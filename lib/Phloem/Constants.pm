@@ -39,13 +39,12 @@ This file is part of Phloem.
 
 package Phloem::Constants;
 
-our $LOG_FILE                        = 'phloem.log';
-our $CONFIG_FILE                     = 'etc/node.xml';
+our $LOG_FILE                       = 'phloem.log';
+our $CONFIG_FILE                    = 'etc/node.xml';
 
-our $REGISTRY_SERVER_TIMEOUT_S       = 30;
+our $REGISTRY_SERVER_TIMEOUT_S      = 30;
 
-our $SUBSCRIBER_UPDATE_SLEEP_TIME_S  = 10;
-our $NODE_REGISTER_SLEEP_TIME_S = 10;
-
+our $SUBSCRIBER_UPDATE_SLEEP_TIME_S = 10;
+our $NODE_REGISTER_SLEEP_TIME_S     = 10;
 
 1;
