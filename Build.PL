@@ -61,7 +61,9 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Getopt::Long;
 use Module::Build;
+use Pod::Usage;
 
 #==============================================================================
 # Start of main program.
