@@ -57,6 +57,7 @@ use lib qw(lib);
 use Phloem::ComponentFactory;
 use Phloem::ConfigLoader;
 use Phloem::Logger;
+use Phloem::NodeAdvertiser;
 use Phloem::RegistryServer;
 
 # This is the main --- indeed, the only --- version number for Phloem.
