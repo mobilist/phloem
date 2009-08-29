@@ -106,6 +106,10 @@ sub get_all_nodes
     $input .= $_;
   }
 
+  if ($input =~ /^ERROR: (.*)$/o) {
+    die "Registry server error: $1";
+  }
+
   # The server is sending us details of the registry.
   my $registry = Phloem::Registry->data_load($input)
     or die "Failed to recreate registry object.";
