@@ -71,8 +71,7 @@ sub register_node
 # Register the specified node.
 {
   my $node = shift or die "No node specified.";
-  die "Expected a node object."
-    unless $node->isa('Phloem::Component::Node');
+  die "Expected a node object." unless $node->isa('Phloem::Node');
 
   # We don't need to register the root node itself; that would be pointless.
   return if $node->is_root();
