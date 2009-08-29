@@ -59,6 +59,7 @@ use diagnostics;
 use lib qw(lib);
 use Phloem::Constants;
 use Phloem::Filter;
+use Phloem::Logger;
 use Phloem::Node;
 use Phloem::Role::Publish;
 use Phloem::Role::Subscribe;
@@ -117,8 +118,11 @@ sub _node_from_xml_data
     my $role_directory_path = $current_role->{'directory'}->[0]->{'path'};
     my $role_description = $current_role->{'description'}->[0] // '';
 
-    print "Role to $role_type $role_route is disabled.\n", next ROLE
-      unless $role_active;
+    unless ($role_active) {
+      Phloem::Logger::append(
+        "Role to $role_type on $role_route route is disabled.");
+      next ROLE;
+    }
 
     # Create a role object.
     my %role_options = ('route'       => $role_route,

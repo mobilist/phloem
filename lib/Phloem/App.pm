@@ -56,6 +56,7 @@ use diagnostics;
 use lib qw(lib);
 use Phloem::ComponentFactory;
 use Phloem::ConfigLoader;
+use Phloem::Logger;
 use Phloem::RegistryServer;
 
 # This is the main --- indeed, the only --- version number for Phloem.
@@ -65,6 +66,10 @@ our $VERSION = 0.01;
 sub run
 # Run the application.
 {
+  # Clear the log file, and write a start-up message.
+  Phloem::Logger::clear();
+  Phloem::Logger::append('Starting up.');
+
   # Load the configuration file.
   my $node = Phloem::ConfigLoader::load()
     or die "Failed to load configuration file.";
@@ -75,13 +80,15 @@ sub run
     my $port = $node->root()->port();
     my $child_pid = Phloem::RegistryServer->run($port)
       or die "Failed to run registry server.";
-    print "Child process started as PID $child_pid.\n";
+    Phloem::Logger::append(
+      "Registry server child process started as PID $child_pid.");
   } else {
     my $node_advertiser = Phloem::NodeAdvertiser->new($node)
       or die "Failed to create node advertiser.";
     my $child_pid = $node_advertiser->run()
       or die "Failed to run node advertiser.";
-    print "Child process started as PID $child_pid.\n";
+    Phloem::Logger::append(
+      "Node advertiser child process started as PID $child_pid.");
   }
 
   # For each role, start a component running.
@@ -90,7 +97,8 @@ sub run
     my $component = Phloem::ComponentFactory::create($node, $role)
       or die "Failed to create component.";
     my $child_pid = $component->run() or die "Failed to run component.";
-    print "Child process started as PID $child_pid.\n";
+    Phloem::Logger::append(
+      "Component child process started as PID $child_pid.");
   }
 }
 

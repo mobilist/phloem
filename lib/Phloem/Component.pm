@@ -78,6 +78,7 @@ use Class::Struct 'Phloem::Component' => {'node' => 'Phloem::Node',
                                           'role' => 'Phloem::Role'};
 
 use lib qw(lib);
+use Phloem::Logger;
 use Phloem::Node;
 use Phloem::Role;
 use Xylem::Utils::Process;
@@ -111,7 +112,8 @@ sub shut_down
 
   my $exit_code = shift // 0;
 
-  print "Component shutting down with exit code $exit_code.\n";
+  Phloem::Logger::append(
+    "Component shutting down with exit code $exit_code.");
 
   exit($exit_code);
 }
