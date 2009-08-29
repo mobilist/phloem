@@ -93,7 +93,7 @@ sub run
   die "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   # Spawn a new child process to run the component.
-  my $child_pid = Xylem::Utils::Process::spawn_child();
+  my $child_pid = Xylem::Utils::Process::spawn_child('NODAEMON' => 1);
   return $child_pid if $child_pid;
 
   # (We're in the child process now.)
