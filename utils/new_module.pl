@@ -110,37 +110,37 @@ sub write_module_file
     or die "Failed to acquire exclusive file lock: $!";
 
   print $module_fh <<"xxx_END_MODULE";
-=head1 NAME
+\=head1 NAME
 
 $module_name
 
-=head1 SYNOPSIS
+\=head1 SYNOPSIS
 
   C<use $module_name;>
 
-=head1 METHODS
+\=head1 METHODS
 
-=over 8
+\=over 8
 
-=item some_method
+\=item some_method
 
 Some method or another.
 
-=back
+\=back
 
-=head1 DESCRIPTION
+\=head1 DESCRIPTION
 
 A module.
 
-=head1 COPYRIGHT
+\=head1 COPYRIGHT
 
 Copyright (C) $year Simon Dawson.
 
-=head1 AUTHOR
+\=head1 AUTHOR
 
 Simon Dawson E<lt>spdawson\@gmail.comE<gt>
 
-=head1 LICENSE
+\=head1 LICENSE
 
 This file is part of Phloem.
 
@@ -157,7 +157,7 @@ This file is part of Phloem.
    You should have received a copy of the GNU General Public License
    along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
 
-=cut
+\=cut
 
 package $module_name;
 
