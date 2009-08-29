@@ -62,6 +62,9 @@ Is the node acting as a "portal" for the specified route?
 
 Does the node fulfil a publisher role for the specified route?
 
+If so, then the relevant publish role is returned. Otherwise, a false value
+is returned.
+
 =back
 
 =head1 DESCRIPTION
@@ -270,6 +273,9 @@ sub is_portal
 #------------------------------------------------------------------------------
 sub publishes_on_route
 # Does the node fulfil a publisher role for the specified route?
+#
+# If so, then the relevant publish role is returned. Otherwise, a false value
+# is returned.
 {
   my $self = shift or die "No object reference.";
   die "Unexpected object class." unless $self->isa(__PACKAGE__);
@@ -281,12 +287,12 @@ sub publishes_on_route
 
   my @roles = $self->roles();
   foreach my $current_role (@roles) {
-    return 1 if ($current_role->isa('Phloem::Role::Publish') &&
-                 $current_role->route() eq $route);
+    return $current_role if ($current_role->isa('Phloem::Role::Publish') &&
+                             $current_role->route() eq $route);
   }
 
   # If we get here, then we failed to find a suitable role.
-  return 0;
+  return;
 }
 
 1;

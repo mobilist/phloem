@@ -103,27 +103,35 @@ sub _find_publishers
   my $self = shift or die "No object reference.";
   die "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  # Retrieve a list of all nodes from the "root" node.
-  my @all_nodes = Phloem::RegistryClient::get_all_nodes($self->root());
-
+  my $node = $self->node() or die "No node.";
   my $role = $self->role() or die "No role.";
+
+  # Retrieve a list of all nodes from the "root" node.
+  my $root = $node->root();
+  my @all_nodes = Phloem::RegistryClient::get_all_nodes($root);
+
   my $route = $role->route();
   my $filter = $role->filter();
 
   # Filter the list down to the publishers of interest.
-  my @publisher_nodes;
+  my @publisher_nodes = ([], []);
   foreach my $current_node (@all_nodes) {
 
     # We're only interested in publisher nodes.
     next unless $current_node->is_publisher();
 
+    # We don't want to subscribe from our own node.
+    next if ($current_node->id() eq $node->id());
+
     # We only want publishers that publish on the route that we subscribe to.
-    next unless $current_node->publishes_on_route($route);
+    my $route_publish_role = $current_node->publishes_on_route($route);
+    next unless $route_publish_role;
 
     # Apply our filter to the node.
     next if ($filter && !$filter->apply($current_node));
 
-    push(@publisher_nodes, $current_node);
+    push(@{$publisher_nodes[0]}, $current_node);
+    push(@{$publisher_nodes[1]}, $route_publish_role);
   }
 
   return @publisher_nodes;
@@ -144,8 +152,13 @@ sub _update_from_publisher
   # Get some details required to specify the transfer.
   my $remote_ip_address = $node->host();
   my $remote_user = $node->rsync()->user();
-  my $remote_path = '';
-  die "NOT YET WRITTEN!";
+  my $remote_path;
+  {
+    # Work out the remote path for the transfer.
+    my $remote_role = undef;
+    # Is a publisher, on the relevant route.
+    die "NOT YET WRITTEN!";
+  }
   my $local_path = $role->directory();
 
   # Transfer data from the remote host.

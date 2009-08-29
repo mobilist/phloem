@@ -48,9 +48,9 @@ ok(my $role = Phloem::Role::Publish->new('route'       => 'rootward',
 
 ok($node->add_role($role), 'Adding role to node.');
 
-ok(my $component = Phloem::ComponentFactory::create($role, $node->root()),
+ok(my $component = Phloem::ComponentFactory::create($node, $role),
    'Creating component using factory.');
+ok(my $node2 = $component->node(), 'Getting node from component.');
 ok(my $role2 = $component->role(), 'Getting role from component.');
-ok(my $root2 = $component->root(), 'Getting root from component.');
+is_deeply($node2, $node, 'Nodes should match.');
 is_deeply($role2, $role, 'Roles should match.');
-is_deeply($root2, $root, 'Roots should match.');

@@ -25,8 +25,8 @@ use diagnostics;
 
 use Test::More tests => 8; # qw(no_plan);
 
+use Phloem::Node;
 use Phloem::Role;
-use Phloem::Root;
 
 BEGIN { use_ok('Phloem::Component'); }
 
@@ -34,12 +34,10 @@ ok(my $role = Phloem::Role->new('route'       => 'rootward',
                                 'directory'   => 'some/path',
                                 'description' => 'Dummy.'),
    'Creating role object.');
-ok(my $root = Phloem::Root->new('host' => 'egg12345',
-                                'port' => 1234),
-   'Creating root object.');
-ok(my $component = Phloem::Component->new('role' => $role, 'root' => $root),
+ok(my $node = Phloem::Node->new(), 'Creating node object.');
+ok(my $component = Phloem::Component->new('node' => $node, 'role' => $role),
    'Creating component object.');
+ok(my $node2 = $component->node(), 'Accessor for node.');
+is_deeply($node2, $node, 'Nodes should match.');
 ok(my $role2 = $component->role(), 'Accessor for role.');
 is_deeply($role2, $role, 'Roles should match.');
-ok(my $root2 = $component->root(), 'Accessor for root.');
-is_deeply($root2, $root, 'Roots should match.');

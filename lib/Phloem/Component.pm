@@ -14,13 +14,13 @@ Phloem::Component
 
 Constructor.
 
+=item node
+
+Get the node.
+
 =item role
 
-Get the root.
-
-=item role
-
-Get the root.
+Get the role.
 
 =item run
 
@@ -74,12 +74,12 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Class::Struct 'Phloem::Component' => {'role'  => 'Phloem::Role',
-                                          'root'  => 'Phloem::Root'};
+use Class::Struct 'Phloem::Component' => {'node' => 'Phloem::Node',
+                                          'role' => 'Phloem::Role'};
 
 use lib qw(lib);
+use Phloem::Node;
 use Phloem::Role;
-use Phloem::Root;
 use Xylem::Utils::Process;
 
 #------------------------------------------------------------------------------

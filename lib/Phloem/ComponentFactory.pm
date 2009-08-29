@@ -57,8 +57,8 @@ use warnings;
 use diagnostics;
 
 use lib qw(lib);
+use Phloem::Node;
 use Phloem::Role;
-use Phloem::Root;
 use Phloem::Component::Publisher;
 use Phloem::Component::Subscriber;
 
@@ -66,16 +66,16 @@ use Phloem::Component::Subscriber;
 sub create
 # Factory method.
 {
+  my $node = shift or die "No node specified.";
+  die "Expected a node object." unless $node->isa('Phloem::Node');
+
   my $role = shift or die "No role specified.";
   die "Expected a role object." unless $role->isa('Phloem::Role');
 
-  my $root = shift or die "No root specified.";
-  die "Expected a root object." unless $root->isa('Phloem::Root');
-
-  return Phloem::Component::Publisher->new('role' => $role, 'root' => $root)
+  return Phloem::Component::Publisher->new('node' => $node, 'role' => $role)
     if $role->isa('Phloem::Role::Publish');
 
-  return Phloem::Component::Subscriber->new('role' => $role, 'root' => $root);
+  return Phloem::Component::Subscriber->new('node' => $node, 'role' => $role);
 }
 
 1;

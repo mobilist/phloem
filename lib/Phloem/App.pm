@@ -87,7 +87,7 @@ sub run
   # For each role, start a component running.
   my @roles = $node->roles();
   foreach my $role (@roles) {
-    my $component = Phloem::ComponentFactory::create($role, $node->root())
+    my $component = Phloem::ComponentFactory::create($node, $role)
       or die "Failed to create component.";
     my $child_pid = $component->run() or die "Failed to run component.";
     print "Child process started as PID $child_pid.\n";
