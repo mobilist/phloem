@@ -47,6 +47,7 @@ use base 'Xylem::Server';
 
 use lib qw(lib);
 use Phloem::Constants;
+use Phloem::Logger;
 use Phloem::Registry;
 
 #------------------------------------------------------------------------------
@@ -61,6 +62,8 @@ sub process_request
 
   my $client_sock = shift or die "No client socket specified.";
   die "Expected a TCP/IP socket." unless $client_sock->isa('IO::Socket::INET');
+
+  Phloem::Logger::append('DEBUG: Client connected to server.');
 
   # Use time-outs to prevent denial-of-service attacks while reading.
   my $input = '';
@@ -80,6 +83,7 @@ sub process_request
   };
 
   if ($@ =~ /Timed out\./o) {
+    Phloem::Logger::append('DEBUG: Server timed out.');
     print $client_sock "ERROR: Timed out.\r\n";
     return;
   }
@@ -90,9 +94,11 @@ sub process_request
   # See what we got.
   if ($input =~ /^\s*GET\s*$/o) {
     # The client wants details of the registry.
+    Phloem::Logger::append('DEBUG: Client requested registry details.');
     print $client_sock $registry->data_dump(), "\r\n";
   } else {
     # The client is sending us details of a node.
+    Phloem::Logger::append('DEBUG: Client sent node details.');
     my $node = Phloem::Node->data_load($input)
       or die "Failed to recreate node object.";
 
@@ -100,6 +106,7 @@ sub process_request
     $registry->add_node($node);
 
     # Save the updated registry.
+    Phloem::Logger::append('DEBUG: Saving updated registry.');
     $registry->save();
   }
 }

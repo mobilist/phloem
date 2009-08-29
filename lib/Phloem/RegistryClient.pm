@@ -63,6 +63,7 @@ use IO::Socket::INET;
 
 use lib qw(lib);
 use Phloem::Constants;
+use Phloem::Logger;
 use Phloem::Node;
 use Phloem::Root;
 
@@ -78,6 +79,8 @@ sub register_node
 
   # Get a socket for communicating with the registry server.
   my $sock =_get_socket($node->root());
+
+  Phloem::Logger::append('DEBUG: Attempting to register a node.');
 
   # Dump the node data off to the registry server.
   print $sock $node->data_dump(), "\r\n";
@@ -95,6 +98,8 @@ sub get_all_nodes
   # Get a socket for communicating with the registry server.
   my $sock =_get_socket($root);
 
+  Phloem::Logger::append('DEBUG: Attempting to request registry data.');
+
   # Send the request off to the registry server.
   print $sock "GET\r\n";
 
@@ -111,6 +116,8 @@ sub get_all_nodes
 
   die "Registry server returned no data."
     unless ($input && length($input) && $input !~ /^\s*$/o);
+
+  Phloem::Logger::append('DEBUG: About to use data returned from server.');
 
   # The server is sending us details of the registry.
   my $registry = Phloem::Registry->data_load($input)
