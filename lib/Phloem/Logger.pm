@@ -59,59 +59,22 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Fcntl qw(:flock :seek); # Import LOCK_* and SEEK_* constants.
-use FileHandle;
-
 use lib qw(lib);
 use Phloem::Constants;
-use Xylem::TimeStamp;
+use Xylem::Logger;
 
 #------------------------------------------------------------------------------
 sub append
 # Append the specified message to the log file.
 {
-  # Get the input: a message to log.
-  my $message = shift or die "No message specified.";
-  chomp($message);
-
-  # Generate a time-stamp.
-  my $ts = Xylem::TimeStamp::create();
- 
-  # Assemble the message: prefix it with the time-stamp.
-  $message = "$ts --- $message\n";
-
-  # Print the message to the console too.
-  #
-  # N.B. We need to use standard error in case we are called from a CGI script.
-  print STDERR $message;
-
-  my $log_file = $Phloem::Constants::LOG_FILE;
-  my $log_fh = FileHandle->new(">> $log_file")
-    or die "Failed to open log file for appending: $!";
-  flock($log_fh, LOCK_EX) or die "Failed to acquire exclusive file lock: $!";
-
-  # Append to the log.
-  print $log_fh $message;
-
-  flock($log_fh, LOCK_UN) or die "Failed to unlock file: $!";
-  $log_fh->close() or die "Failed to close file: $!";
+  Xylem::Logger::append(@_, $Phloem::Constants::LOG_FILE);
 }
 
 #------------------------------------------------------------------------------
 sub clear
 # Clear the log file.
 {
-  my $log_file = $Phloem::Constants::LOG_FILE;
-  my $log_fh = FileHandle->new("> $log_file")
-    or die "Failed to open log file for writing: $!";
-  flock($log_fh, LOCK_EX) or die "Failed to acquire exclusive file lock: $!";
-
-  # Clear the log.
-  $log_fh->seek(SEEK_SET, 0);
-  $log_fh->truncate(0);
-
-  flock($log_fh, LOCK_UN) or die "Failed to unlock file: $!";
-  $log_fh->close() or die "Failed to close file: $!";
+  Xylem::Logger::clear($Phloem::Constants::LOG_FILE);
 }
 
 1;
