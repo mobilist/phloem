@@ -114,8 +114,10 @@ sub get_all_nodes
     die "Registry server error: $1";
   }
 
-  die "Registry server returned no data."
-    unless ($input && length($input) && $input !~ /^\s*$/o);
+  unless ($input && length($input) && $input !~ /^\s*$/o) {
+    warn "Registry server returned no data.";
+    return;
+  }
 
   Phloem::Logger::append('DEBUG: About to use data returned from server.');
 
