@@ -141,6 +141,8 @@ sub _get_socket
   my $root = shift or die "No root specified.";
   die "Expected a root object." unless $root->isa('Phloem::Root');
 
+  Phloem::Logger::append(
+    "Creating socket on " . $root->host() . ":" . $root->port() . ".");
   my $sock = IO::Socket::INET->new('PeerAddr' => $root->host(),
                                    'PeerPort' => $root->port(),
                                    'Proto'    => 'tcp',
