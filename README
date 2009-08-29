@@ -1,0 +1,49 @@
+README
+
+This is some basic information about the Phloem Content Delivery Network (CDN).
+
+
+INSTALLATION
+
+Phloem uses Module::Build for its installation process.
+
+To install Phloem, do the following.
+
+   1. perl Build.PL   # 'Build.PL' script creates the 'Build' script
+   2. ./Build         # Need ./ to ensure we're using this "Build" script
+   3. ./Build test    # and not another one that happens to be in the PATH
+   4. ./Build install
+
+
+DEPENDENCIES
+
+Phloem requires the following non-core Perl modules.
+
+  XML::Simple
+
+Phloem also requires that rsync and ssh (client and server) be installed.
+
+
+AUTHOR
+
+The author can be contacted by electronic mail to spdawson@gmail.com
+
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2009 Simon Dawson
+
+ This file is part of Phloem.
+
+    Phloem is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Phloem is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Phloem.  If not, see <http://www.gnu.org/licenses/>.

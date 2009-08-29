@@ -1,0 +1,196 @@
+=head1 NAME
+
+Phloem::ConfigLoader
+
+=head1 SYNOPSIS
+
+  C<use Phloem::ConfigLoader;>
+  C<my $config = Phloem::ConfigLoader::load();>
+
+=head1 METHODS
+
+=over 8
+
+=item load
+
+Load the configuration file.
+
+Returns a node object.
+
+=back
+
+=head1 DESCRIPTION
+
+A utility module for loading the Phloem configuration settings from file.
+
+=head1 COPYRIGHT
+
+Copyright (C) 2009 Simon Dawson.
+
+=head1 AUTHOR
+
+Simon Dawson E<lt>spdawson@gmail.comE<gt>
+
+=head1 LICENSE
+
+This file is part of Phloem.
+
+   Phloem is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Phloem is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut
+
+package Phloem::ConfigLoader;
+
+use strict;
+use warnings;
+use diagnostics;
+
+use lib qw(lib);
+use Phloem::Constants;
+use Phloem::Filter;
+use Phloem::Node;
+use Phloem::Role::Publish;
+use Phloem::Role::Subscribe;
+use Phloem::Root;
+use Phloem::Rsync;
+use Xylem::Utils::XML;
+
+#------------------------------------------------------------------------------
+sub load
+# Load the configuration file.
+#
+# Returns a node object.
+{
+  # Parse the configuration XML file.
+  my $config_data = Xylem::Utils::XML::parse($Phloem::Constants::CONFIG_FILE);
+
+  # Process the parsed XML data, returning a node object.
+  return _node_from_xml_data($config_data);
+}
+
+#------------------------------------------------------------------------------
+sub _node_from_xml_data
+# Process the specified parsed XML data, returning a node object.
+{
+  my $xml_data = shift or die "No XML data specified.";
+  die "Expected a hash reference." unless (ref($xml_data) eq 'HASH');
+
+  # Get the root for the node.
+  my $root_object = _root_from_xml_data($xml_data);
+
+  # Get the rsync for the node.
+  my $rsync_object = _rsync_from_xml_data($xml_data);
+
+  # Create a node object.
+  my $node_id = $xml_data->{'id'} or die "No node ID.";
+  my $node_group = $xml_data->{'group'};
+  my $node_description = $xml_data->{'description'}->[0] // '';
+  my $node_is_root = $xml_data->{'is_root'} // 0;
+  my $node_host = $xml_data->{'host'} // 'localhost';
+  my $node_object = Phloem::Node->new('id'          => $node_id,
+                                      'group'       => $node_group,
+                                      'description' => $node_description,
+                                      'is_root'     => $node_is_root,
+                                      'host'        => $node_host,
+                                      'root'        => $root_object,
+                                      'rsync'       => $rsync_object)
+    or die "Failed to create node object.";
+
+  # Add roles to the node.
+  my $roles = $xml_data->{'role'};
+ ROLE:
+  foreach my $current_role (@$roles) {
+    my $role_type = $current_role->{'type'};
+    my $role_route = $current_role->{'route'};
+    my $role_active = $current_role->{'active'} // 1;
+    my $role_directory_path = $current_role->{'directory'}->[0]->{'path'};
+    my $role_description = $current_role->{'description'}->[0] // '';
+
+    print "Role to $role_type $role_route is disabled.\n", next ROLE
+      unless $role_active;
+
+    # Create a role object.
+    my %role_options = ('route'       => $role_route,
+                        'directory'   => $role_directory_path,
+                        'description' => $role_description);
+    my $role_object;
+    if ($role_type eq 'publish') {
+      $role_object = Phloem::Role::Publish->new(%role_options);
+    } else {
+      my $role_filter = $current_role->{'filter'};
+      if ($role_filter) {
+        my $role_filter_type = $role_filter->[0]->{'type'};
+        my $role_filter_value = $role_filter->[0]->{'value'};
+        my $role_filter_rule = $role_filter->[0]->{'rule'} // 'exact';
+        my $filter = Phloem::Filter->new('type'  => $role_filter_type,
+                                         'value' => $role_filter_value,
+                                         'rule'  => $role_filter_rule)
+          or die "Failed to create filter object.";
+        $role_options{'filter'} = $filter;
+      }
+
+      $role_object = Phloem::Role::Subscribe->new(%role_options);
+    }
+    die "Failed to create role object." unless $role_object;
+
+    # Add the role to the node.
+    $node_object->add_role($role_object);
+  }
+
+  return $node_object;
+}
+
+#------------------------------------------------------------------------------
+sub _root_from_xml_data
+# Process the specified parsed XML data, returning a root object.
+{
+  my $xml_data = shift or die "No XML data specified.";
+  die "Expected a hash reference." unless (ref($xml_data) eq 'HASH');
+
+  my $root_object;
+  {
+    my $node_root = $xml_data->{'root'} or die "No root.";
+    {
+      my $node_root_host = $node_root->[0]->{'host'};
+      my $node_root_port = $node_root->[0]->{'port'};
+      $root_object = Phloem::Root->new('host' => $node_root_host,
+                                       'port' => $node_root_port)
+        or die "Failed to create root object.";
+    }
+  }
+
+  return $root_object;
+}
+
+#------------------------------------------------------------------------------
+sub _rsync_from_xml_data
+# Process the specified parsed XML data, returning a rsync object.
+{
+  my $xml_data = shift or die "No XML data specified.";
+  die "Expected a hash reference." unless (ref($xml_data) eq 'HASH');
+
+  my $rsync_object;
+  {
+    my $node_rsync = $xml_data->{'rsync'} or die "No rsync.";
+    {
+      my $node_rsync_user = $node_rsync->[0]->{'user'};
+      $rsync_object = Phloem::Rsync->new('user' => $node_rsync_user)
+        or die "Failed to create rsync object.";
+    }
+  }
+
+  return $rsync_object;
+}
+
+1;
