@@ -80,6 +80,7 @@ use diagnostics;
 
 use Fcntl qw(:flock); # Import LOCK_* constants.
 use FileHandle;
+use File::Temp;
 
 use lib qw(lib);
 
@@ -153,7 +154,7 @@ sub load
   die "Expected an ordinary scalar." if ref($class);
   die "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  my $registry_file = $Phloem::Constants::REGISTRY_FILE;
+  my $registry_file = _registry_file();
 
   # Create and return a new object if there is no saved registry data.
   return $class->new() unless (-f $registry_file);
@@ -183,7 +184,8 @@ sub save
   my $self = shift or die "No object reference.";
   die "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  my $registry_file = $Phloem::Constants::REGISTRY_FILE;
+  my $registry_file = _registry_file();
+
   my $registry_fh = FileHandle->new("> $registry_file")
     or die "Failed to open registry file for writing: $!";
   flock($registry_fh, LOCK_EX)
@@ -196,5 +198,17 @@ sub save
   $registry_fh->close() or die "Failed to close file: $!";
 }
 
+#------------------------------------------------------------------------------
+my $_registry_file; # A "private" module variable.
+sub _registry_file
+# Get the path to the registry file.
+{
+  unless ($_registry_file) {
+    my $temp_fh = File::Temp->new('UNLINK' => 0);
+    $_registry_file = $temp_fh->filename();
+  }
+
+  return $_registry_file;
+}
 
 1;

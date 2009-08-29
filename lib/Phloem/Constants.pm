@@ -41,7 +41,6 @@ package Phloem::Constants;
 
 our $LOG_FILE                        = 'phloem.log';
 our $CONFIG_FILE                     = 'etc/node.xml';
-our $REGISTRY_FILE                   = 'etc/registry.txt';
 
 our $REGISTRY_SERVER_TIMEOUT_S       = 30;
 
