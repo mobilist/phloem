@@ -1,37 +1,28 @@
 README
 
-This is some basic information about the Phloem Content Delivery Network (CDN).
+ Full information is in the Phloem::Manual module. If Phloem is already
+ installed, then run the following command.
+
+   perldoc Phloem::Manual
+
+ If Phloem is not installed, then you can run
+
+   perldoc lib/Phloem/Manual.pm
+
+ in the directory in which you found this file.
 
 
-INSTALLATION
+COPYRIGHT
 
-Phloem uses Module::Build for its installation process.
-
-To install Phloem, do the following.
-
-   1. perl Build.PL   # 'Build.PL' script creates the 'Build' script
-   2. ./Build         # Need ./ to ensure we're using this "Build" script
-   3. ./Build test    # and not another one that happens to be in the PATH
-   4. ./Build install
-
-
-DEPENDENCIES
-
-Phloem requires the following non-core Perl modules.
-
-  XML::Simple
-
-Phloem also requires that rsync and ssh (client and server) be installed.
+ Copyright (C) 2009 Simon Dawson.
 
 
 AUTHOR
 
-The author can be contacted by electronic mail to spdawson@gmail.com
+ Simon Dawson <spdawson@gmail.com>
 
 
-COPYRIGHT AND LICENCE
-
-Copyright (C) 2009 Simon Dawson
+LICENCE
 
  This file is part of Phloem.
 

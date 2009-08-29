@@ -37,6 +37,32 @@ These modules are available from CPAN.
 
 Phloem also requires that rsync and ssh (client and server) be installed.
 
+=head1 INSTALLATION
+
+Phloem uses Module::Build for its installation process.
+
+To install Phloem, do the following.
+
+=over 8
+
+=item 1
+
+perl Build.PL
+
+=item 2
+
+./Build
+
+=item 3
+
+./Build test
+
+=item 4
+
+./Build install
+
+=back
+
 =head1 OVERVIEW
 
 A basic conceptual overview of Phloem follows.
