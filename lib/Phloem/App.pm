@@ -84,7 +84,7 @@ sub run
     Phloem::Logger::append(
       "Registry server child process started as PID $child_pid.");
   } else {
-    my $node_advertiser = Phloem::NodeAdvertiser->new($node)
+    my $node_advertiser = Phloem::NodeAdvertiser->new('node' => $node)
       or die "Failed to create node advertiser.";
     my $child_pid = $node_advertiser->run()
       or die "Failed to run node advertiser.";
