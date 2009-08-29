@@ -85,6 +85,7 @@ sub run
   # (We're in the child process now.)
 
   my $server_sock = IO::Socket::INET->new('LocalPort' => $port,
+                                          'Proto'     => 'tcp',
                                           'Type'      => SOCK_STREAM,
                                           'Reuse'     => 1,
                                           'Listen'    => SOMAXCONN)

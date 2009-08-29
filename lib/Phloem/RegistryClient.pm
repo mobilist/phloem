@@ -146,7 +146,8 @@ sub _get_socket
   my $sock = IO::Socket::INET->new('PeerAddr' => $root->host(),
                                    'PeerPort' => $root->port(),
                                    'Proto'    => 'tcp',
-                                   'Type'     => SOCK_STREAM)
+                                   'Type'     => SOCK_STREAM,
+                                   'Blocking' => 1)
     or die "Failed to create socket: $@";
 
   return $sock;
