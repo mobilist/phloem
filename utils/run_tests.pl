@@ -2,15 +2,19 @@
 
 =head1 NAME
 
-phloem.pl
+run_tests.pl
 
 =head1 SYNOPSIS
 
-phloem.pl [options]
+run_tests.pl [options]
 
 =head1 DESCRIPTION
 
-Driver script for Phloem.
+Run the Phloem tests.
+
+Yes, this could have just been a simple shell script one-liner --- a wrapper
+around the "prove" command. But that would have made Phloem less portable.
+And, in any case, this whole thing is meant to be written in Perl.
 
 =head1 OPTIONS
 
@@ -61,11 +65,9 @@ use strict;
 use warnings;
 use diagnostics;
 
+use App::Prove;
 use Getopt::Long;
 use Pod::Usage;
-
-use lib qw(lib);
-use Phloem::App;
 
 #==============================================================================
 # Start of main program.
@@ -81,13 +83,21 @@ use Phloem::App;
             -exitval  => 0) if $opt_l;
 
   print <<'xxx_END_GPL_HEADER';
-    phloem.pl Copyright (C) 2009 Simon Dawson
+    run_tests.pl Copyright (C) 2009 Simon Dawson
     This program comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it
-    under certain conditions; type phloem.pl --license for details.
+    under certain conditions; type run_tests.pl --license for details.
 xxx_END_GPL_HEADER
 
-  # Run the application.
-  Phloem::App::run();
+  # Set up the tester object.
+  my $app = App::Prove->new();
+  $app->lib(1);
+  $app->verbose(1);
+  $app->recurse(1);
+  $app->timer(1);
+  $app->process_args('t'); # Test directory path.
+
+  # Return a proper exit code.
+  exit( $app->run() ? 0 : 1 );
 }
 # End of main program.
