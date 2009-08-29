@@ -28,6 +28,8 @@ use Test::More tests => 4; # qw(no_plan);
 BEGIN { use_ok('Xylem::TimeStamp'); }
 
 ok(my $ts1 = Xylem::TimeStamp::create(), 'Generating a time-stamp.');
+
+diag('Waiting for a second, so that the next time-stamp is different...');
 sleep(1);
 ok(my $ts2 = Xylem::TimeStamp::create(), 'Generating another time-stamp.');
 ok($ts2 ne $ts1, 'Time-stamps should differ.');

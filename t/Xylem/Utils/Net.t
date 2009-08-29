@@ -37,5 +37,6 @@ ok(my $recv_sock = Xylem::Utils::Net::get_broadcast_recv_socket(TEST_PORT),
 
 is(Xylem::Utils::Net::ping('localhost'), 1, 'Should be able to ping ourself.');
 
+diag('Waiting for a ping to time-out...');
 ok(!Xylem::Utils::Net::ping('donkey.sputem.stick'),
    'Should not be able to ping a non-existent host.');
