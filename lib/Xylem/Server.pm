@@ -63,6 +63,7 @@ sub run
 
   # (We're in the child process now.)
 
+  # Create the server socket.
   my $server_sock = IO::Socket::INET->new('LocalPort' => $port,
                                           'Proto'     => 'tcp',
                                           'Type'      => SOCK_STREAM,
@@ -70,11 +71,8 @@ sub run
                                           'Listen'    => SOMAXCONN)
     or die "Failed to create server socket on port $port : $@\n";
 
-  while (my $client_sock = $server_sock->accept()) {
-    $class->process_request($client_sock);
-  }
-
-  close($server_sock);
+  # Run the server.
+  $class->_do_run($server_sock);
 }
 
 #------------------------------------------------------------------------------
@@ -84,6 +82,29 @@ sub process_request
 # N.B. This is a class method.
 {
   die "PURE VIRTUAL BASE CLASS METHOD! MUST BE OVERRIDDEN!";
+}
+
+#------------------------------------------------------------------------------
+sub _do_run
+# Run the server --- "protected" method.
+#
+# Subclasses should override this default implementation if different
+# behaviour is required.
+#
+# N.B. This is a class method.
+{
+  my $class = shift or die "No class name specified.";
+  die "Expected an ordinary scalar." if ref($class);
+  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+
+  my $server_sock = shift or die "No server socket specified.";
+  die "Expected a TCP/IP socket." unless $server_sock->isa('IO::Socket::INET');
+
+  while (my $client_sock = $server_sock->accept()) {
+    $class->process_request($client_sock);
+  }
+
+  close($server_sock);
 }
 
 1;
