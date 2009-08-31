@@ -2,6 +2,10 @@
 
 Phloem::ComponentFactory
 
+=head1 DESCRIPTION
+
+A factory for Phloem components.
+
 =head1 SYNOPSIS
 
   C<use Phloem::ComponentFactory;>
@@ -13,15 +17,45 @@ Phloem::ComponentFactory
 
 =over 8
 
+=cut
+
+package Phloem::ComponentFactory;
+
+use strict;
+use warnings;
+use diagnostics;
+
+use lib qw(lib);
+use Phloem::Node;
+use Phloem::Role;
+use Phloem::Component::Publisher;
+use Phloem::Component::Subscriber;
+
+#------------------------------------------------------------------------------
+
 =item create
 
 Factory method.
 
+=cut
+
+sub create
+{
+  my $node = shift or die "No node specified.";
+  die "Expected a node object." unless $node->isa('Phloem::Node');
+
+  my $role = shift or die "No role specified.";
+  die "Expected a role object." unless $role->isa('Phloem::Role');
+
+  return Phloem::Component::Publisher->new('node' => $node, 'role' => $role)
+    if $role->isa('Phloem::Role::Publish');
+
+  return Phloem::Component::Subscriber->new('node' => $node, 'role' => $role);
+}
+
+1;
+
 =back
-
-=head1 DESCRIPTION
-
-A factory for Phloem components.
 
 =head1 COPYRIGHT
 
@@ -49,33 +83,3 @@ This file is part of Phloem.
    along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-
-package Phloem::ComponentFactory;
-
-use strict;
-use warnings;
-use diagnostics;
-
-use lib qw(lib);
-use Phloem::Node;
-use Phloem::Role;
-use Phloem::Component::Publisher;
-use Phloem::Component::Subscriber;
-
-#------------------------------------------------------------------------------
-sub create
-# Factory method.
-{
-  my $node = shift or die "No node specified.";
-  die "Expected a node object." unless $node->isa('Phloem::Node');
-
-  my $role = shift or die "No role specified.";
-  die "Expected a role object." unless $role->isa('Phloem::Role');
-
-  return Phloem::Component::Publisher->new('node' => $node, 'role' => $role)
-    if $role->isa('Phloem::Role::Publish');
-
-  return Phloem::Component::Subscriber->new('node' => $node, 'role' => $role);
-}
-
-1;

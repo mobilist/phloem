@@ -2,6 +2,10 @@
 
 Phloem::Root
 
+=head1 DESCRIPTION
+
+Root node information for Phloem.
+
 =head1 SYNOPSIS
 
   C<use Phloem::Root;>
@@ -23,10 +27,6 @@ Get the host.
 Get the port.
 
 =back
-
-=head1 DESCRIPTION
-
-Root node information for Phloem.
 
 =head1 COPYRIGHT
 

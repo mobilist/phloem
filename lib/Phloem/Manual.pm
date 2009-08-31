@@ -2,15 +2,15 @@
 
 Phloem::Manual
 
+=head1 DESCRIPTION
+
+The Phloem manual.
+
 =head1 SYNOPSIS
 
   C<perldoc Phloem::Manual>
 
 But then, if you're reading this, then you've probably figured that out...
-
-=head1 DESCRIPTION
-
-The Phloem manual.
 
 =head1 INTRODUCTION
 

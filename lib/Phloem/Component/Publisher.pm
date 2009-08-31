@@ -2,13 +2,17 @@
 
 Phloem::Component::Publisher
 
+=head1 DESCRIPTION
+
+A publisher Phloem component.
+
 =head1 SYNOPSIS
 
   C<use Phloem::Component::Publisher;>
 
-=head1 DESCRIPTION
+=head1 SEE ALSO
 
-A publisher Phloem component.
+L<Phloem::Component>, L<Phloem::Component::Subscriber>
 
 =head1 COPYRIGHT
 

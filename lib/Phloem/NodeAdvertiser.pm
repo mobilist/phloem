@@ -2,6 +2,10 @@
 
 Phloem::NodeAdvertiser
 
+=head1 DESCRIPTION
+
+An object to handle the registration of a node with the "root" node.
+
 =head1 SYNOPSIS
 
   C<use Phloem::NodeAdvertiser;>
@@ -18,17 +22,54 @@ Constructor.
 
 Get the node.
 
+=cut
+
+package Phloem::NodeAdvertiser;
+
+use strict;
+use warnings;
+use diagnostics;
+
+use Class::Struct 'Phloem::NodeAdvertiser' => {'node'  => 'Phloem::Node'};
+
+use lib qw(lib);
+use Phloem::Constants;
+use Phloem::RegistryClient;
+use Xylem::Utils::Process;
+
+#------------------------------------------------------------------------------
+
 =item run
 
 Run the advertiser.
 
 Spawns a child process, and returns the PID.
 
+=cut
+
+sub run
+{
+  my $self = shift or die "No object reference.";
+  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  # Spawn a new child process to run the component.
+  my $child_pid = Xylem::Utils::Process::spawn_child('NODAEMON' => 1);
+  return $child_pid if $child_pid;
+
+  # (We're in the child process now.)
+
+  # Sit in a loop, periodically registering our node with the "root" node.
+  while (1) {
+    Phloem::RegistryClient::register_node($self->node())
+      or die "Failed to register node with root node.";
+  } continue {
+    sleep($Phloem::Constants::NODE_REGISTER_SLEEP_TIME_S);
+  }
+}
+
+1;
+
 =back
-
-=head1 DESCRIPTION
-
-An object to handle the registration of a node with the "root" node.
 
 =head1 COPYRIGHT
 
@@ -56,42 +97,3 @@ This file is part of Phloem.
    along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-
-package Phloem::NodeAdvertiser;
-
-use strict;
-use warnings;
-use diagnostics;
-
-use Class::Struct 'Phloem::NodeAdvertiser' => {'node'  => 'Phloem::Node'};
-
-use lib qw(lib);
-use Phloem::Constants;
-use Phloem::RegistryClient;
-use Xylem::Utils::Process;
-
-#------------------------------------------------------------------------------
-sub run
-# Run the advertiser.
-#
-# Spawns a child process, and returns the PID.
-{
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  # Spawn a new child process to run the component.
-  my $child_pid = Xylem::Utils::Process::spawn_child('NODAEMON' => 1);
-  return $child_pid if $child_pid;
-
-  # (We're in the child process now.)
-
-  # Sit in a loop, periodically registering our node with the "root" node.
-  while (1) {
-    Phloem::RegistryClient::register_node($self->node())
-      or die "Failed to register node with root node.";
-  } continue {
-    sleep($Phloem::Constants::NODE_REGISTER_SLEEP_TIME_S);
-  }
-}
-
-1;

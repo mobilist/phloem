@@ -2,13 +2,17 @@
 
 Phloem::RegistryServer
 
+=head1 DESCRIPTION
+
+Registry server for Phloem.
+
 =head1 SYNOPSIS
 
   C<use Phloem::RegistryServer;>
 
-=head1 DESCRIPTION
+=head1 SEE ALSO
 
-Registry server for Phloem.
+L<Xylem::Server>
 
 =head1 COPYRIGHT
 

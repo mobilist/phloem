@@ -2,6 +2,10 @@
 
 Phloem::Rsync
 
+=head1 DESCRIPTION
+
+Rsync parameters and settings for Phloem.
+
 =head1 SYNOPSIS
 
   C<use Phloem::Rsync;>
@@ -10,15 +14,15 @@ Phloem::Rsync
 
 =over 8
 
+=item new
+
+Constructor.
+
 =item user
 
 Get the user.
 
 =back
-
-=head1 DESCRIPTION
-
-Rsync parameters and settings for Phloem.
 
 =head1 COPYRIGHT
 

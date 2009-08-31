@@ -2,6 +2,10 @@
 
 Phloem::ConfigLoader
 
+=head1 DESCRIPTION
+
+A utility module for loading the Phloem configuration settings from file.
+
 =head1 SYNOPSIS
 
   C<use Phloem::ConfigLoader;>
@@ -10,43 +14,6 @@ Phloem::ConfigLoader
 =head1 METHODS
 
 =over 8
-
-=item load
-
-Load the configuration file.
-
-Returns a node object.
-
-=back
-
-=head1 DESCRIPTION
-
-A utility module for loading the Phloem configuration settings from file.
-
-=head1 COPYRIGHT
-
-Copyright (C) 2009 Simon Dawson.
-
-=head1 AUTHOR
-
-Simon Dawson E<lt>spdawson@gmail.comE<gt>
-
-=head1 LICENSE
-
-This file is part of Phloem.
-
-   Phloem is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-
-   Phloem is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
 
@@ -68,10 +35,16 @@ use Phloem::Rsync;
 use Xylem::Utils::XML;
 
 #------------------------------------------------------------------------------
+
+=item load
+
+Load the configuration file.
+
+Returns a node object.
+
+=cut
+
 sub load
-# Load the configuration file.
-#
-# Returns a node object.
 {
   # Parse the configuration XML file.
   my $config_data = Xylem::Utils::XML::parse($Phloem::Constants::CONFIG_FILE);
@@ -198,3 +171,32 @@ sub _rsync_from_xml_data
 }
 
 1;
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (C) 2009 Simon Dawson.
+
+=head1 AUTHOR
+
+Simon Dawson E<lt>spdawson@gmail.comE<gt>
+
+=head1 LICENSE
+
+This file is part of Phloem.
+
+   Phloem is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Phloem is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

@@ -4,10 +4,6 @@
 
 run_tests.pl
 
-=head1 SYNOPSIS
-
-run_tests.pl [options]
-
 =head1 DESCRIPTION
 
 Run the Phloem tests.
@@ -15,6 +11,10 @@ Run the Phloem tests.
 Yes, this could have just been a simple shell script one-liner --- a wrapper
 around the "prove" command. But that would have made Phloem less portable.
 And, in any case, this whole thing is meant to be written in Perl.
+
+=head1 SYNOPSIS
+
+run_tests.pl [options]
 
 =head1 OPTIONS
 

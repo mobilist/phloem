@@ -2,6 +2,10 @@
 
 Phloem::App
 
+=head1 DESCRIPTION
+
+Phloem Content Delivery Network application.
+
 =head1 SYNOPSIS
 
   C<use Phloem::App;>
@@ -9,41 +13,6 @@ Phloem::App
 =head1 METHODS
 
 =over 8
-
-=item run
-
-Run the application.
-
-=back
-
-=head1 DESCRIPTION
-
-Phloem Content Delivery Network application.
-
-=head1 COPYRIGHT
-
-Copyright (C) 2009 Simon Dawson.
-
-=head1 AUTHOR
-
-Simon Dawson E<lt>spdawson@gmail.comE<gt>
-
-=head1 LICENSE
-
-This file is part of Phloem.
-
-   Phloem is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-
-   Phloem is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
 
@@ -64,8 +33,14 @@ use Phloem::RegistryServer;
 our $VERSION = 0.01;
 
 #------------------------------------------------------------------------------
+
+=item run
+
+Run the application.
+
+=cut
+
 sub run
-# Run the application.
 {
   # Clear the log file, and write a start-up message.
   Phloem::Logger::clear();
@@ -104,3 +79,32 @@ sub run
 }
 
 1;
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (C) 2009 Simon Dawson.
+
+=head1 AUTHOR
+
+Simon Dawson E<lt>spdawson@gmail.comE<gt>
+
+=head1 LICENSE
+
+This file is part of Phloem.
+
+   Phloem is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Phloem is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

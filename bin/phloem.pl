@@ -4,13 +4,13 @@
 
 phloem.pl
 
-=head1 SYNOPSIS
-
-phloem.pl [options]
-
 =head1 DESCRIPTION
 
 Driver script for Phloem.
+
+=head1 SYNOPSIS
+
+phloem.pl [options]
 
 =head1 OPTIONS
 

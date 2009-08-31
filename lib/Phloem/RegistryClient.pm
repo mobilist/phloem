@@ -2,6 +2,10 @@
 
 Phloem::RegistryClient
 
+=head1 DESCRIPTION
+
+Registry client for Phloem.
+
 =head1 SYNOPSIS
 
   C<use base qwCDN::RegistryClient;>
@@ -9,47 +13,6 @@ Phloem::RegistryClient
 =head1 METHODS
 
 =over 8
-
-=item register_node
-
-Register the specified node.
-
-=item get_all_nodes
-
-Retrieve a list of all nodes.
-
-The root node must be specified.
-
-=back
-
-=head1 DESCRIPTION
-
-Registry client for Phloem.
-
-=head1 COPYRIGHT
-
-Copyright (C) 2009 Simon Dawson.
-
-=head1 AUTHOR
-
-Simon Dawson E<lt>spdawson@gmail.comE<gt>
-
-=head1 LICENSE
-
-This file is part of Phloem.
-
-   Phloem is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-
-   Phloem is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
 
@@ -68,8 +31,14 @@ use Phloem::Node;
 use Phloem::Root;
 
 #------------------------------------------------------------------------------
+
+=item register_node
+
+Register the specified node.
+
+=cut
+
 sub register_node
-# Register the specified node.
 {
   my $node = shift or die "No node specified.";
   die "Expected a node object." unless $node->isa('Phloem::Node');
@@ -87,10 +56,16 @@ sub register_node
 }
 
 #------------------------------------------------------------------------------
+
+=item get_all_nodes
+
+Retrieve a list of all nodes.
+
+The root node must be specified.
+
+=cut
+
 sub get_all_nodes
-# Retrieve a list of all nodes.
-#
-# The root node must be specified.
 {
   my $root = shift or die "No root specified.";
   die "Expected a root object." unless $root->isa('Phloem::Root');
@@ -154,3 +129,32 @@ sub _get_socket
 }
 
 1;
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (C) 2009 Simon Dawson.
+
+=head1 AUTHOR
+
+Simon Dawson E<lt>spdawson@gmail.comE<gt>
+
+=head1 LICENSE
+
+This file is part of Phloem.
+
+   Phloem is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Phloem is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

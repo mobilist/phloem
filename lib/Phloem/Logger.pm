@@ -2,6 +2,10 @@
 
 Phloem::Logger
 
+=head1 DESCRIPTION
+
+Logging utilities for Phloem.
+
 =head1 SYNOPSIS
 
   C<use Phloem::Logger;>
@@ -12,19 +16,47 @@ Phloem::Logger
 
 =over 8
 
+=cut
+
+package Phloem::Logger;
+
+use strict;
+use warnings;
+use diagnostics;
+
+use lib qw(lib);
+use Phloem::Constants;
+use Xylem::Logger;
+
+#------------------------------------------------------------------------------
+
 =item append
 
 Append the specified message to the log file.
+
+=cut
+
+sub append
+{
+  Xylem::Logger::append(@_, $Phloem::Constants::LOG_FILE);
+}
+
+#------------------------------------------------------------------------------
 
 =item clear
 
 Clear the log file.
 
+=cut
+
+sub clear
+{
+  Xylem::Logger::clear($Phloem::Constants::LOG_FILE);
+}
+
+1;
+
 =back
-
-=head1 DESCRIPTION
-
-Logging utilities for Phloem.
 
 =head1 COPYRIGHT
 
@@ -52,29 +84,3 @@ This file is part of Phloem.
    along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-
-package Phloem::Logger;
-
-use strict;
-use warnings;
-use diagnostics;
-
-use lib qw(lib);
-use Phloem::Constants;
-use Xylem::Logger;
-
-#------------------------------------------------------------------------------
-sub append
-# Append the specified message to the log file.
-{
-  Xylem::Logger::append(@_, $Phloem::Constants::LOG_FILE);
-}
-
-#------------------------------------------------------------------------------
-sub clear
-# Clear the log file.
-{
-  Xylem::Logger::clear($Phloem::Constants::LOG_FILE);
-}
-
-1;

@@ -2,6 +2,10 @@
 
 Phloem::Role
 
+=head1 DESCRIPTION
+
+Base class for a role for a node in a Phloem network.
+
 =head1 SYNOPSIS
 
   C<use Phloem::Role;>
@@ -10,27 +14,88 @@ Phloem::Role
 
 =over 8
 
+=cut
+
+package Phloem::Role;
+
+use strict;
+use warnings;
+use diagnostics;
+
+use lib qw(lib);
+
+#------------------------------------------------------------------------------
+
 =item new
 
 Constructor.
+
+=cut
+
+sub new
+{
+  my $class = shift or die "No class name specified.";
+  die "Expected an ordinary scalar." if ref($class);
+  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+
+  my $self = {'route'       => undef,
+              'directory'   => undef,
+              'description' => '',
+              @_};
+  return bless($self, $class);
+}
+
+#------------------------------------------------------------------------------
 
 =item route
 
 Get the route.
 
+=cut
+
+sub route
+{
+  my $self = shift or die "No object reference.";
+  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  return $self->{'route'};
+}
+
+#------------------------------------------------------------------------------
+
 =item directory
 
 Get the directory.
+
+=cut
+
+sub directory
+{
+  my $self = shift or die "No object reference.";
+  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  return $self->{'directory'};
+}
+
+#------------------------------------------------------------------------------
 
 =item description
 
 Get the description.
 
+=cut
+
+sub description
+{
+  my $self = shift or die "No object reference.";
+  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  return $self->{'description'};
+}
+
+1;
+
 =back
-
-=head1 DESCRIPTION
-
-Base class for a role for a node in a Phloem network.
 
 =head1 COPYRIGHT
 
@@ -58,58 +123,3 @@ This file is part of Phloem.
    along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-
-package Phloem::Role;
-
-use strict;
-use warnings;
-use diagnostics;
-
-use lib qw(lib);
-
-#------------------------------------------------------------------------------
-sub new
-# Constructor.
-{
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
-
-  my $self = {'route'       => undef,
-              'directory'   => undef,
-              'description' => '',
-              @_};
-  return bless($self, $class);
-}
-
-#------------------------------------------------------------------------------
-sub route
-# Get the route.
-{
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  return $self->{'route'};
-}
-
-#------------------------------------------------------------------------------
-sub directory
-# Get the directory.
-{
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  return $self->{'directory'};
-}
-
-#------------------------------------------------------------------------------
-sub description
-# Get the description.
-{
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  return $self->{'description'};
-}
-
-1;

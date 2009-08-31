@@ -2,13 +2,17 @@
 
 Phloem::Component::Subscriber
 
+=head1 DESCRIPTION
+
+A subscriber Phloem component.
+
 =head1 SYNOPSIS
 
   C<use Phloem::Component::Subscriber;>
 
-=head1 DESCRIPTION
+=head1 SEE ALSO
 
-A subscriber Phloem component.
+L<Phloem::Component>, L<Phloem::Component::Publisher>
 
 =head1 COPYRIGHT
 

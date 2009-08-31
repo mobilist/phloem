@@ -2,6 +2,10 @@
 
 Phloem::Component
 
+=head1 DESCRIPTION
+
+An abstract base class for Phloem components.
+
 =head1 SYNOPSIS
 
   C<use Phloem::Component;>
@@ -22,11 +26,47 @@ Get the node.
 
 Get the role.
 
+=cut
+
+package Phloem::Component;
+
+use strict;
+use warnings;
+use diagnostics;
+
+use Class::Struct 'Phloem::Component' => {'node' => 'Phloem::Node',
+                                          'role' => 'Phloem::Role'};
+
+use lib qw(lib);
+use Phloem::Logger;
+use Phloem::Node;
+use Phloem::Role;
+use Xylem::Utils::Process;
+
+#------------------------------------------------------------------------------
+
 =item run
 
 Run the component.
 
 Spawns a child process, and returns the PID.
+
+=cut
+
+sub run
+{
+  my $self = shift or die "No object reference.";
+  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  # Spawn a new child process to run the component.
+  my $child_pid = Xylem::Utils::Process::spawn_child('NODAEMON' => 1);
+  return $child_pid if $child_pid;
+
+  # (We're in the child process now.)
+  $self->_do_run();
+}
+
+#------------------------------------------------------------------------------
 
 =item shut_down
 
@@ -35,11 +75,35 @@ Shut down the component.
 If an argument is supplied, it is used as the exit code. Otherwise, the
 component exits with a standard "success" exit code (0).
 
+=cut
+
+sub shut_down
+{
+  my $self = shift or die "No object reference.";
+  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  my $exit_code = shift // 0;
+
+  Phloem::Logger::append(
+    "Component shutting down with exit code $exit_code.");
+
+  exit($exit_code);
+}
+
+#------------------------------------------------------------------------------
+sub _do_run
+# Run the component --- "protected" method.
+{
+  die "PURE VIRTUAL BASE CLASS METHOD! MUST BE OVERRIDDEN!";
+}
+
+1;
+
 =back
 
-=head1 DESCRIPTION
+=head1 SEE ALSO
 
-An abstract base class for Phloem components.
+L<Phloem::Component::Publisher>, L<Phloem::Component::Subscriber>
 
 =head1 COPYRIGHT
 
@@ -67,62 +131,3 @@ This file is part of Phloem.
    along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-
-package Phloem::Component;
-
-use strict;
-use warnings;
-use diagnostics;
-
-use Class::Struct 'Phloem::Component' => {'node' => 'Phloem::Node',
-                                          'role' => 'Phloem::Role'};
-
-use lib qw(lib);
-use Phloem::Logger;
-use Phloem::Node;
-use Phloem::Role;
-use Xylem::Utils::Process;
-
-#------------------------------------------------------------------------------
-sub run
-# Run the component.
-#
-# Spawns a child process, and returns the PID.
-{
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  # Spawn a new child process to run the component.
-  my $child_pid = Xylem::Utils::Process::spawn_child('NODAEMON' => 1);
-  return $child_pid if $child_pid;
-
-  # (We're in the child process now.)
-  $self->_do_run();
-}
-
-#------------------------------------------------------------------------------
-sub shut_down
-# Shut down the component.
-#
-# If an argument is supplied, it is used as the exit code. Otherwise, the
-# component exits with a standard "success" exit code (0).
-{
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $exit_code = shift // 0;
-
-  Phloem::Logger::append(
-    "Component shutting down with exit code $exit_code.");
-
-  exit($exit_code);
-}
-
-#------------------------------------------------------------------------------
-sub _do_run
-# Run the component --- "protected" method.
-{
-  die "PURE VIRTUAL BASE CLASS METHOD! MUST BE OVERRIDDEN!";
-}
-
-1;
