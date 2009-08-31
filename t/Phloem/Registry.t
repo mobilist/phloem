@@ -42,7 +42,7 @@ ok($registry->timestamp() eq $object_data{'timestamp'},
    'Accessor for timestamp.');
 ok($registry->nodes() == 0, 'Accessor for nodes.');
 
-ok(my $node = Phloem::Node->new('id'     => 'egg', 'root' => 'dog'),
+ok(my $node = Phloem::Node->new('id' => 'egg', 'root' => 'dog'),
    'Creating node object.');
 
 ok($registry->add_node($node), 'Adding node to registry.');

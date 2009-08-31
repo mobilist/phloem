@@ -62,8 +62,8 @@ ok($node->roles() == 0, 'Accessor for roles.');
 ok(!$node->is_publisher(), 'Node does not publish.');
 
 ok(my $role = Phloem::Role::Publish->new('route'       => 'rootward',
-                                        'directory'   => 'some/path',
-                                        'description' => 'A dummy role.'),
+                                         'directory'   => 'some/path',
+                                         'description' => 'A dummy role.'),
    'Creating publish role object.');
 
 ok($node->add_role($role), 'Adding role to node.');
@@ -73,8 +73,8 @@ ok(!$node->is_portal($role->route()), 'Node is not portal for route.');
 
 ok(my $role2 =
    Phloem::Role::Subscribe->new('route'       => $role->route(),
-                               'directory'   => $role->directory(),
-                               'description' => 'Another dummy role.'),
+                                'directory'   => $role->directory(),
+                                'description' => 'Another dummy role.'),
    'Creating subscribe role object.');
 
 ok($node->add_role($role2), 'Adding role to node.');
