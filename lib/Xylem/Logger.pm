@@ -2,6 +2,10 @@
 
 Xylem::Logger
 
+=head1 DESCRIPTION
+
+Logging utilities for Xylem.
+
 =head1 SYNOPSIS
 
   C<use Xylem::Logger;>
@@ -12,45 +16,6 @@ Xylem::Logger
 =head1 METHODS
 
 =over 8
-
-=item append
-
-Append the specified message to the specified log file.
-
-=item clear
-
-Clear the specified log file.
-
-=back
-
-=head1 DESCRIPTION
-
-Logging utilities for Xylem.
-
-=head1 COPYRIGHT
-
-Copyright (C) 2009 Simon Dawson.
-
-=head1 AUTHOR
-
-Simon Dawson E<lt>spdawson@gmail.comE<gt>
-
-=head1 LICENSE
-
-This file is part of Xylem.
-
-   Xylem is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-
-   Xylem is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with Xylem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
 
@@ -67,8 +32,14 @@ use lib qw(lib);
 use Xylem::TimeStamp;
 
 #------------------------------------------------------------------------------
+
+=item append
+
+Append the specified message to the specified log file.
+
+=cut
+
 sub append
-# Append the specified message to the specified log file.
 {
   # Get the input: a message to log.
   my $message = shift or die "No message specified.";
@@ -99,8 +70,14 @@ sub append
 }
 
 #------------------------------------------------------------------------------
+
+=item clear
+
+Clear the specified log file.
+
+=cut
+
 sub clear
-# Clear the specified log file.
 {
   my $log_file = shift or die "No log file specified.";
 
@@ -117,3 +94,32 @@ sub clear
 }
 
 1;
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (C) 2009 Simon Dawson.
+
+=head1 AUTHOR
+
+Simon Dawson E<lt>spdawson@gmail.comE<gt>
+
+=head1 LICENSE
+
+This file is part of Xylem.
+
+   Xylem is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Xylem is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Xylem.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

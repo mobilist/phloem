@@ -2,6 +2,10 @@
 
 Xylem::TimeStamp
 
+=head1 DESCRIPTION
+
+Time-stamp functionality for Xylem.
+
 =head1 SYNOPSIS
 
   C<use Xylem::TimeStamp;>
@@ -11,15 +15,34 @@ Xylem::TimeStamp
 
 =over 8
 
+=cut
+
+package Xylem::TimeStamp;
+
+use strict;
+use warnings;
+use diagnostics;
+
+use POSIX qw(strftime);
+
+use lib qw(lib);
+
+#------------------------------------------------------------------------------
+
 =item create
 
 Generate a time-stamp.
 
+=cut
+
+sub create
+{
+  return strftime("%A %d %B %Y, %X %Z", localtime);
+}
+
+1;
+
 =back
-
-=head1 DESCRIPTION
-
-Time-stamp functionality for Xylem.
 
 =head1 COPYRIGHT
 
@@ -47,22 +70,3 @@ This file is part of Xylem.
    along with Xylem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-
-package Xylem::TimeStamp;
-
-use strict;
-use warnings;
-use diagnostics;
-
-use POSIX qw(strftime);
-
-use lib qw(lib);
-
-#------------------------------------------------------------------------------
-sub create
-# Generate a time-stamp.
-{
-  return strftime("%A %d %B %Y, %X %Z", localtime);
-}
-
-1;

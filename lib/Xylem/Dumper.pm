@@ -2,6 +2,10 @@
 
 Xylem::Dumper
 
+=head1 DESCRIPTION
+
+A base class for dumpable objects.
+
 =head1 SYNOPSIS
 
   C<package MyClass;>
@@ -15,9 +19,38 @@ Xylem::Dumper
 
 =over 8
 
+=cut
+
+package Xylem::Dumper;
+
+use strict;
+use warnings;
+use diagnostics;
+
+use Data::Dumper;
+use Safe;
+
+#------------------------------------------------------------------------------
+
 =item data_dump
 
 Generate a textual dump of the object data.
+
+=cut
+
+sub data_dump
+{
+  my $self = shift or die "No object reference.";
+  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  my $dumper = Data::Dumper->new([$self], [qw(self)]);
+
+  $dumper->Indent(0)->Purity(1)->Terse(1)->Deepcopy(1)->Sortkeys(1);
+
+  return $dumper->Dump();
+}
+
+#------------------------------------------------------------------------------
 
 =item data_load
 
@@ -25,11 +58,37 @@ Attempt to recreate an object from the specified textual data.
 
 N.B. This is a class method.
 
+=cut
+
+sub data_load
+{
+  my $class = shift or die "No class name specified.";
+  die "Expected an ordinary scalar." if ref($class);
+  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+
+  my $data = shift or die "No textual data specified.";
+
+  # Evaluate the code in an opcode-safe compartment. Only the base-minimum of
+  # opcodes are allowed. In particular, no system calls can be made. This is
+  # necessary because the data could have come from anywhere, and cannot
+  # necessarily be trusted.
+  my $self;
+  my $compartment = Safe->new();
+  $compartment->share('$self');
+  # N.B. You might think that the next line would be necessary. Indeed, for
+  #      some classes it may be. But not for ours.
+#  $compartment->share_from($class, [qw(new)]);
+  $compartment->permit_only(qw(:base_core bless padany anonhash));
+  my $STRICT = 1;
+  $self = $compartment->reval($data, $STRICT);
+  die "Failed to reconstruct object: $@" if $@;
+
+  return $self;
+}
+
+1;
+
 =back
-
-=head1 DESCRIPTION
-
-A base class for dumpable objects.
 
 =head1 COPYRIGHT
 
@@ -57,58 +116,3 @@ This file is part of Xylem.
    along with Xylem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-
-package Xylem::Dumper;
-
-use strict;
-use warnings;
-use diagnostics;
-
-use Data::Dumper;
-use Safe;
-
-#------------------------------------------------------------------------------
-sub data_dump
-# Generate a textual dump of the object data.
-{
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $dumper = Data::Dumper->new([$self], [qw(self)]);
-
-  $dumper->Indent(0)->Purity(1)->Terse(1)->Deepcopy(1)->Sortkeys(1);
-
-  return $dumper->Dump();
-}
-
-#------------------------------------------------------------------------------
-sub data_load
-# Attempt to recreate an object from the specified textual data.
-#
-# N.B. This is a class method.
-{
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
-
-  my $data = shift or die "No textual data specified.";
-
-  # Evaluate the code in an opcode-safe compartment. Only the base-minimum of
-  # opcodes are allowed. In particular, no system calls can be made. This is
-  # necessary because the data could have come from anywhere, and cannot
-  # necessarily be trusted.
-  my $self;
-  my $compartment = Safe->new();
-  $compartment->share('$self');
-  # N.B. You might think that the next line would be necessary. Indeed, for
-  #      some classes it may be. But not for ours.
-#  $compartment->share_from($class, [qw(new)]);
-  $compartment->permit_only(qw(:base_core bless padany anonhash));
-  my $STRICT = 1;
-  $self = $compartment->reval($data, $STRICT);
-  die "Failed to reconstruct object: $@" if $@;
-
-  return $self;
-}
-
-1;

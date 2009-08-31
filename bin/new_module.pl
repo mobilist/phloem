@@ -4,13 +4,13 @@
 
 new_module.pl
 
+=head1 DESCRIPTION
+
+Create a new Xylem or Phloem module.
+
 =head1 SYNOPSIS
 
 new_module.pl [options] E<lt>module_nameE<gt>
-
-=head1 DESCRIPTION
-
-Create a new Phloem module.
 
 =head1 OPTIONS
 
@@ -94,11 +94,17 @@ use POSIX qw(strftime);
     under certain conditions; type new_module.pl --license for details.
 xxx_END_GPL_HEADER
 
-  # Get the module name, and fix it up.
+  # Get the module name, and fix it up. Also get a 'package name' for use in
+  # copyright notices.
   my $module_name = shift or pod2usage(-verbose => 0);
+  my $package_name = 'Phloem';
   $module_name =~ s/\.pm$//o;
   $module_name =~ s/^Phloem:://o;
-  $module_name = 'Phloem::' . $module_name;
+  if ($module_name =~ /^Xylem::/o) {
+    $package_name = 'Xylem';
+  } else {
+    $module_name = 'Phloem::' . $module_name;
+  }
 
   print "Creating module $module_name...\n";
 
@@ -130,10 +136,11 @@ xxx_END_GPL_HEADER
   my $year = strftime("%Y", localtime);
 
   # Write the module file.
-  write_module_file($module_name, $module_file, $year);
+  write_module_file($module_name, $package_name, $module_file, $year);
 
   # Write the module test file.
-  write_module_test_file($module_name, $module_test_file, $year);
+  write_module_test_file($module_name, $package_name, $module_test_file,
+                         $year);
 
   print "Done.\n";
 }
@@ -144,6 +151,7 @@ sub write_module_file
 # Write the module file.
 {
   my $module_name = shift or die "No module name specified.";
+  my $package_name = shift or die "No package name specified.";
   my $module_file = shift or die "No module file path specified.";
   my $year = shift or die "No year specified.";
 
@@ -158,6 +166,10 @@ sub write_module_file
 
 $module_name
 
+\=head1 DESCRIPTION
+
+A module.
+
 \=head1 SYNOPSIS
 
   C<use $module_name;>
@@ -165,41 +177,6 @@ $module_name
 \=head1 METHODS
 
 \=over 8
-
-\=item some_method
-
-Some method or another.
-
-\=back
-
-\=head1 DESCRIPTION
-
-A module.
-
-\=head1 COPYRIGHT
-
-Copyright (C) $year Simon Dawson.
-
-\=head1 AUTHOR
-
-Simon Dawson E<lt>spdawson\@gmail.comE<gt>
-
-\=head1 LICENSE
-
-This file is part of Phloem.
-
-   Phloem is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-
-   Phloem is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
 
 \=cut
 
@@ -212,13 +189,48 @@ use diagnostics;
 use lib qw(lib);
 
 #------------------------------------------------------------------------------
+
+\=item some_method
+
+Some method or another.
+
+\=cut
+
 sub some_method
-# Some method or another.
 {
   die "NOT YET WRITTEN!";
 }
 
 1;
+
+\=back
+
+\=head1 COPYRIGHT
+
+Copyright (C) $year Simon Dawson.
+
+\=head1 AUTHOR
+
+Simon Dawson E<lt>spdawson\@gmail.comE<gt>
+
+\=head1 LICENSE
+
+This file is part of $package_name.
+
+   $package_name is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   $package_name is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with $package_name.  If not, see <http://www.gnu.org/licenses/>.
+
+\=cut
 xxx_END_MODULE
 
   flock($module_fh, LOCK_UN) or die "Failed to unlock file: $!";
@@ -230,6 +242,7 @@ sub write_module_test_file
 # Write the module test file.
 {
   my $module_name = shift or die "No module name specified.";
+  my $package_name = shift or die "No package name specified.";
   my $module_test_file = shift or die "No module test file path specified.";
   my $year = shift or die "No year specified.";
 
@@ -246,20 +259,20 @@ sub write_module_test_file
 
 # Copyright (C) $year Simon Dawson
 #
-# This file is part of Phloem.
+# This file is part of $package_name.
 #
-#    Phloem is free software: you can redistribute it and/or modify
+#    $package_name is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
-#    Phloem is distributed in the hope that it will be useful,
+#    $package_name is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
 #    You should have received a copy of the GNU General Public License
-#    along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
+#    along with $package_name.  If not, see <http://www.gnu.org/licenses/>.
 
 use strict;
 use warnings;

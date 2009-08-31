@@ -2,6 +2,10 @@
 
 Xylem::Utils::XML
 
+=head1 DESCRIPTION
+
+Utilities for working with XML in Xylem.
+
 =head1 SYNOPSIS
 
   C<use Xylem::Utils::XML;>
@@ -10,17 +14,40 @@ Xylem::Utils::XML
 
 =over 8
 
+=cut
+
+package Xylem::Utils::XML;
+
+use strict;
+use warnings;
+use diagnostics;
+
+use XML::Simple qw(:strict);
+
+#------------------------------------------------------------------------------
+
 =item parse
 
 Parse the specified XML file.
 
 Returns a hash reference of parsed XML data.
 
+=cut
+
+sub parse
+{
+  my $xml_file = shift or die "No file specified.";
+
+  # Parse the XML file.
+  my %xml_options = ('ForceArray'     => 1,
+                     'KeyAttr'        => [],
+                     'NormaliseSpace' => 2);
+  return XMLin($xml_file, %xml_options);
+}
+
+1;
+
 =back
-
-=head1 DESCRIPTION
-
-Utilities for working with XML in Xylem.
 
 =head1 COPYRIGHT
 
@@ -48,28 +75,3 @@ This file is part of Xylem.
    along with Xylem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-
-package Xylem::Utils::XML;
-
-use strict;
-use warnings;
-use diagnostics;
-
-use XML::Simple qw(:strict);
-
-#------------------------------------------------------------------------------
-sub parse
-# Parse the specified XML file.
-#
-# Returns a hash reference of parsed XML data.
-{
-  my $xml_file = shift or die "No file specified.";
-
-  # Parse the XML file.
-  my %xml_options = ('ForceArray'     => 1,
-                     'KeyAttr'        => [],
-                     'NormaliseSpace' => 2);
-  return XMLin($xml_file, %xml_options);
-}
-
-1;
