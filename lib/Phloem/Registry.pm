@@ -145,6 +145,9 @@ sub load
   flock($registry_fh, LOCK_UN) or die "Failed to unlock file: $!";
   $registry_fh->close() or die "Failed to close file: $!";
 
+  # Create and return a new object if there is no saved registry data.
+  return $class->new() unless $object_data;
+
   # Attempt to reconstruct the object.
   my $self = eval " $object_data ";
   die "Failed to reconstruct object: $@" if $@;
