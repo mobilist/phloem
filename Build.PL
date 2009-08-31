@@ -4,13 +4,13 @@
 
 Build.PL
 
-=head1 SYNOPSIS
-
-Build.PL [options]
-
 =head1 DESCRIPTION
 
 Build script for Phloem.
+
+=head1 SYNOPSIS
+
+Build.PL [options]
 
 =head1 OPTIONS
 
