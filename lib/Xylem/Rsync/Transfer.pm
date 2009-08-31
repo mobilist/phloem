@@ -2,6 +2,10 @@
 
 Xylem::Rsync::Transfer
 
+=head1 DESCRIPTION
+
+A utility module for transfering data using rsync.
+
 =head1 SYNOPSIS
 
   C<use Xylem::Rsync::Transfer;>
@@ -9,43 +13,6 @@ Xylem::Rsync::Transfer
 =head1 METHODS
 
 =over 8
-
-=item go
-
-Transfer data from a remote host.
-
-Returns true on success, and false otherwise.
-
-=back
-
-=head1 DESCRIPTION
-
-A utility module for transfering data using rsync.
-
-=head1 COPYRIGHT
-
-Copyright (C) 2009 Simon Dawson.
-
-=head1 AUTHOR
-
-Simon Dawson E<lt>spdawson@gmail.comE<gt>
-
-=head1 LICENSE
-
-This file is part of Xylem.
-
-   Xylem is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-
-   Xylem is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with Xylem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
 
@@ -62,10 +29,16 @@ use lib qw(lib);
 use Xylem::Rsync::Stats;
 
 #------------------------------------------------------------------------------
+
+=item go
+
+Transfer data from a remote host.
+
+Returns true on success, and false otherwise.
+
+=cut
+
 sub go
-# Transfer data from a remote host.
-#
-# Returns true on success, and false otherwise.
 {
   # Get the inputs.
   my $remote_ip_address = shift or die "No remote IP address specified.";
@@ -181,75 +154,31 @@ sub _get_rsync_stats
 
 1;
 
+=back
 
-__END__
+=head1 COPYRIGHT
 
-use File::Find;
-use File::Temp;
+Copyright (C) 2009 Simon Dawson.
 
-use constant TESTING => 1;
+=head1 AUTHOR
 
-#------------------------------------------------------------------------------
-sub go
-# Transfer data to a remote host.
-#
-# Returns true on success, and false otherwise.
-{
-  # Get the inputs.
-  my $remote_ip_address = shift or die "No remote IP address specified.";
-  my $remote_user = shift or die "No remote user specified.";
-  my $remote_path = shift or die "No remote path specified.";
-  my $local_path = shift or die "No local path specified.";
+Simon Dawson E<lt>spdawson@gmail.comE<gt>
 
-  print "Starting data transfer.\n";
-  my $full_remote_path =
-    $remote_user . '@' . $remote_ip_address . ':' . $remote_path;
-  $local_path =~ s/\/$//; # N.B. No trailing forward slash on local path.
+=head1 LICENSE
 
-  # Build a list of the files that are candidates for transfer.
-  my @files_to_transfer;
-  my $wanted_sub = sub {
-    my $full_path = $File::Find::name;
-    return unless (-f $full_path);
-    if (TESTING) {
-      # Force transfer of all data.
-      utime(undef, undef, $full_path)
-        or die "Failed to touch file $full_path: $!";
-    }
-    $full_path =~ s/^$local_path//;
-    push(@files_to_transfer, $full_path);
-  };
-  find({'wanted' => $wanted_sub, 'no_chdir' => 1}, $local_path);
+This file is part of Xylem.
 
-  # Write the file listing the files to be transferred.
-  #
-  # N.B. We only want half of the files.
-  my $temp_fh = File::Temp->new();
-  {
-    foreach my $current_file (@files_to_transfer) {
-      print $temp_fh "$current_file\n";
-    }
-  }
-  my $file_list_file = $temp_fh->filename();
+   Xylem is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-  # N.B. although --archive handles almost everything, we need to explicitly
-  #      declare --recursive, because we're using --files-from.
-  #
-  #      Also, when testing, we force all data to be transferred.
-  my $shell_opts =
-    '--rsh=\'' .
-    'ssh -i etc/.ssh/id_rsa -q ' .
-    '-o "CheckHostIP=no" -o "StrictHostKeyChecking=no"\'';
-  my $rsync_command =
-    'rsync --archive --compress --update --verbose --delete --stats ' .
-    '--timeout=10 --copy-unsafe-links --hard-links --recursive ' .
-    '--exclude \'*~\' --partial --partial-dir=.rsync-tmp ' .
-    (TESTING ? '--whole-file ' : '') .
-    "--files-from=$file_list_file " .
-    "$shell_opts " .
-    "$local_path " .
-    "$full_remote_path";
+   Xylem is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-  # Run the rsync command.
-  return _run_rsync_command($rsync_command);
-}
+   You should have received a copy of the GNU General Public License
+   along with Xylem.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

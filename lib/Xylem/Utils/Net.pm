@@ -22,52 +22,9 @@ use strict;
 use warnings;
 use diagnostics;
 
-use IO::Socket::INET;
 use Net::Ping;
 
 use lib qw(lib);
-
-#------------------------------------------------------------------------------
-
-=item get_broadcast_send_socket
-
-Get a socket with which to broadcast to the specified port.
-
-=cut
-
-sub get_broadcast_send_socket
-{
-  my $port = shift or die "No port specified.";
-
-  my $sock = IO::Socket::INET->new('PeerAddr'  => inet_ntoa(INADDR_BROADCAST),
-                                   'PeerPort'  => $port,
-                                   'Proto'     => 'udp',
-                                   'LocalAddr' => 'localhost',
-                                   'Broadcast' => 1)
-    or die "Failed to create send socket for broadcast: $@";
-
-  return $sock;
-}
-
-#------------------------------------------------------------------------------
-
-=item get_broadcast_recv_socket
-
-Get a socket with which to listen for broadcasts on the specified port.
-
-=cut
-
-sub get_broadcast_recv_socket
-{
-  my $port = shift or die "No port specified.";
-
-  my $sock = IO::Socket::INET->new('PeerAddr' => inet_ntoa(INADDR_ANY),
-                                   'PeerPort' => $port,
-                                   'Proto'    => 'udp')
-    or die "Failed to create receive socket for broadcast: $@";
-
-  return $sock;
-}
 
 #------------------------------------------------------------------------------
 

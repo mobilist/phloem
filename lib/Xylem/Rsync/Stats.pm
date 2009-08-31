@@ -2,6 +2,10 @@
 
 Xylem::Rsync::Stats
 
+=head1 DESCRIPTION
+
+Statistics for an rsync data transfer.
+
 =head1 SYNOPSIS
 
   C<use Xylem::Rsync::Stats;>
@@ -63,10 +67,6 @@ Accessor method.
 Accessor method.
 
 =back
-
-=head1 DESCRIPTION
-
-Statistics for an rsync data transfer.
 
 =head1 COPYRIGHT
 
