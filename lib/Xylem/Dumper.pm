@@ -82,6 +82,8 @@ sub data_load
   my $STRICT = 1;
   $self = $compartment->reval($data, $STRICT);
   die "Failed to reconstruct object: $@" if $@;
+  die "Failed to reconstruct object of class $class."
+    unless (ref($self) eq $class);
 
   return $self;
 }
