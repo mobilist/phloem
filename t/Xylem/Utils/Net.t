@@ -23,17 +23,11 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 5; # qw(no_plan);
+use Test::More tests => 3; # qw(no_plan);
 
 use constant TEST_PORT => 9999;
 
 BEGIN { use_ok('Xylem::Utils::Net'); }
-
-ok(my $send_sock = Xylem::Utils::Net::get_broadcast_send_socket(TEST_PORT),
-   'Getting broadcast send socket.');
-
-ok(my $recv_sock = Xylem::Utils::Net::get_broadcast_recv_socket(TEST_PORT),
-   'Getting broadcast listen socket.');
 
 is(Xylem::Utils::Net::ping('localhost'), 1, 'Should be able to ping ourself.');
 
