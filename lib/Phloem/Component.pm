@@ -84,8 +84,10 @@ sub shut_down
 
   my $exit_code = shift // 0;
 
+  my $class = ref($self);
+
   Phloem::Logger::append(
-    "Component shutting down with exit code $exit_code.");
+    "$class component shutting down with exit code $exit_code.");
 
   exit($exit_code);
 }

@@ -47,7 +47,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-use base 'Xylem::Server';
+use base qw(Xylem::Server);
 
 use lib qw(lib);
 use Phloem::Constants;
