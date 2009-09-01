@@ -43,9 +43,6 @@ sub register_node
   my $node = shift or die "No node specified.";
   die "Expected a node object." unless $node->isa('Phloem::Node');
 
-  # We don't need to register the root node itself; that would be pointless.
-  return if $node->is_root();
-
   # Get a socket for communicating with the registry server.
   my $sock =_get_socket($node->root());
 
