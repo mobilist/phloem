@@ -85,6 +85,13 @@ sub data_load
   die "Failed to reconstruct object of class $class."
     unless (ref($self) eq $class);
 
+  # Okay, now we know that the code is safe. Let's eval it for real now.
+  #
+  # N.B. I have no idea why this is necessary --- it is likely to be a
+  #      namespace problem. The first reval should be sufficient...
+  $self = eval " $data ";
+  die "Failed to eval object data: $@" if $@;
+
   return $self;
 }
 
