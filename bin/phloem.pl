@@ -70,7 +70,7 @@ use Pod::Usage;
 
 use lib qw(lib);
 use Phloem::App;
-use Xylem::Debug;
+use Phloem::Debug;
 
 #==============================================================================
 # Start of main program.
@@ -94,7 +94,7 @@ use Xylem::Debug;
 xxx_END_GPL_HEADER
 
   # Enable/disable debug output, as appropriate.
-  Xylem::Debug::enabled($opt_d);
+  Phloem::Debug->enabled($opt_d);
 
   # Run the application.
   Phloem::App::run();

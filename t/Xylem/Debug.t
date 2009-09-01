@@ -27,14 +27,14 @@ use Test::More tests => 10; # qw(no_plan);
 
 BEGIN { use_ok('Xylem::Debug'); }
 
-ok(!Xylem::Debug::enabled(), 'Debugging should be disabled initially.');
-ok(Xylem::Debug::enabled(1), 'Debugging should be enabled.');
-ok(Xylem::Debug::enabled(), 'Debugging should still be enabled.');
-ok(!Xylem::Debug::enabled(0), 'Debugging should be disabled now.');
-ok(!Xylem::Debug::enabled(), 'Debugging should still be disabled.');
-ok(Xylem::Debug::message('Hello teh World!'),
+ok(!Xylem::Debug->enabled(), 'Debugging should be disabled initially.');
+ok(Xylem::Debug->enabled(1), 'Debugging should be enabled.');
+ok(Xylem::Debug->enabled(), 'Debugging should still be enabled.');
+ok(!Xylem::Debug->enabled(0), 'Debugging should be disabled now.');
+ok(!Xylem::Debug->enabled(), 'Debugging should still be disabled.');
+ok(!Xylem::Debug->message('Hello teh World!'),
    'Printing a debug message (disabled).');
-ok(Xylem::Debug::enabled(1), 'Debugging should be enabled again.');
-ok(Xylem::Debug::message('Hello again teh World!'),
+ok(Xylem::Debug->enabled(1), 'Debugging should be enabled again.');
+ok(Xylem::Debug->message('Hello again teh World!'),
    'Printing a debug message (enabled).');
-ok(Xylem::Debug::message(), 'Should cope with an absent message.');
+ok(Xylem::Debug->message(), 'Should cope with an absent message.');

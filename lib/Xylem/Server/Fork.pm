@@ -39,7 +39,7 @@ sub _do_run
   use POSIX qw(:sys_wait_h);
 
   sub REAPER {
-    Xylem::Debug::message('In reaper');
+    Xylem::Debug->message('In reaper');
     1 until (-1 == waitpid(-1, WNOHANG));
     $SIG{'CHLD'} = \&REAPER; # unless $] >= 5.002
   }
@@ -76,7 +76,7 @@ sub _do_run
     exit(0); # Don't let the child process back to accept!
   }
 
-  Xylem::Debug::message('Server run ending.');
+  Xylem::Debug->message('Server run ending.');
 }
 
 1;

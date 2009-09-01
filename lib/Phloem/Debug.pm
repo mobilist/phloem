@@ -1,16 +1,16 @@
 =head1 NAME
 
-Xylem::Debug
+Phloem::Debug
 
 =head1 DESCRIPTION
 
-Debugging utilities for Xylem.
+Debugging utilities for Phloem.
 
 =head1 SYNOPSIS
 
-  C<use Xylem::Debug;>
-  C<Xylem::Debug->enabled(1);>
-  C<Xylem::Debug->message('Hello teh World.');>
+  C<use Phloem::Debug;>
+  C<Phloem::Debug->enabled(1);>
+  C<Phloem::Debug->message('Hello teh world!');>
 
 =head1 METHODS
 
@@ -18,38 +18,16 @@ Debugging utilities for Xylem.
 
 =cut
 
-package Xylem::Debug;
+package Phloem::Debug;
 
 use strict;
 use warnings;
 use diagnostics;
 
 use lib qw(lib);
+use Phloem::Logger;
 
-# A flag variable to store the current debug status (enabled/disabled).
-my $_DEBUG;
-
-#------------------------------------------------------------------------------
-
-=item enabled
-
-Enable/disable debugging. If no argument is passed, returns the current status:
-enabled (true) or disabled (false).
-
-N.B. This is a class method.
-
-=cut
-
-sub enabled
-{
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
-
-  my $value = shift;
-  $_DEBUG = $value if defined($value);
-  return $_DEBUG;
-}
+use base qw(Xylem::Debug);
 
 #------------------------------------------------------------------------------
 
@@ -71,20 +49,20 @@ sub message
   die "Expected an ordinary scalar." if ref($class);
   die "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  return unless $class->enabled();
+  # Call the base class version first.
+  my $message = $class->SUPER::message(@_);
 
-  # Fix up the message.
-  chomp(my $message = shift // '');
-  $message = "DEBUG: $message\n";
-
-  print STDERR $message;
-
-  return $message;
+  # Do our own special thing with the debugging message.
+  Phloem::Logger::append($message);
 }
 
 1;
 
 =back
+
+=head1 SEE ALSO
+
+L<Xylem::Debug>
 
 =head1 COPYRIGHT
 
@@ -96,19 +74,19 @@ Simon Dawson E<lt>spdawson@gmail.comE<gt>
 
 =head1 LICENSE
 
-This file is part of Xylem.
+This file is part of Phloem.
 
-   Xylem is free software: you can redistribute it and/or modify
+   Phloem is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
 
-   Xylem is distributed in the hope that it will be useful,
+   Phloem is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with Xylem.  If not, see <http://www.gnu.org/licenses/>.
+   along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
