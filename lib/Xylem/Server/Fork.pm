@@ -47,12 +47,18 @@ sub _do_run
 
   while (my $client_sock = $server_sock->accept()) {
 
-    next if my $pid = fork; # Parent re-enters the loop (via the continue block).
-    die "Failed to fork: $!" unless defined($pid);
+    # Fork a new child process.
+    defined(my $pid = fork) or die "Failed to fork: $!";
 
-    # This is the child process.
+    # The parent process just re-enters the loop.
+    if ($pid) {
+      close($client_sock); # Parent process closes unused client socket handle.
+      next;
+    }
 
-    # Child process closes unused socket handle.
+    # (We're in the child process now.)
+
+    # Child process closes unused server socket handle.
     close($server_sock);
 
     select($client_sock->fileno);
@@ -65,13 +71,11 @@ sub _do_run
     # Handle the request.
     $class->process_request($client_sock);
 
-    close($client_sock); # Child has finished with this now.
-    exit(0); # Don't let the child back to accept!
-  } continue {
-    close($client_sock); # Parent process closes unused socket handle.
+    close($client_sock); # Child process has finished with this now.
+    exit(0); # Don't let the child process back to accept!
   }
 
-  die "Server run ending.";
+  print STDERR "DEBUG: Server run ending.\n";
 }
 
 1;
