@@ -63,6 +63,10 @@ perl Build.PL
 
 =back
 
+=head1 CONFIGURATION
+
+NOT YET WRITTEN!
+
 =head1 OVERVIEW
 
 A basic conceptual overview of Phloem follows.
