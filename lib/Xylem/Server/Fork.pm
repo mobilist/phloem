@@ -75,8 +75,6 @@ sub _do_run
     close($client_sock); # Child process has finished with this now.
     exit(0); # Don't let the child process back to accept!
   }
-
-  Xylem::Debug->message('Server run ending.');
 }
 
 1;

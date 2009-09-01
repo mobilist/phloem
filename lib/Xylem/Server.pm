@@ -35,6 +35,7 @@ use diagnostics;
 use IO::Socket::INET;
 
 use lib qw(lib);
+use Xylem::Debug;
 use Xylem::Utils::Process;
 
 #------------------------------------------------------------------------------
@@ -67,13 +68,16 @@ sub run
   my $server_sock = IO::Socket::INET->new('LocalPort' => $port,
                                           'Proto'     => 'tcp',
                                           'Type'      => SOCK_STREAM,
-                                          'ReuseAddr' => 1,
+                                          'Reuse'     => 1,
                                           'Listen'    => SOMAXCONN,
-                                          'Timeout'   => 5)
+                                          'Timeout'   => 5,
+                                          'Blocking'  => 1)
     or die "Failed to create server socket on port $port : $@\n";
 
   # Run the server.
   $class->_do_run($server_sock);
+
+  Xylem::Debug->message('Server run ending.');
 }
 
 #------------------------------------------------------------------------------
