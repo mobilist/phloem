@@ -34,6 +34,7 @@ use Class::Struct 'Phloem::NodeAdvertiser' => {'node'  => 'Phloem::Node'};
 
 use lib qw(lib);
 use Phloem::Constants;
+use Phloem::Logger;
 use Phloem::RegistryClient;
 use Xylem::Utils::Process;
 
@@ -57,6 +58,13 @@ sub run
   return $child_pid if $child_pid;
 
   # (We're in the child process now.)
+
+  # If the node is not a publisher, then we may as well shut down right now.
+  unless ($self->node()->is_publisher()) {
+    Phloem::Logger::append(
+      'Node advertiser process shutting down: node does not publish.');
+    exit(0);
+  }
 
   # Sit in a loop, periodically registering our node with the "root" node.
   while (1) {
