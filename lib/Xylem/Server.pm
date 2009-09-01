@@ -67,8 +67,9 @@ sub run
   my $server_sock = IO::Socket::INET->new('LocalPort' => $port,
                                           'Proto'     => 'tcp',
                                           'Type'      => SOCK_STREAM,
-                                          'Reuse'     => 1,
-                                          'Listen'    => SOMAXCONN)
+                                          'ReuseAddr' => 1,
+                                          'Listen'    => SOMAXCONN,
+                                          'Timeout'   => 5)
     or die "Failed to create server socket on port $port : $@\n";
 
   # Run the server.

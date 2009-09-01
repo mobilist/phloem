@@ -45,7 +45,7 @@ sub register_node
   die "Expected a node object." unless $node->isa('Phloem::Node');
 
   # Get a socket for communicating with the registry server.
-  my $sock =_get_socket($node->root());
+  my $sock = _get_socket($node->root());
 
   Phloem::Debug->message('Attempting to register a node.');
 
@@ -55,7 +55,8 @@ sub register_node
   # Read the output from the registry server.
   my $input = _read_from_server_socket($sock);
 
-  die "Registry server error: $input" unless ($input =~ /^OK\s*$/o);
+  Phloem::Logger::append("Registry server error: $input")
+    unless ($input =~ /^OK\s*$/o);
 }
 
 #------------------------------------------------------------------------------
@@ -74,12 +75,12 @@ sub get_all_nodes
   die "Expected a root object." unless $root->isa('Phloem::Root');
 
   # Get a socket for communicating with the registry server.
-  my $sock =_get_socket($root);
+  my $sock = _get_socket($root);
 
   Phloem::Debug->message('Attempting to request registry data.');
 
   # Send the request off to the registry server.
-  print $sock "GET\r\n";
+  print $sock "GET\r\n", "\r\n";
 
   # Read the output from the registry server.
   my $input = _read_from_server_socket($sock);
@@ -117,11 +118,12 @@ sub _get_socket
 
   Phloem::Logger::append(
     "Creating socket on " . $root->host() . ":" . $root->port() . ".");
+
   my $sock = IO::Socket::INET->new('PeerAddr' => $root->host(),
                                    'PeerPort' => $root->port(),
                                    'Proto'    => 'tcp',
                                    'Type'     => SOCK_STREAM,
-                                   'Blocking' => 1)
+                                   'Timeout'  => 5)
     or die "Failed to create socket: $@";
 
   return $sock;
