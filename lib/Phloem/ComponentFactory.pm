@@ -57,6 +57,10 @@ sub create
 
 =back
 
+=head1 SEE ALSO
+
+L<Phloem::Component>
+
 =head1 COPYRIGHT
 
 Copyright (C) 2009 Simon Dawson.

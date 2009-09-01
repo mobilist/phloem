@@ -97,6 +97,10 @@ sub description
 
 =back
 
+=head1 SEE ALSO
+
+L<Phloem::Role::Publish>, L<Phloem::Role::Subscribe>
+
 =head1 COPYRIGHT
 
 Copyright (C) 2009 Simon Dawson.

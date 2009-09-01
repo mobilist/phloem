@@ -2,23 +2,17 @@
 
 Phloem::Role::Publish
 
+=head1 DESCRIPTION
+
+A publish role for a node in a Phloem network.
+
 =head1 SYNOPSIS
 
   C<use Phloem::Role::Publish;>
 
-=head1 METHODS
+=head1 SEE ALSO
 
-=over 8
-
-=item new
-
-Constructor.
-
-=back
-
-=head1 DESCRIPTION
-
-A publish role for a node in a Phloem network.
+L<Phloem::Role>, L<Phloem::Role::Subscribe>
 
 =head1 COPYRIGHT
 

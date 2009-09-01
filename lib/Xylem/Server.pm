@@ -111,6 +111,10 @@ sub _do_run
 
 =back
 
+=head1 SEE ALSO
+
+L<Xylem::Server::Fork>
+
 =head1 COPYRIGHT
 
 Copyright (C) 2009 Simon Dawson.

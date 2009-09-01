@@ -2,6 +2,10 @@
 
 Phloem::Role::Subscribe
 
+=head1 DESCRIPTION
+
+A subscribe role for a node in a Phloem network.
+
 =head1 SYNOPSIS
 
   C<use Phloem::Role::Subscribe;>
@@ -10,19 +14,63 @@ Phloem::Role::Subscribe
 
 =over 8
 
+=cut
+
+package Phloem::Role::Subscribe;
+
+use strict;
+use warnings;
+use diagnostics;
+
+use lib qw(lib);
+use Phloem::Filter;
+
+use base qw(Phloem::Role);
+
+#------------------------------------------------------------------------------
+
 =item new
 
 Constructor.
+
+=cut
+
+sub new
+{
+  my $class = shift or die "No class name specified.";
+  die "Expected an ordinary scalar." if ref($class);
+  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+
+  # Construct the base class part.
+  my $self = $class->SUPER::new('filter' => undef, @_);
+
+  # Re-bless into the subclass.
+  return bless($self, $class);
+}
+
+#------------------------------------------------------------------------------
 
 =item filter
 
 Get the filter.
 
+=cut
+
+sub filter
+{
+  my $self = shift or die "No object reference.";
+  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  return $self->{'filter'};
+}
+
+1;
+
 =back
 
-=head1 DESCRIPTION
+=head1 SEE ALSO
 
-A subscribe role for a node in a Phloem network.
+L<Phloem::Role>, L<Phloem::Role::Publish>
 
 =head1 COPYRIGHT
 
@@ -50,41 +98,3 @@ This file is part of Phloem.
    along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-
-package Phloem::Role::Subscribe;
-
-use strict;
-use warnings;
-use diagnostics;
-
-use lib qw(lib);
-use Phloem::Filter;
-
-use base qw(Phloem::Role);
-
-#------------------------------------------------------------------------------
-sub new
-# Constructor.
-{
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
-
-  # Construct the base class part.
-  my $self = $class->SUPER::new('filter' => undef, @_);
-
-  # Re-bless into the subclass.
-  return bless($self, $class);
-}
-
-#------------------------------------------------------------------------------
-sub filter
-# Get the filter.
-{
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  return $self->{'filter'};
-}
-
-1;

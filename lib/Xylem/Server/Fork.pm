@@ -81,6 +81,10 @@ sub _do_run
 
 1;
 
+=head1 SEE ALSO
+
+L<Xylem::Server>
+
 =head1 COPYRIGHT
 
 Copyright (C) 2009 Simon Dawson.
