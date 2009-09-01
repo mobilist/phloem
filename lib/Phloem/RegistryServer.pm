@@ -69,6 +69,8 @@ sub process_request
 
   Phloem::Logger::append('DEBUG: Client connected to server.');
 
+  my $is_get = 0;
+
   # Use time-outs to prevent denial-of-service attacks while reading.
   my $input = '';
   eval {
@@ -77,9 +79,18 @@ sub process_request
     my $timeout = $Phloem::Constants::REGISTRY_SERVER_TIMEOUT_S;
 
     my $previous_alarm = alarm($timeout);
-    while (<$client_sock>) {
-      $_ =~ s/\r?\n$//o;
-      $input .= $_;
+    while (defined(my $current_line = $client_sock->getline())) {
+
+      # Stop reading input as soon as we get an empty line.
+      last if $current_line =~ /^\s*$/o;
+
+      if ($current_line =~ /^\s*GET\s*$/o) {
+        $is_get = 1;
+        return; # (From the eval --- stop gathering input.)
+      }
+      $current_line =~ s/\r?\n$//o;
+      $input .= $current_line;
+      print STDERR "DEBUG: $input\n";
       alarm($timeout);
     }
     alarm($previous_alarm);
@@ -96,22 +107,33 @@ sub process_request
   my $registry = Phloem::Registry->load();
 
   # See what we got.
-  if ($input =~ /^\s*GET\s*$/o) {
+  if ($is_get) {
     # The client wants details of the registry.
     Phloem::Logger::append('DEBUG: Client requested registry details.');
     print $client_sock $registry->data_dump(), "\r\n";
-  } else {
+  } elsif ($input) {
     # The client is sending us details of a node.
     Phloem::Logger::append('DEBUG: Client sent node details.');
-    my $node = Phloem::Node->data_load($input)
-      or die "Failed to recreate node object.";
+    eval {
+      my $node = Phloem::Node->data_load($input)
+        or die "Failed to recreate node object.";
 
-    # Update the registry with the node information.
-    $registry->add_node($node);
+      print STDERR "DEBUG: Client sent node... ", $node->data_dump(), "\n";
 
-    # Save the updated registry.
-    Phloem::Logger::append('DEBUG: Saving updated registry.');
-    $registry->save();
+      # Update the registry with the node information.
+      $registry->add_node($node);
+
+      # Save the updated registry.
+      Phloem::Logger::append('DEBUG: Saving updated registry.');
+      $registry->save();
+    };
+    if ($@) {
+      print $client_sock "ERROR: Failed to process node data.\r\n";
+    } else {
+      print $client_sock "OK\r\n";
+    }
+  } else {
+    print $client_sock "ERROR: No input.\r\n";
   }
 }
 
