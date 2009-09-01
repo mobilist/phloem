@@ -51,9 +51,9 @@ use base 'Xylem::Server';
 
 use lib qw(lib);
 use Phloem::Constants;
+use Phloem::Debug;
 use Phloem::Logger;
 use Phloem::Registry;
-use Xylem::Debug;
 
 #------------------------------------------------------------------------------
 sub process_request
@@ -68,7 +68,7 @@ sub process_request
   my $client_sock = shift or die "No client socket specified.";
   die "Expected a TCP/IP socket." unless $client_sock->isa('IO::Socket::INET');
 
-  Xylem::Debug::message('Client connected to server.');
+  Phloem::Debug->message('Client connected to server.');
 
   my $is_get = 0;
 
@@ -91,7 +91,7 @@ sub process_request
       }
       $current_line =~ s/\r?\n$//o;
       $input .= $current_line;
-      Xylem::Debug::message($input);
+      Phloem::Debug->message($input);
       alarm($timeout);
     }
     alarm($previous_alarm);
@@ -99,7 +99,7 @@ sub process_request
   };
 
   if ($@ =~ /Timed out\./o) {
-    Xylem::Debug::message('Server timed out.');
+    Phloem::Debug->message('Server timed out.');
     print $client_sock "ERROR: Timed out.\r\n";
     return;
   }
@@ -110,22 +110,22 @@ sub process_request
   # See what we got.
   if ($is_get) {
     # The client wants details of the registry.
-    Xylem::Debug::message('Client requested registry details.');
+    Phloem::Debug->message('Client requested registry details.');
     print $client_sock $registry->data_dump(), "\r\n";
   } elsif ($input) {
     # The client is sending us details of a node.
-    Xylem::Debug::message('Client sent node details.');
+    Phloem::Debug->message('Client sent node details.');
     eval {
       my $node = Phloem::Node->data_load($input)
         or die "Failed to recreate node object.";
 
-      Xylem::Debug::message('Client sent node... ' . $node->data_dump());
+      Phloem::Debug->message('Client sent node... ' . $node->data_dump());
 
       # Update the registry with the node information.
       $registry->add_node($node);
 
       # Save the updated registry.
-      Xylem::Debug::message('Saving updated registry.');
+      Phloem::Debug->message('Saving updated registry.');
       $registry->save();
     };
     if ($@) {
