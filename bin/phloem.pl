@@ -28,6 +28,10 @@ Print this manual page, and then exit.
 
 Print the license terms, and then exit.
 
+=item B<-d, --debug>
+
+Enable debugging output.
+
 =back
 
 =head1 COPYRIGHT
@@ -66,14 +70,16 @@ use Pod::Usage;
 
 use lib qw(lib);
 use Phloem::App;
+use Xylem::Debug;
 
 #==============================================================================
 # Start of main program.
 {
-  my ($opt_h, $opt_m, $opt_l);
-  pod2usage(-verbose => 0) unless GetOptions('h|help'     => \$opt_h,
-                                             'm|man'      => \$opt_m,
-                                             'l|license'  => \$opt_l);
+  my ($opt_h, $opt_m, $opt_l, $opt_d);
+  pod2usage(-verbose => 0) unless GetOptions('h|help'    => \$opt_h,
+                                             'm|man'     => \$opt_m,
+                                             'l|license' => \$opt_l,
+                                             'd|debug'   => \$opt_d);
   pod2usage(-verbose => 1) if $opt_h;
   pod2usage(-verbose => 2) if $opt_m;
   pod2usage(-verbose  => 99,
@@ -86,6 +92,9 @@ use Phloem::App;
     This is free software, and you are welcome to redistribute it
     under certain conditions; type phloem.pl --license for details.
 xxx_END_GPL_HEADER
+
+  # Enable/disable debug output, as appropriate.
+  Xylem::Debug::enabled($opt_d);
 
   # Run the application.
   Phloem::App::run();

@@ -77,10 +77,10 @@ use POSIX qw(strftime);
 # Start of main program.
 {
   my ($opt_h, $opt_m, $opt_l, $opt_f);
-  pod2usage(-verbose => 0) unless GetOptions('h|help'     => \$opt_h,
-                                             'm|man'      => \$opt_m,
-                                             'l|license'  => \$opt_l,
-                                             'f|force'    => \$opt_f);
+  pod2usage(-verbose => 0) unless GetOptions('h|help'    => \$opt_h,
+                                             'm|man'     => \$opt_m,
+                                             'l|license' => \$opt_l,
+                                             'f|force'   => \$opt_f);
   pod2usage(-verbose => 1) if $opt_h;
   pod2usage(-verbose => 2) if $opt_m;
   pod2usage(-verbose  => 99,
