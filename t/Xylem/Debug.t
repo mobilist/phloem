@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 10; # qw(no_plan);
+use Test::More tests => 12; # qw(no_plan);
 
 BEGIN { use_ok('Xylem::Debug'); }
 
@@ -35,6 +35,10 @@ ok(!Xylem::Debug->enabled(), 'Debugging should still be disabled.');
 ok(!Xylem::Debug->message('Hello teh World!'),
    'Printing a debug message (disabled).');
 ok(Xylem::Debug->enabled(1), 'Debugging should be enabled again.');
-ok(Xylem::Debug->message('Hello again teh World!'),
+my $message = 'Hello again teh World!';
+ok(my $message2 = Xylem::Debug->message($message),
    'Printing a debug message (enabled).');
-ok(Xylem::Debug->message(), 'Should cope with an absent message.');
+ok($message2 =~ /$message/, 'Messages should be similar.');
+ok(my $message3 = Xylem::Debug->message(),
+   'Should cope with an absent message.');
+ok(length($message3), 'Returned message should be non-trivial.');

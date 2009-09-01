@@ -50,10 +50,14 @@ sub message
   die "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   # Call the base class version first.
-  my $message = $class->SUPER::message(@_);
+  #
+  # N.B. Just return if we don't get a message back: debugging is disabled.
+  my $message = $class->SUPER::message(shift) or return;
 
   # Do our own special thing with the debugging message.
   Phloem::Logger::append($message);
+
+  return $message;
 }
 
 1;
