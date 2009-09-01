@@ -53,6 +53,7 @@ use lib qw(lib);
 use Phloem::Constants;
 use Phloem::Logger;
 use Phloem::Registry;
+use Xylem::Debug;
 
 #------------------------------------------------------------------------------
 sub process_request
@@ -67,7 +68,7 @@ sub process_request
   my $client_sock = shift or die "No client socket specified.";
   die "Expected a TCP/IP socket." unless $client_sock->isa('IO::Socket::INET');
 
-  Phloem::Logger::append('DEBUG: Client connected to server.');
+  Xylem::Debug::message('Client connected to server.');
 
   my $is_get = 0;
 
@@ -90,7 +91,7 @@ sub process_request
       }
       $current_line =~ s/\r?\n$//o;
       $input .= $current_line;
-      print STDERR "DEBUG: $input\n";
+      Xylem::Debug::message($input);
       alarm($timeout);
     }
     alarm($previous_alarm);
@@ -98,7 +99,7 @@ sub process_request
   };
 
   if ($@ =~ /Timed out\./o) {
-    Phloem::Logger::append('DEBUG: Server timed out.');
+    Xylem::Debug::message('Server timed out.');
     print $client_sock "ERROR: Timed out.\r\n";
     return;
   }
@@ -109,22 +110,22 @@ sub process_request
   # See what we got.
   if ($is_get) {
     # The client wants details of the registry.
-    Phloem::Logger::append('DEBUG: Client requested registry details.');
+    Xylem::Debug::message('Client requested registry details.');
     print $client_sock $registry->data_dump(), "\r\n";
   } elsif ($input) {
     # The client is sending us details of a node.
-    Phloem::Logger::append('DEBUG: Client sent node details.');
+    Xylem::Debug::message('Client sent node details.');
     eval {
       my $node = Phloem::Node->data_load($input)
         or die "Failed to recreate node object.";
 
-      print STDERR "DEBUG: Client sent node... ", $node->data_dump(), "\n";
+      Xylem::Debug::message('Client sent node... ' . $node->data_dump());
 
       # Update the registry with the node information.
       $registry->add_node($node);
 
       # Save the updated registry.
-      Phloem::Logger::append('DEBUG: Saving updated registry.');
+      Xylem::Debug::message('Saving updated registry.');
       $registry->save();
     };
     if ($@) {

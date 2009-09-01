@@ -29,6 +29,7 @@ use Phloem::Constants;
 use Phloem::Logger;
 use Phloem::Node;
 use Phloem::Root;
+use Xylem::Debug;
 
 #------------------------------------------------------------------------------
 
@@ -46,7 +47,7 @@ sub register_node
   # Get a socket for communicating with the registry server.
   my $sock =_get_socket($node->root());
 
-  Phloem::Logger::append('DEBUG: Attempting to register a node.');
+  Xylem::Debug::message('Attempting to register a node.');
 
   # Dump the node data off to the registry server.
   print $sock $node->data_dump(), "\r\n", "\r\n";
@@ -75,7 +76,7 @@ sub get_all_nodes
   # Get a socket for communicating with the registry server.
   my $sock =_get_socket($root);
 
-  Phloem::Logger::append('DEBUG: Attempting to request registry data.');
+  Xylem::Debug::message('Attempting to request registry data.');
 
   # Send the request off to the registry server.
   print $sock "GET\r\n";
@@ -92,7 +93,7 @@ sub get_all_nodes
     return;
   }
 
-  Phloem::Logger::append('DEBUG: About to use data returned from server.');
+  Xylem::Debug::message('About to use data returned from server.');
 
   # The server is sending us details of the registry.
   my $registry = Phloem::Registry->data_load($input)

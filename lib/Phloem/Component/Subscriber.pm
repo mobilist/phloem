@@ -53,6 +53,7 @@ use Phloem::Constants;
 use Phloem::Logger;
 use Phloem::Node;
 use Phloem::RegistryClient;
+use Xylem::Debug;
 use Xylem::Rsync::Transfer;
 use Xylem::Utils::Net;
 
@@ -68,7 +69,7 @@ sub _do_run
   # Sit in a loop, periodically updating our content from the "best"
   # available publisher node and role.
   while (1) {
-    Phloem::Logger::append('DEBUG: Choosing best publisher node.');
+    Xylem::Debug::message('Choosing best publisher node.');
     my ($best_publisher_node, $best_publisher_role) =
       $self->_choose_best_publisher() or next;
     $self->_update_from_publisher($best_publisher_node, $best_publisher_role);
@@ -101,7 +102,7 @@ sub _choose_best_publisher
     my $role_i = $publisher_nodes[1]->[$i];
     my $host_i = $node_i->host()
       or die "Unknown host name for node " . $node_i->id() . ".";
-    Phloem::Logger::append('DEBUG: Pinging $host_i.');
+    Xylem::Debug::message("Pinging $host_i.");
     if (Xylem::Utils::Net::ping($host_i)) {
       return ($node_i, $role_i);
     }
@@ -126,14 +127,14 @@ sub _find_publishers
 
   # Retrieve a list of all nodes from the "root" node.
   my $root = $node->root();
-  Phloem::Logger::append('DEBUG: Getting details of all nodes.');
+  Xylem::Debug::message('Getting details of all nodes.');
   my @all_nodes = Phloem::RegistryClient::get_all_nodes($root);
 
   my $route = $role->route();
   my $filter = $role->filter();
 
   # Filter the list down to the publishers of interest.
-  Phloem::Logger::append('DEBUG: Filtering the list of nodes.');
+  Xylem::Debug::message('Filtering the list of nodes.');
   my @publisher_nodes = ([], []);
   foreach my $current_node (@all_nodes) {
 
@@ -170,7 +171,7 @@ sub _update_from_publisher
   my $role = shift or die "No role specified.";
   die "Expected a role object." unless $role->isa('Phloem::Role');
 
-  Phloem::Logger::append('DEBUG: About to update from publisher node.');
+  Xylem::Debug::message('About to update from publisher node.');
 
   # Get some details required to specify the transfer.
   my $remote_ip_address = $node->host();
