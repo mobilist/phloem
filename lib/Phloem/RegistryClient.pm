@@ -49,14 +49,12 @@ sub register_node
   Phloem::Logger::append('DEBUG: Attempting to register a node.');
 
   # Dump the node data off to the registry server.
-  print $sock $node->data_dump(), "\r\n";
+  print $sock $node->data_dump(), "\r\n", "\r\n";
 
   # Read the output from the registry server.
   my $input = _read_from_server_socket($sock);
 
-  if ($input =~ /^ERROR: (.*)$/o) {
-    die "Registry server error: $1";
-  }
+  die "Registry server error: $input" unless ($input =~ /^OK\s*$/o);
 }
 
 #------------------------------------------------------------------------------
