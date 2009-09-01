@@ -50,6 +50,13 @@ sub register_node
 
   # Dump the node data off to the registry server.
   print $sock $node->data_dump(), "\r\n";
+
+  # Read the output from the registry server.
+  my $input = _read_from_server_socket($sock);
+
+  if ($input =~ /^ERROR: (.*)$/o) {
+    die "Registry server error: $1";
+  }
 }
 
 #------------------------------------------------------------------------------
@@ -76,11 +83,7 @@ sub get_all_nodes
   print $sock "GET\r\n";
 
   # Read the output from the registry server.
-  my $input = '';
-  while (<$sock>) {
-    $_ =~ s/\r?\n$//o;
-    $input .= $_;
-  }
+  my $input = _read_from_server_socket($sock);
 
   if ($input =~ /^ERROR: (.*)$/o) {
     die "Registry server error: $1";
@@ -123,6 +126,27 @@ sub _get_socket
     or die "Failed to create socket: $@";
 
   return $sock;
+}
+
+#------------------------------------------------------------------------------
+sub _read_from_server_socket
+# Read data from the specified server socket.
+{
+  my $sock = shift or die "No socket specified.";
+  die "Expected a TCP/IP socket." unless $sock->isa('IO::Socket::INET');
+
+  # Read from the socket.
+  my $input = '';
+  while (<$sock>) {
+    $_ =~ s/\r?\n$//o;
+    $input .= $_;
+  }
+
+  # Trim parenthetical whitespace.
+  $input =~ s/^\s*//o;
+  $input =~ s/\s*$//o;
+
+  return $input;
 }
 
 1;
