@@ -177,14 +177,6 @@ synchronisation, compression, authentication, etc.
 
 =item
 
-Finish writing code.
-
-=item
-
-Make more extensive use of Class::Struct, to eliminate "bolier-plate" code.
-
-=item
-
 Expand unit test coverage.
 
 =item
@@ -193,7 +185,7 @@ Integration testing.
 
 =item
 
-Use the logger where appropriate.
+Make better use of the logger.
 
 =item
 
