@@ -78,7 +78,7 @@ sub data_load
   # N.B. You might think that the next line would be necessary. Indeed, for
   #      some classes it may be. But not for ours.
 #  $compartment->share_from($class, [qw(new)]);
-  $compartment->permit_only(qw(:base_core bless padany anonhash));
+  $compartment->permit_only(qw(:base_core bless padany anonhash anonlist));
   my $STRICT = 1;
   $self = $compartment->reval($data, $STRICT);
   die "Failed to reconstruct object: $@" if $@;

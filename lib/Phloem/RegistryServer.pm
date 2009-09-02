@@ -133,7 +133,7 @@ sub process_request
       $registry->save();
     };
     if ($@) {
-      print $client_sock "ERROR: Failed to process node data.\r\n";
+      print $client_sock "ERROR: Failed to process node data: $@\r\n";
     } else {
       print $client_sock "OK\r\n";
     }
