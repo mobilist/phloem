@@ -102,6 +102,8 @@ sub get_client_tcp_socket
   my $sock = IO::Socket::INET->new(%sock_options)
     or die "Failed to create client socket for host $host on port $port: $@";
 
+  $sock->autoflush(1);
+
   return $sock;
 }
 

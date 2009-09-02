@@ -55,6 +55,8 @@ sub register_node
   # Read the output from the registry server.
   my $input = _read_from_server_socket($sock);
 
+  $sock->shutdown(2) or die "Failed to shut down client socket: $!";
+
   Phloem::Logger::append("Registry server error: $input")
     unless ($input =~ /^OK\s*$/o);
 }
@@ -84,6 +86,8 @@ sub get_all_nodes
 
   # Read the output from the registry server.
   my $input = _read_from_server_socket($sock);
+
+  $sock->shutdown(2) or die "Failed to shut down client socket: $!";
 
   if ($input =~ /^ERROR: (.*)$/o) {
     Phloem::Logger::append("Registry server error: $1");

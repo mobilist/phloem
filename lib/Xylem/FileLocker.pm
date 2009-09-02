@@ -43,6 +43,7 @@ use Fcntl qw(:flock); # Import LOCK_* constants.
 use FileHandle;
 
 use lib qw(lib);
+use Xylem::Debug;
 
 #------------------------------------------------------------------------------
 
@@ -71,7 +72,7 @@ sub new
   die "An access mode of 'r', 'w' or 'a' must be specified."
     unless ($mode && $mode =~ /^(?:r|w|a)$/o);
 
-  print STDERR "DEBUG: Acquiring lock on file $file.\n";
+  Xylem::Debug->message("Acquiring lock on file $file.");
   # N.B. It's a shame that we have to open the file in order to get a lock.
   my $raw_mode = ($mode eq 'r') ? '<' : ( ($mode eq 'w') ? '>' : '>>');
   my $fh = FileHandle->new("$raw_mode " . $file)
@@ -117,7 +118,7 @@ sub DESTROY
   my $self = shift or die "No object reference.";
   die "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  print STDERR "DEBUG: Releasing file lock.\n";
+  Xylem::Debug->message('Releasing file lock.');
   my $fh = $self->filehandle();
   flock($fh, LOCK_UN) or die "Failed to unlock file: $!";
 

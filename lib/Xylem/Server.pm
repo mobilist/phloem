@@ -76,6 +76,8 @@ sub run
   $class->_do_run($server_sock);
 
   Xylem::Debug->message('Server run ending.');
+
+  $server_sock->shutdown(2) or die "Failed to shut down server socket: $!";
 }
 
 #------------------------------------------------------------------------------
@@ -104,10 +106,10 @@ sub _do_run
   die "Expected a TCP/IP socket." unless $server_sock->isa('IO::Socket::INET');
 
   while (my $client_sock = $server_sock->accept()) {
+    $client_sock->autoflush(1);
     $class->process_request($client_sock);
+    $client_sock->shutdown(2) or die "Failed to shut down client socket: $!";
   }
-
-  close($server_sock);
 }
 
 1;
