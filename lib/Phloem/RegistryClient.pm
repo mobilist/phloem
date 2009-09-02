@@ -86,11 +86,12 @@ sub get_all_nodes
   my $input = _read_from_server_socket($sock);
 
   if ($input =~ /^ERROR: (.*)$/o) {
-    die "Registry server error: $1";
+    Phloem::Logger::append("Registry server error: $1");
+    return;
   }
 
   unless ($input && length($input) && $input !~ /^\s*$/o) {
-    warn "Registry server returned no data.";
+    Phloem::Logger::append('Registry server returned no data.');
     return;
   }
 
@@ -119,7 +120,7 @@ sub _get_socket
   my $host = $root->host();
   my $port = $root->port();
 
-  Phloem::Logger::append("Creating socket on ${host}:${port}.");
+  Phloem::Logger::append("Creating client socket on ${host}:${port}.");
 
   # Create the server socket.
   my $sock = Xylem::Utils::Net::get_client_tcp_socket($host, $port)
