@@ -47,6 +47,11 @@ sub register_node
   # Get a socket for communicating with the registry server.
   my $sock = _get_socket($node->root());
 
+  unless ($sock) {
+    Phloem::Logger->append('Failed to connect to server.');
+    return;
+  }
+
   Phloem::Debug->message('Attempting to register a node.');
 
   # Dump the node data off to the registry server.
@@ -78,6 +83,11 @@ sub get_all_nodes
 
   # Get a socket for communicating with the registry server.
   my $sock = _get_socket($root);
+
+  unless ($sock) {
+    Phloem::Logger->append('Failed to connect to server.');
+    return;
+  }
 
   Phloem::Debug->message('Attempting to request registry data.');
 
@@ -127,8 +137,15 @@ sub _get_socket
   Phloem::Logger->append("Creating client socket on ${host}:${port}.");
 
   # Create the server socket.
-  my $sock = Xylem::Utils::Net::get_client_tcp_socket($host, $port)
-    or die "Failed to create client socket.";
+  my $sock;
+  eval {
+    $sock = Xylem::Utils::Net::get_client_tcp_socket($host, $port)
+      or die "Failed to create client socket.";
+  };
+  if ($@) {
+    Phloem::Logger->append($@);
+    return;
+  }
 
   return $sock;
 }
