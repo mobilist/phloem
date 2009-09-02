@@ -151,7 +151,7 @@ sub _find_publishers
     # Apply our filter to the node.
     next if ($filter && !$filter->apply($current_node));
 
-    Phloem::Debug::message('Found a suitable publisher node.');
+    Phloem::Debug->message('Found a suitable publisher node.');
     push(@{$publisher_nodes[0]}, $current_node);
     push(@{$publisher_nodes[1]}, $route_publish_role);
   }
