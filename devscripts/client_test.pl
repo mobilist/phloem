@@ -86,8 +86,6 @@ sub _get_socket
   my $sock = Xylem::Utils::Net::get_client_tcp_socket($HOST, $PORT)
     or die "Failed to create client socket.";
 
-  $sock->autoflush(1);
-
   return $sock;
 }
 
