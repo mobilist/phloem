@@ -32,7 +32,7 @@ BEGIN { use_ok('Phloem::Role::Subscribe'); }
 ok(my $filter = Phloem::Filter->new('type'  => 'group',
                                     'value' => '^ova\d+',
                                     'rule'  => 'match'), 'Creating filter.');
-my %object_data = ('route'       => 'rootward',
+my %object_data = ('route'       => 'leaf2root',
                    'directory'   => 'some/dir/path',
                    'description' => 'Dummy role.',
                    'filter'      => $filter);

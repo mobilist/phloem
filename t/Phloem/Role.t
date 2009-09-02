@@ -27,7 +27,7 @@ use Test::More tests => 5; # qw(no_plan);
 
 BEGIN { use_ok('Phloem::Role'); }
 
-my %object_data = ('route'       => 'rootward',
+my %object_data = ('route'       => 'leaf2root',
                    'directory'   => 'some/dir/path',
                    'description' => 'Dummy role.');
 

@@ -32,18 +32,18 @@
 
   <rsync user="simond" />
 
-  <role type="publish" route="leafward">
+  <role type="publish" route="root2leaf">
     <directory path="/home/simond/Projects/svn/phloem/branches" />
     <description>
-      Publish leafward content.
+      Publish root2leaf content.
     </description>
   </role>
 
-  <role type="subscribe" route="leafward">
+  <role type="subscribe" route="root2leaf">
     <directory path="/home/simond/Projects/svn/phloem/tags" />
     <filter type="group" value="^lea(ves|f)$" rule="match" />
     <description>
-      Subscribe to leafward content from matching publisher nodes.
+      Subscribe to root2leaf content from matching publisher nodes.
       Currently disabled.
     </description>
   </role>

@@ -87,15 +87,15 @@ acyclic graph, in other words.
 
 =item
 
-There are two "routes" from the "root" node to a leaf node: "rootward"
-and "leafward".
+There are two "routes" from the "root" node to a leaf node: "leaf2root"
+and "root2leaf".
 
 =item
 
 Each node has a set of "roles", which is a subset of the following set.
 
-  {publisher(leafward), publisher(rootward),
-   subscriber(leafward), subscriber(rootward)}
+  {publisher(root2leaf), publisher(leaf2root),
+   subscriber(root2leaf), subscriber(leaf2root)}
 
 =item
 
@@ -138,7 +138,7 @@ referred to as that of a "portal" for the affected route.
 
 It is worth emphasising that this is a critical difference from certain
 existing system, in which the publish/subscribe mechanism is [ab]used to
-populate the leafward "outgoing" directory of the top-level node. Phloem is
+populate the root2leaf "outgoing" directory of the top-level node. Phloem is
 a pure Phloem system --- it makes no claim to content generation and/or
 management.
 

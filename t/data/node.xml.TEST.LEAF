@@ -32,17 +32,17 @@
 
   <rsync user="simond" />
 
-  <role type="publish" route="rootward" active="1">
+  <role type="publish" route="leaf2root" active="1">
     <directory path="/home/simon/Projects/svn/phloem/tags" />
     <description>
-      Publish rootward content. Currently disabled.
+      Publish leaf2root content. Currently disabled.
     </description>
   </role>
 
-  <role type="subscribe" route="rootward" active="1">
+  <role type="subscribe" route="leaf2root" active="1">
     <directory path="/home/simon/Projects/svn/phloem/branches" />
     <description>
-      Subscribe to rootward content from the any publisher node.
+      Subscribe to leaf2root content from the any publisher node.
     </description>
   </role>
 

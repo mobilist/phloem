@@ -61,7 +61,7 @@ ok($node->roles() == 0, 'Accessor for roles.');
 
 ok(!$node->is_publisher(), 'Node does not publish.');
 
-ok(my $role = Phloem::Role::Publish->new('route'       => 'rootward',
+ok(my $role = Phloem::Role::Publish->new('route'       => 'leaf2root',
                                          'directory'   => 'some/path',
                                          'description' => 'A dummy role.'),
    'Creating publish role object.');

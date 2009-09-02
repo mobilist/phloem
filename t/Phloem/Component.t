@@ -30,7 +30,7 @@ use Phloem::Role;
 
 BEGIN { use_ok('Phloem::Component'); }
 
-ok(my $role = Phloem::Role->new('route'       => 'rootward',
+ok(my $role = Phloem::Role->new('route'       => 'leaf2root',
                                 'directory'   => 'some/path',
                                 'description' => 'Dummy.'),
    'Creating role object.');

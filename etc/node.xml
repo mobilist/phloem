@@ -32,33 +32,33 @@
 
   <rsync user="simond" />
 
-  <role type="publish" route="leafward">
+  <role type="publish" route="root2leaf">
     <directory path="/some/path" />
     <description>
-      Publish leafward content.
+      Publish root2leaf content.
     </description>
   </role>
 
-  <role type="publish" route="rootward" active="0">
+  <role type="publish" route="leaf2root" active="0">
     <directory path="/some/other/path" />
     <description>
-      Publish rootward content. Currently disabled.
+      Publish leaf2root content. Currently disabled.
     </description>
   </role>
 
-  <role type="subscribe" route="leafward">
+  <role type="subscribe" route="root2leaf">
     <directory path="/a/path" />
     <filter type="group" value="^egg\w+" rule="match" />
     <description>
-      Subscribe to leafward content from matching publisher nodes.
+      Subscribe to root2leaf content from matching publisher nodes.
       Currently disabled.
     </description>
   </role>
 
-  <role type="subscribe" route="rootward" active="0">
+  <role type="subscribe" route="leaf2root" active="0">
     <directory path="/another/path" />
     <description>
-      Subscribe to rootward content from the any publisher node.
+      Subscribe to leaf2root content from the any publisher node.
     </description>
   </role>
 

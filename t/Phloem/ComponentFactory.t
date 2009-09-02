@@ -41,7 +41,7 @@ my %object_data = ('id'          => 'egg',
                    'root'        => $root);
 
 ok(my $node = Phloem::Node->new(%object_data), 'Creating node object.');
-ok(my $role = Phloem::Role::Publish->new('route'       => 'rootward',
+ok(my $role = Phloem::Role::Publish->new('route'       => 'leaf2root',
                                          'directory'   => 'some/path',
                                          'description' => 'A dummy role.'),
    'Creating publish role object.');

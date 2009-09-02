@@ -43,7 +43,7 @@
 <!ELEMENT role (directory, filter?, description?)>
 <!ATTLIST role
   type    (publish|subscribe)    #REQUIRED
-  route   (rootward|leafward)  #REQUIRED
+  route   (leaf2root|root2leaf)  #REQUIRED
   active  (0|1)  "1"
 >
 
