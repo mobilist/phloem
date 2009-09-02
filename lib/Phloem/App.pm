@@ -43,7 +43,9 @@ Run the application.
 
 sub run
 {
-  # Clear the log file, and write a start-up message.
+  # Initialise the logging subsystem, clear the log file, and write a
+  # start-up message.
+  Phloem::Logger->initialise();
   Phloem::Logger::clear();
   Phloem::Logger::append('Starting up.');
 

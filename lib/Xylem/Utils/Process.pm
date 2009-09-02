@@ -40,6 +40,10 @@ directory is changed to the root, and standard file descriptors are
 redirected to /dev/null. If this behaviour is not required, then a
 'NODAEMON' flag argument should be provided by the caller.
 
+When daemonising a process, it may be desirable NOT to change the working
+directory to the root. This can be achieved by setting the 'NOCHDIR' flag
+argument. Note that this will have no effect if the 'NODAEMON' flag is up.
+
 =cut
 
 sub spawn_child
@@ -47,6 +51,7 @@ sub spawn_child
   # Are we to fully "daemonise" the child?
   my %args = @_;
   my $NODAEMON = exists($args{'NODAEMON'}) && $args{'NODAEMON'};
+  my $NOCHDIR = exists($args{'NOCHDIR'}) && $args{'NOCHDIR'};
 
   # Fork a new child process.
   defined(my $pid = fork) or die "Failed to fork: $!";
@@ -54,12 +59,18 @@ sub spawn_child
   # The parent process just returns now.
   return $pid if $pid;
 
+  # Change the file mode mask.
+  umask(0) or die "Failed to set file mode mask: $!";
+
   # Give the child a new process group and session.
   setsid() or die "Failed to start a new session: $!";
 
   unless ($NODAEMON) {
-    # Change the working directory to the root.
-    chdir('/') or die "Failed to move to /: $!";
+
+    # Change the working directory to the root, if appropriate.
+    unless ($NOCHDIR) {
+      chdir('/') or die "Failed to move to / directory: $!";
+    }
 
     # Redirect file descriptors to /dev/null.
     open(STDIN, '/dev/null') or die "Failed to open /dev/null for reading: $!";

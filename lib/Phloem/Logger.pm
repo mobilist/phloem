@@ -9,6 +9,7 @@ Logging utilities for Phloem.
 =head1 SYNOPSIS
 
   C<use Phloem::Logger;>
+  C<Phloem::Logger->initialise();>
   C<Phloem::Logger->clear();>
   C<Phloem::Logger->append('Hello teh world!');>
 
@@ -24,9 +25,32 @@ use strict;
 use warnings;
 use diagnostics;
 
+use File::Spec;
+
 use lib qw(lib);
 use Phloem::Constants;
-use Xylem::Logger;
+
+use base qw(Xylem::Logger);
+
+#------------------------------------------------------------------------------
+sub _do_initialise
+# Initialise the logging subsystem --- "protected" method.
+#
+# Subclasses must provide an implementation for this pure virtual method.
+#
+# N.B. This is a class method.
+{
+  my $class = shift or die "No class name specified.";
+  die "Expected an ordinary scalar." if ref($class);
+  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+
+  # Set the log file path.
+  #
+  # N.B. We make sure to use an absolute file path here, in case this process
+  #      is ever daemonised.
+  my $log_file_path = File::Spec->rel2abs($Phloem::Constants::LOG_FILE);
+  Xylem::Logger::path($log_file_path);
+}
 
 #------------------------------------------------------------------------------
 
@@ -38,7 +62,7 @@ Append the specified message to the log file.
 
 sub append
 {
-  Xylem::Logger::append(@_, $Phloem::Constants::LOG_FILE);
+  Xylem::Logger::append(@_);
 }
 
 #------------------------------------------------------------------------------
@@ -51,12 +75,16 @@ Clear the log file.
 
 sub clear
 {
-  Xylem::Logger::clear($Phloem::Constants::LOG_FILE);
+  Xylem::Logger::clear();
 }
 
 1;
 
 =back
+
+=head1 SEE ALSO
+
+L<Xylem::Logger>
 
 =head1 COPYRIGHT
 

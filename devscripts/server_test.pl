@@ -15,6 +15,7 @@ use Phloem::Root;
 
 {
   Phloem::Debug->enabled(1);
+  Phloem::Logger->initialise();
   Phloem::Logger::clear();
   Phloem::Logger::append('Starting up.');
   my $root = Phloem::Root->new('host' => '10.127.10.4', 'port' => 9999);

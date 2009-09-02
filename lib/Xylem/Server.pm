@@ -84,6 +84,8 @@ sub run
 sub process_request
 # Process the request on the specified client socket --- "protected" method.
 #
+# Subclasses must provide an implementation for this pure virtual method.
+#
 # N.B. This is a class method.
 {
   die "PURE VIRTUAL BASE CLASS METHOD! MUST BE OVERRIDDEN!";

@@ -8,10 +8,13 @@ Logging utilities for Xylem.
 
 =head1 SYNOPSIS
 
-  C<use Xylem::Logger;>
-  C<my $log_file = 'eggs.log';>
-  C<Xylem::Logger->clear($log_file);>
-  C<Xylem::Logger->append('Hello teh world!', $log_file);>
+  C<package MyLogger;>
+  C<use base qw(Xylem::Logger);>
+  C<sub _do_initialise { Xylem::Logger::path('eggs.log'); };>
+  C<package main;>
+  C<MyLogger->initialise();>
+  C<MyLogger::clear();>
+  C<MyLogger::append('Hello teh world!');>
 
 =head1 METHODS
 
@@ -29,21 +32,83 @@ use lib qw(lib);
 use Xylem::TimeStamp;
 use Xylem::Utils::File;
 
+# "Private" storage for the log file path.
+our $_LOG_FILE;
+
+# A "private" flag that goes up when the logging subsystem is initialised.
+our $_INITIALISED;
+
+#------------------------------------------------------------------------------
+
+=item initialise
+
+Initialise the logging subsystem.
+
+N.B. This is a class method.
+
+=cut
+
+sub initialise
+{
+  my $class = shift or die "No class name specified.";
+  die "Expected an ordinary scalar." if ref($class);
+  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+
+  die "The logging subsystem has already been initialised." if $_INITIALISED;
+
+  # Perform the (subclass-specific) initialisation.
+  $class->_do_initialise();
+
+  # Put up the "initialised" flag.
+  $_INITIALISED = 1;
+}
+
+#------------------------------------------------------------------------------
+sub _do_initialise
+# Initialise the logging subsystem --- "protected" method.
+#
+# Subclasses must provide an implementation for this pure virtual method.
+#
+# N.B. This is a class method.
+{
+  die "PURE VIRTUAL BASE CLASS METHOD! MUST BE OVERRIDDEN!";
+}
+
+#------------------------------------------------------------------------------
+
+=item path
+
+Get/set the log file path.
+
+=cut
+
+sub path
+{
+  my $path = shift;
+
+  $_LOG_FILE = $path if $path;
+
+  return $_LOG_FILE;
+}
+
 #------------------------------------------------------------------------------
 
 =item append
 
-Append the specified message to the specified log file.
+Append the specified message to the log file.
 
 =cut
 
 sub append
 {
+  die "The logging subsystem has not yet been initialised."
+    unless $_INITIALISED;
+
   # Get the input: a message to log.
   my $message = shift or die "No message specified.";
   chomp($message);
 
-  my $log_file = shift or die "No log file specified.";
+  my $log_file = path() or die "No log file path has been set.";
 
   # Generate a time-stamp.
   my $ts = Xylem::TimeStamp::create();
@@ -63,13 +128,16 @@ sub append
 
 =item clear
 
-Clear the specified log file.
+Clear the log file.
 
 =cut
 
 sub clear
 {
-  my $log_file = shift or die "No log file specified.";
+  die "The logging subsystem has not yet been initialised."
+    unless $_INITIALISED;
+
+  my $log_file = path() or die "No log file path has been set.";
 
   Xylem::Utils::File::clear($log_file);
 }
