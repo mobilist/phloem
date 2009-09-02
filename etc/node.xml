@@ -22,7 +22,7 @@
 
 -->
 
-<node id="egg12345" group="eggs" is_root="1">
+<node id="egg12345" group="eggs" is_root="1" host="localhost">
 
   <description>
     This is just a dummy node, for testing purposes.
