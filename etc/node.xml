@@ -22,43 +22,29 @@
 
 -->
 
-<node id="egg12345" group="eggs" is_root="1">
+<node id="ivor" group="tree" is_root="1">
 
   <description>
-    This is just a dummy node, for testing purposes.
+    A dummy root node.
   </description>
 
-  <root host="localhost" port="9999" />
+  <root host="10.127.10.4" port="9999" />
 
   <rsync user="simond" />
 
   <role type="publish" route="leafward">
-    <directory path="/some/path" />
+    <directory path="/home/simond/Projects/svn/phloem/branches" />
     <description>
       Publish leafward content.
     </description>
   </role>
 
-  <role type="publish" route="rootward" active="0">
-    <directory path="/some/other/path" />
-    <description>
-      Publish rootward content. Currently disabled.
-    </description>
-  </role>
-
   <role type="subscribe" route="leafward">
-    <directory path="/a/path" />
-    <filter type="group" value="^egg\w+" rule="match" />
+    <directory path="/home/simond/Projects/svn/phloem/tags" />
+    <filter type="group" value="^lea(ves|f)$" rule="match" />
     <description>
       Subscribe to leafward content from matching publisher nodes.
       Currently disabled.
-    </description>
-  </role>
-
-  <role type="subscribe" route="rootward" active="0">
-    <directory path="/another/path" />
-    <description>
-      Subscribe to rootward content from the any publisher node.
     </description>
   </role>
 
