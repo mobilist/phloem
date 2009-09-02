@@ -45,6 +45,8 @@ use Xylem::Utils::Process;
 
 Run the server on the specified port.
 
+A host can optionally be specified, as the second argument.
+
 Spawns a child process, and returns the PID.
 
 N.B. This is a class method.
@@ -58,6 +60,7 @@ sub run
   die "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   my $port = shift or die "No port specified.";
+  my $host = shift; # Optional second argument.
 
   # Spawn a new child process to run the component.
   my $child_pid = Xylem::Utils::Process::spawn_child('NODAEMON' => 1);
@@ -66,7 +69,7 @@ sub run
   # (We're in the child process now.)
 
   # Create the server socket.
-  my $server_sock = Xylem::Utils::Net::get_server_tcp_socket($port)
+  my $server_sock = Xylem::Utils::Net::get_server_tcp_socket($port, $host)
     or die "Failed to create server socket on port $port.";
 
   # Run the server.

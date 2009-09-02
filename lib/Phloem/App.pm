@@ -53,9 +53,7 @@ sub run
 
   # If this is the root node, then start the registry server running.
   if ($node->is_root()) {
-    # Get the registry server port from the root node information.
-    my $port = $node->root()->port();
-    my $child_pid = Phloem::RegistryServer->run($port)
+    my $child_pid = Phloem::RegistryServer->run($node->root())
       or die "Failed to run registry server.";
     Phloem::Logger::append(
       "Registry server child process started as PID $child_pid.");
