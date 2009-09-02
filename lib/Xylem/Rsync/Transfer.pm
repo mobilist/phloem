@@ -22,6 +22,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use IPC::Cmd;
 use FileHandle;
 use Time::HiRes;
 
@@ -72,6 +73,10 @@ sub _run_rsync_command
 # Run the specified rsync command.
 {
   my $rsync_command = shift or die "No rsync command specified.";
+
+  # Check that we can run rsync and ssh.
+  IPC::Cmd::can_run('rsync') or die "It appears that rsync is not installed.";
+  IPC::Cmd::can_run('ssh')   or die "It appears that ssh is not installed.";
 
   my $start_time = Time::HiRes::time();
 
