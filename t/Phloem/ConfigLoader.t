@@ -23,9 +23,14 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 2; # qw(no_plan);
+use Test::More tests => 3; # qw(no_plan);
+
+use Phloem::Logger;
 
 BEGIN { use_ok('Phloem::ConfigLoader'); }
+
+ok(Phloem::Logger->initialise(),
+   'Initialising the Phloem logging subsystem.');
 
 ok(my $node = Phloem::ConfigLoader::load(),
    'Loading node object from configuration file.');

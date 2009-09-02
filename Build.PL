@@ -90,7 +90,8 @@ xxx_END_GPL_HEADER
                        'dist_author' => 'Simon Dawson <spdawson@gmail.com>',
                        'license'     => 'gpl',
                        'requires'    => {'perl'        => '5.10.0',
-                                         'XML::Simple' => 0},
+                                         'XML::Simple' => 0,
+					 'App::Prove'  => 0},
                        'recursive_test_files' => 1);
 
   $builder->create_build_script();

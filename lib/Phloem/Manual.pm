@@ -31,6 +31,11 @@ Phloem currently depends on the following non-core Perl modules.
 This is used to parse the node definition file, which currently uses an XML
 format.
 
+=item App::Prove
+
+As of Perl 5.10.1, this is actually a core module. If you've got an older
+Perl, then you'll have to install it using cpan. Sorry about that.
+
 =back
 
 These modules are available from CPAN.

@@ -241,7 +241,8 @@ sub is_portal
   my $route = shift or die "No route specified.";
   die "Expected an ordinary scalar." if ref($route);
 
-  die "Unexpected route specified." unless ($route =~ /^(?:root|leaf)ward$/o);
+  die "Unexpected route specified."
+      unless ($route =~ /^(?:root2leaf|leaf2root)$/o);
 
   # Iterate over the roles.
   my $pub_dir;
