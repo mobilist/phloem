@@ -13,8 +13,8 @@ Logging utilities for Xylem.
   C<sub _do_initialise { Xylem::Logger::path('eggs.log'); };>
   C<package main;>
   C<MyLogger->initialise();>
-  C<MyLogger::clear();>
-  C<MyLogger::append('Hello teh world!');>
+  C<MyLogger->clear();>
+  C<MyLogger->append('Hello teh world!');>
 
 =head1 METHODS
 
@@ -86,7 +86,7 @@ sub path
 {
   my $path = shift;
 
-  $_LOG_FILE = $path if $path;
+  $_LOG_FILE = $path if defined($path);
 
   return $_LOG_FILE;
 }
@@ -97,16 +97,22 @@ sub path
 
 Append the specified message to the log file.
 
+N.B. This is a class method.
+
 =cut
 
 sub append
 {
-  die "The logging subsystem has not yet been initialised."
-    unless $_INITIALISED;
+  my $class = shift or die "No class name specified.";
+  die "Expected an ordinary scalar." if ref($class);
+  die "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   # Get the input: a message to log.
   my $message = shift or die "No message specified.";
   chomp($message);
+
+  die "The logging subsystem has not yet been initialised."
+    unless $_INITIALISED;
 
   my $log_file = path() or die "No log file path has been set.";
 
@@ -130,10 +136,16 @@ sub append
 
 Clear the log file.
 
+N.B. This is a class method.
+
 =cut
 
 sub clear
 {
+  my $class = shift or die "No class name specified.";
+  die "Expected an ordinary scalar." if ref($class);
+  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+
   die "The logging subsystem has not yet been initialised."
     unless $_INITIALISED;
 

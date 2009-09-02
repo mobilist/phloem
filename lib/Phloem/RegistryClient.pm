@@ -57,7 +57,7 @@ sub register_node
 
   $sock->shutdown(2) or die "Failed to shut down client socket: $!";
 
-  Phloem::Logger::append("Registry server error: $input")
+  Phloem::Logger->append("Registry server error: $input")
     unless ($input =~ /^OK\s*$/o);
 }
 
@@ -90,12 +90,12 @@ sub get_all_nodes
   $sock->shutdown(2) or die "Failed to shut down client socket: $!";
 
   if ($input =~ /^ERROR: (.*)$/o) {
-    Phloem::Logger::append("Registry server error: $1");
+    Phloem::Logger->append("Registry server error: $1");
     return;
   }
 
   unless ($input && length($input) && $input !~ /^\s*$/o) {
-    Phloem::Logger::append('Registry server returned no data.');
+    Phloem::Logger->append('Registry server returned no data.');
     return;
   }
 
@@ -124,7 +124,7 @@ sub _get_socket
   my $host = $root->host();
   my $port = $root->port();
 
-  Phloem::Logger::append("Creating client socket on ${host}:${port}.");
+  Phloem::Logger->append("Creating client socket on ${host}:${port}.");
 
   # Create the server socket.
   my $sock = Xylem::Utils::Net::get_client_tcp_socket($host, $port)

@@ -52,32 +52,6 @@ sub _do_initialise
   Xylem::Logger::path($log_file_path);
 }
 
-#------------------------------------------------------------------------------
-
-=item append
-
-Append the specified message to the log file.
-
-=cut
-
-sub append
-{
-  Xylem::Logger::append(@_);
-}
-
-#------------------------------------------------------------------------------
-
-=item clear
-
-Clear the log file.
-
-=cut
-
-sub clear
-{
-  Xylem::Logger::clear();
-}
-
 1;
 
 =back

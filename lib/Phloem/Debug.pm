@@ -55,7 +55,7 @@ sub message
   my $message = $class->SUPER::message(shift) or return;
 
   # Do our own special thing with the debugging message.
-  Phloem::Logger::append($message);
+  Phloem::Logger->append($message);
 
   return $message;
 }

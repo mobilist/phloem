@@ -92,7 +92,7 @@ sub _node_from_xml_data
     my $role_description = $current_role->{'description'}->[0] // '';
 
     unless ($role_active) {
-      Phloem::Logger::append(
+      Phloem::Logger->append(
         "Role to $role_type on $role_route route is disabled.");
       next ROLE;
     }

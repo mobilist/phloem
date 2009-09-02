@@ -90,7 +90,7 @@ sub _choose_best_publisher
   die "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   # Find suitable publisher nodes.
-  my @publisher_nodes = $self->_find_publishers();
+  my @publisher_nodes = $self->_find_publishers() or return;
 
   # Choose the "best" publisher node.
   #
@@ -151,6 +151,7 @@ sub _find_publishers
     # Apply our filter to the node.
     next if ($filter && !$filter->apply($current_node));
 
+    Phloem::Debug::message('Found a suitable publisher node.');
     push(@{$publisher_nodes[0]}, $current_node);
     push(@{$publisher_nodes[1]}, $route_publish_role);
   }

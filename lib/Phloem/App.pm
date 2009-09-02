@@ -46,8 +46,8 @@ sub run
   # Initialise the logging subsystem, clear the log file, and write a
   # start-up message.
   Phloem::Logger->initialise();
-  Phloem::Logger::clear();
-  Phloem::Logger::append('Starting up.');
+  Phloem::Logger->clear();
+  Phloem::Logger->append('Starting up.');
 
   # Load the configuration file.
   my $node = Phloem::ConfigLoader::load()
@@ -57,7 +57,7 @@ sub run
   if ($node->is_root()) {
     my $child_pid = Phloem::RegistryServer->run($node->root())
       or die "Failed to run registry server.";
-    Phloem::Logger::append(
+    Phloem::Logger->append(
       "Registry server child process started as PID $child_pid.");
   }
 
@@ -67,7 +67,7 @@ sub run
       or die "Failed to create node advertiser.";
     my $child_pid = $node_advertiser->run()
       or die "Failed to run node advertiser.";
-    Phloem::Logger::append(
+    Phloem::Logger->append(
       "Node advertiser child process started as PID $child_pid.");
   }
 
@@ -77,7 +77,7 @@ sub run
     my $component = Phloem::ComponentFactory::create($node, $role)
       or die "Failed to create component.";
     my $child_pid = $component->run() or die "Failed to run component.";
-    Phloem::Logger::append(
+    Phloem::Logger->append(
       "Component child process started as PID $child_pid.");
   }
 }

@@ -61,7 +61,7 @@ sub run
 
   # If the node is not a publisher, then we may as well shut down right now.
   unless ($self->node()->is_publisher()) {
-    Phloem::Logger::append(
+    Phloem::Logger->append(
       'Node advertiser process shutting down: node does not publish.');
     exit(0);
   }
