@@ -116,15 +116,14 @@ sub _get_socket
   my $root = shift or die "No root specified.";
   die "Expected a root object." unless $root->isa('Phloem::Root');
 
-  Phloem::Logger::append(
-    "Creating socket on " . $root->host() . ":" . $root->port() . ".");
+  my $host = $root->host();
+  my $port = $root->port();
 
-  my $sock = IO::Socket::INET->new('PeerAddr' => $root->host(),
-                                   'PeerPort' => $root->port(),
-                                   'Proto'    => 'tcp',
-                                   'Type'     => SOCK_STREAM,
-                                   'Timeout'  => 5)
-    or die "Failed to create socket: $@";
+  Phloem::Logger::append("Creating socket on ${host}:${port}.");
+
+  # Create the server socket.
+  my $sock = Xylem::Utils::Net::get_client_tcp_socket($host, $port)
+    or die "Failed to create client socket.";
 
   return $sock;
 }

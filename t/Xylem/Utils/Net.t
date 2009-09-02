@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 3; # qw(no_plan);
+use Test::More tests => 5; # qw(no_plan);
 
 use constant TEST_PORT => 9999;
 
@@ -34,3 +34,8 @@ is(Xylem::Utils::Net::ping('localhost'), 1, 'Should be able to ping ourself.');
 diag('Waiting for a ping to time-out...');
 ok(!Xylem::Utils::Net::ping('donkey.sputem.stick'),
    'Should not be able to ping a non-existent host.');
+ok(my $server_sock = Xylem::Utils::Net::get_server_tcp_socket(TEST_PORT),
+   'Creating client TCP socket.');
+ok(my $client_sock = Xylem::Utils::Net::get_client_tcp_socket('localhost',
+                                                              TEST_PORT),
+   'Creating client TCP socket.');

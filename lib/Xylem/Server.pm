@@ -36,9 +36,8 @@ use IO::Socket::INET;
 
 use lib qw(lib);
 use Xylem::Debug;
+use Xylem::Utils::Net;
 use Xylem::Utils::Process;
-
-use constant XYLEM_SOCK_TIMEOUT_S => 31536000; # One calendar year.
 
 #------------------------------------------------------------------------------
 
@@ -67,12 +66,8 @@ sub run
   # (We're in the child process now.)
 
   # Create the server socket.
-  my $server_sock = IO::Socket::INET->new('LocalPort' => $port,
-                                          'Proto'     => 'tcp',
-                                          'Type'      => SOCK_STREAM,
-                                          'Listen'    => SOMAXCONN,
-                                          'Timeout'   => XYLEM_SOCK_TIMEOUT_S)
-    or die "Failed to create server socket on port $port : $@\n";
+  my $server_sock = Xylem::Utils::Net::get_server_tcp_socket($port)
+    or die "Failed to create server socket on port $port.";
 
   # Run the server.
   $class->_do_run($server_sock);

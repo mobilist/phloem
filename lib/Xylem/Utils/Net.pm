@@ -22,9 +22,12 @@ use strict;
 use warnings;
 use diagnostics;
 
+use IO::Socket::INET;
 use Net::Ping;
 
 use lib qw(lib);
+
+use constant XYLEM_SOCK_TIMEOUT_S => 31536000; # One calendar year.
 
 #------------------------------------------------------------------------------
 
@@ -46,6 +49,60 @@ sub ping
 
   # Can we see the host?
   return $sonar->ping($ip_address);
+}
+
+#------------------------------------------------------------------------------
+
+=item get_server_tcp_socket
+
+Get a client TCP socket for running a server on the specified port.
+
+A host can optionally be specified, as the second argument.
+
+=cut
+
+sub get_server_tcp_socket
+{
+  my $port = shift or die "No port specified.";
+  my $host = shift; # Optional second argument.
+
+  my %sock_options = ('LocalPort' => $port,
+                      'Proto'     => 'tcp',
+                      'Type'      => SOCK_STREAM,
+                      'Listen'    => SOMAXCONN,
+                      'Reuse'     => 1,
+                      'Timeout'   => XYLEM_SOCK_TIMEOUT_S);
+  $sock_options{'LocalAddr'} = $host if $host;
+  my $sock = IO::Socket::INET->new(%sock_options)
+    or die "Failed to create server socket on port $port : $@";
+
+  return $sock;
+}
+
+#------------------------------------------------------------------------------
+
+=item get_client_tcp_socket
+
+Get a client TCP socket for communicating with the specified host on the
+specified port.
+
+=cut
+
+sub get_client_tcp_socket
+{
+  my $host = shift or die "No host specified.";
+  my $port = shift or die "No port specified.";
+
+  my %sock_options = ('PeerAddr' => $host,
+                      'PeerPort' => $port,
+                      'Proto'    => 'tcp',
+                      'Type'     => SOCK_STREAM,
+                      'Reuse'     => 1,
+                      'Timeout'  => XYLEM_SOCK_TIMEOUT_S);
+  my $sock = IO::Socket::INET->new(%sock_options)
+    or die "Failed to create client socket for host $host on port $port: $@";
+
+  return $sock;
 }
 
 1;
