@@ -23,8 +23,6 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Fcntl qw(:flock); # Import LOCK_* constants.
-use FileHandle;
 use File::Temp;
 
 use lib qw(lib);
@@ -34,6 +32,7 @@ use base qw(Xylem::Dumper);
 use Phloem::Constants;
 use Phloem::Node;
 use Xylem::TimeStamp;
+use Xylem::Utils::File;
 
 #------------------------------------------------------------------------------
 
@@ -134,16 +133,8 @@ sub load
   # Create and return a new object if there is no saved registry data.
   return $class->new() unless (-f $registry_file);
 
-  my $registry_fh = FileHandle->new("< $registry_file")
-    or die "Failed to open registry file for reading: $!";
-  flock($registry_fh, LOCK_SH)
-    or die "Failed to acquire shared file lock: $!";
-
   # Read the registry file.
-  my $object_data = <$registry_fh>;
-
-  flock($registry_fh, LOCK_UN) or die "Failed to unlock file: $!";
-  $registry_fh->close() or die "Failed to close file: $!";
+  my $object_data = Xylem::Utils::File::read($registry_file);
 
   # Create and return a new object if there is no saved registry data.
   return $class->new() unless $object_data;
@@ -170,16 +161,8 @@ sub save
 
   my $registry_file = _registry_file();
 
-  my $registry_fh = FileHandle->new("> $registry_file")
-    or die "Failed to open registry file for writing: $!";
-  flock($registry_fh, LOCK_EX)
-    or die "Failed to acquire exclusive file lock: $!";
-
   # Write to the registry file.
-  print $registry_fh $self->data_dump();
-
-  flock($registry_fh, LOCK_UN) or die "Failed to unlock file: $!";
-  $registry_fh->close() or die "Failed to close file: $!";
+  Xylem::Utils::File::write($registry_file, $self->data_dump());
 }
 
 #------------------------------------------------------------------------------

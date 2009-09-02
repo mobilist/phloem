@@ -25,11 +25,9 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Fcntl qw(:flock :seek); # Import LOCK_* and SEEK_* constants.
-use FileHandle;
-
 use lib qw(lib);
 use Xylem::TimeStamp;
+use Xylem::Utils::File;
 
 #------------------------------------------------------------------------------
 
@@ -58,15 +56,7 @@ sub append
   # N.B. We need to use standard error in case we are called from a CGI script.
   print STDERR $message;
 
-  my $log_fh = FileHandle->new(">> $log_file")
-    or die "Failed to open log file for appending: $!";
-  flock($log_fh, LOCK_EX) or die "Failed to acquire exclusive file lock: $!";
-
-  # Append to the log.
-  print $log_fh $message;
-
-  flock($log_fh, LOCK_UN) or die "Failed to unlock file: $!";
-  $log_fh->close() or die "Failed to close file: $!";
+  Xylem::Utils::File::append_line($message, $log_file);
 }
 
 #------------------------------------------------------------------------------
@@ -81,16 +71,7 @@ sub clear
 {
   my $log_file = shift or die "No log file specified.";
 
-  my $log_fh = FileHandle->new("> $log_file")
-    or die "Failed to open log file for writing: $!";
-  flock($log_fh, LOCK_EX) or die "Failed to acquire exclusive file lock: $!";
-
-  # Clear the log.
-  $log_fh->seek(SEEK_SET, 0);
-  $log_fh->truncate(0);
-
-  flock($log_fh, LOCK_UN) or die "Failed to unlock file: $!";
-  $log_fh->close() or die "Failed to close file: $!";
+  Xylem::Utils::File::clear($log_file);
 }
 
 1;
