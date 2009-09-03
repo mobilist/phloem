@@ -191,21 +191,21 @@ higher than indicated below.
 
 =item Driver
 
-This process shuts down after starting the other sub-processes.
-
 =item Registry server
 
 =item Node advertiser
 
-This process shuts down after the first successful node registration.
+This is run as a thread inside the driver process. In any event, this shuts
+down after the first successful node registration.
 
 =item Component per role
 
-The publisher components shut down immediately.
+Components are run as thread inside the driver process. Publisher components
+shut down immediately.
 
 =back
 
-Total: 1--3, depending on number of subscriber roles.
+Total: 2.
 
 =head3 Non-root node
 
@@ -213,45 +213,32 @@ Total: 1--3, depending on number of subscriber roles.
 
 =item Driver
 
-This process shuts down after starting the other sub-processes.
-
 =item Node advertiser
+
+This is run as a thread inside the driver process.
 
 =item Component per role
 
-The publisher components shut down immediately.
+Components are run as thread inside the driver process. Publisher components
+shut down immediately.
 
 =back
 
-Total: 1--3, depending on number of subscriber roles.
+Total: 1.
 
 =head3 Summary
 
-Hmm. This isn't actually very lightweight after all. This requires some further
-work. There are options:
-
-=over 8
-
-=item Threading
-
-The node advertiser and role component processes could easily be run as
-concurrent threads.
-
-The slight concern here is that portability may be impacted upon.
-
-=item Main loop
-
-The "simple minded" solution is for the main driver process to enter a main
-loop, running the node advertiser and role component chores repeatedly in
-series.
-
-This might reduce scalability, but the resulting code simplification is
-appealing.
-
-=back
+This is about as lightweight as it could be.
 
 The registry server should probably always be run in a separate process, since
-its workload would appear to justify the overhead.
+its workload would appear to justify the overhead. That said, it may prove to
+be possible to run the server as a thread; further investigation is required
+here.
+
+Should the threading prove to have portability issues, there is an
+alternative. The main driver process could be re-written to enter a main
+loop, running the node advertiser and role component chores repeatedly in
+series.
 
 =head1 TODO
 

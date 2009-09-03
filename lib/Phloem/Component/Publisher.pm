@@ -59,7 +59,6 @@ sub _do_run
   die "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   # (We don't currently have anything to do.)
-  $self->shut_down();
 }
 
 1;

@@ -41,15 +41,12 @@ use lib qw(lib);
 use Phloem::Logger;
 use Phloem::Node;
 use Phloem::Role;
-use Xylem::Utils::Process;
 
 #------------------------------------------------------------------------------
 
 =item run
 
 Run the component.
-
-Spawns a child process, and returns the PID.
 
 =cut
 
@@ -58,38 +55,7 @@ sub run
   my $self = shift or die "No object reference.";
   die "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  # Spawn a new child process to run the component.
-  my $child_pid = Xylem::Utils::Process::spawn_child('NODAEMON' => 1);
-  return $child_pid if $child_pid;
-
-  # (We're in the child process now.)
   $self->_do_run();
-}
-
-#------------------------------------------------------------------------------
-
-=item shut_down
-
-Shut down the component.
-
-If an argument is supplied, it is used as the exit code. Otherwise, the
-component exits with a standard "success" exit code (0).
-
-=cut
-
-sub shut_down
-{
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $exit_code = shift // 0;
-
-  my $class = ref($self);
-
-  Phloem::Logger->append(
-    "$class component shutting down with exit code $exit_code.");
-
-  exit($exit_code);
 }
 
 #------------------------------------------------------------------------------

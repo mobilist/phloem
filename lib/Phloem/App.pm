@@ -23,6 +23,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use threads;
+
 use lib qw(lib);
 use Phloem::ComponentFactory;
 use Phloem::ConfigLoader;
@@ -62,24 +64,59 @@ sub run
   }
 
   # Start up a node advertiser for the node.
-  {
-    my $node_advertiser = Phloem::NodeAdvertiser->new('node' => $node)
-      or die "Failed to create node advertiser.";
-    my $child_pid = $node_advertiser->run()
-      or die "Failed to run node advertiser.";
-    Phloem::Logger->append(
-      "Node advertiser child process started as PID $child_pid.");
-  }
+  my $node_advertiser_thread = threads->create(\&_run_node_advertiser, $node);
 
   # For each role, start a component running.
-  my @roles = $node->roles();
-  foreach my $role (@roles) {
-    my $component = Phloem::ComponentFactory::create($node, $role)
-      or die "Failed to create component.";
-    my $child_pid = $component->run() or die "Failed to run component.";
-    Phloem::Logger->append(
-      "Component child process started as PID $child_pid.");
+  my @role_component_threads;
+  {
+    my @roles = $node->roles();
+    foreach my $role (@roles) {
+      my $role_component_thread =
+        threads->create(\&_run_role_component, $node, $role);
+      push(@role_component_threads, $role_component_thread);
+    }
   }
+
+  # Wait for all threads to terminate.
+  foreach my $role_component_thread (@role_component_threads) {
+    $role_component_thread->join();
+  }
+  $node_advertiser_thread->join();
+
+  exit(0);
+}
+
+#------------------------------------------------------------------------------
+sub _run_node_advertiser
+# Run a node advertiser for the specified node.
+{
+  my $node = shift or die "No node specified.";
+  die "Expected a node object." unless $node->isa('Phloem::Node');
+
+  my $node_advertiser = Phloem::NodeAdvertiser->new('node' => $node)
+    or die "Failed to create node advertiser.";
+
+  Phloem::Logger->append('Starting node advertiser.');
+
+  return $node_advertiser->run();
+}
+
+#------------------------------------------------------------------------------
+sub _run_role_component
+# Run a component for the specified node and role.
+{
+  my $node = shift or die "No node specified.";
+  die "Expected a node object." unless $node->isa('Phloem::Node');
+
+  my $role = shift or die "No role specified.";
+  die "Expected a role object." unless $role->isa('Phloem::Role');
+
+  my $component = Phloem::ComponentFactory::create($node, $role)
+    or die "Failed to create component.";
+
+  Phloem::Logger->append('Starting role component.');
+
+  return $component->run();
 }
 
 1;

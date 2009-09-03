@@ -36,15 +36,12 @@ use lib qw(lib);
 use Phloem::Constants;
 use Phloem::Logger;
 use Phloem::RegistryClient;
-use Xylem::Utils::Process;
 
 #------------------------------------------------------------------------------
 
 =item run
 
 Run the advertiser.
-
-Spawns a child process, and returns the PID.
 
 =cut
 
@@ -53,17 +50,10 @@ sub run
   my $self = shift or die "No object reference.";
   die "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  # Spawn a new child process to run the component.
-  my $child_pid = Xylem::Utils::Process::spawn_child('NODAEMON' => 1);
-  return $child_pid if $child_pid;
-
-  # (We're in the child process now.)
-
   # If the node is not a publisher, then we may as well shut down right now.
   unless ($self->node()->is_publisher()) {
-    Phloem::Logger->append(
-      'Node advertiser process shutting down: node does not publish.');
-    exit(0);
+    Phloem::Logger->append('Node advertiser ending: node does not publish.');
+    return;
   }
 
   # Sit in a loop, periodically registering our node with the "root" node.
@@ -72,9 +62,8 @@ sub run
       # If we are handling the root node, then we can shut down as soon as
       # we've registered it.
       if ($self->node()->is_root()) {
-        Phloem::Logger->append(
-          'Node advertiser process shutting down: registered root node.');
-        exit(0);
+        Phloem::Logger->append('Node advertiser ending: registered root.');
+        return;
       }
     } else {
       Phloem::Logger->append('Failed to register node.');
