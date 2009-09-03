@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE node SYSTEM "node.dtd">
+
+<!--
+
+ Copyright (C) 2009 Simon Dawson
+
+ This file is part of Phloem.
+
+    Phloem is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Phloem is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Phloem.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+<node id="testleaf" group="testers" is_root="0" host="10.127.10.4">
+
+  <description>
+    This is a dummy leaf node, for testing purposes.
+  </description>
+
+  <root host="10.127.10.4" port="9999" />
+
+  <rsync user="simond" />
+
+  <role type="publish" route="leaf2root">
+    <directory path="/home/simond/Projects/svn/phloem/testleaf/leaf2root/" />
+    <description>
+      Publish leaf2root content.
+    </description>
+  </role>
+
+  <role type="subscribe" route="root2leaf" active="1">
+    <directory path="/home/simond/Projects/svn/phloem/testleaf/root2leaf/" />
+    <filter type="group" value="^test\w+" rule="match" />
+    <description>
+      Subscribe to root2leaf content from matching publisher nodes.
+    </description>
+  </role>
+
+</node>
