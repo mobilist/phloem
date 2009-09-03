@@ -51,14 +51,14 @@
     <filter type="group" value="^egg\w+" rule="match" />
     <description>
       Subscribe to root2leaf content from matching publisher nodes.
-      Currently disabled.
     </description>
   </role>
 
   <role type="subscribe" route="leaf2root" active="0">
     <directory path="/another/path" />
     <description>
-      Subscribe to leaf2root content from the any publisher node.
+      Subscribe to leaf2root content from any publisher node.
+      Currently disabled.
     </description>
   </role>
 
