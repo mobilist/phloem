@@ -84,8 +84,8 @@ sub _run_rsync_command
   # it runs without error.
   my @caught_output;
   eval {
-    # N.B. We need to re-instate the default child process signal handler,
-    #      because the handler used by the server will mess things up for us.
+    # N.B. Re-instate the default child process signal handler,
+    #      because any non-default global handler will mess things up for us.
     local $SIG{'CHLD'} = 'DEFAULT';
     my $rsync_process_fh = FileHandle->new("$rsync_command 2>/dev/null |")
       or die "Failed to open pipe: $!";
