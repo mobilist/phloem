@@ -176,9 +176,92 @@ Phloem relies on rsync for its content transport duties. This greatly
 alleviates the burdon on the system, delegating all concerns of
 synchronisation, compression, authentication, etc.
 
+=head2 LIGHTWEIGHT?
+
+Is the system really lightweight, as intended? Let's examine the proces counts
+for a running (single node) system.
+
+Note that each subscriber component will run an rsync sub-process from time
+to time, in order to transfer data. So the actual process count may be one
+higher than indicated below.
+
+=head3 Root node
+
+=over 8
+
+=item Driver
+
+This process shuts down after starting the other sub-processes.
+
+=item Registry server
+
+=item Node advertiser
+
+This process shuts down after the first successful node registration.
+
+=item Component per role
+
+The publisher components shut down immediately.
+
+=back
+
+Total: 1--3, depending on number of subscriber roles.
+
+=head3 Non-root node
+
+=over 8
+
+=item Driver
+
+This process shuts down after starting the other sub-processes.
+
+=item Node advertiser
+
+=item Component per role
+
+The publisher components shut down immediately.
+
+=back
+
+Total: 1--3, depending on number of subscriber roles.
+
+=head3 Summary
+
+Hmm. This isn't actually very lightweight after all. This requires some further
+work. There are options:
+
+=over 8
+
+=item Threading
+
+The node advertiser and role component processes could easily be run as
+concurrent threads.
+
+The slight concern here is that portability may be impacted upon.
+
+=item Main loop
+
+The "simple minded" solution is for the main driver process to enter a main
+loop, running the node advertiser and role component chores repeatedly in
+series.
+
+This might reduce scalability, but the resulting code simplification is
+appealing.
+
+=back
+
+The registry server should probably always be run in a separate process, since
+its workload would appear to justify the overhead.
+
 =head1 TODO
 
 =over 8
+
+=item
+
+Reduce the number of processes that are required to run (see above). The
+current state of affairs violates the requirement that the system be
+"lightweight".
 
 =item
 

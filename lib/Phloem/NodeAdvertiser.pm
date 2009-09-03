@@ -68,11 +68,30 @@ sub run
 
   # Sit in a loop, periodically registering our node with the "root" node.
   while (1) {
-    Phloem::RegistryClient::register_node($self->node())
-      or die "Failed to register node with root node.";
+    if ($self->_register_node()) {
+      # If we are handling the root node, then we can shut down as soon as
+      # we've registered it.
+      if ($self->node()->is_root()) {
+        Phloem::Logger->append(
+          'Node advertiser process shutting down: registered root node.');
+        exit(0);
+      }
+    } else {
+      Phloem::Logger->append('Failed to register node.');
+    }
   } continue {
     sleep($Phloem::Constants::NODE_REGISTER_SLEEP_TIME_S);
   }
+}
+
+#------------------------------------------------------------------------------
+sub _register_node
+# Register out node with the "root" node.
+{
+  my $self = shift or die "No object reference.";
+  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  return Phloem::RegistryClient::register_node($self->node());
 }
 
 1;

@@ -37,6 +37,8 @@ use Phloem::Root;
 
 Register the specified node.
 
+Returns a true value on success; false otherwise.
+
 =cut
 
 sub register_node
@@ -62,8 +64,13 @@ sub register_node
 
   $sock->shutdown(2) or die "Failed to shut down client socket: $!";
 
-  Phloem::Logger->append("Registry server error: $input")
-    unless ($input =~ /^OK\s*$/o);
+  unless ($input =~ /^OK\s*$/o) {
+    Phloem::Logger->append("Registry server error: $input");
+    return;
+  }
+
+  # If we get here, then we've successfully registered the node.
+  return 1;
 }
 
 #------------------------------------------------------------------------------
