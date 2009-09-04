@@ -26,7 +26,7 @@ use diagnostics;
 use threads;
 
 use lib qw(lib);
-use Phloem::ComponentFactory;
+use Phloem::Component;
 use Phloem::ConfigLoader;
 use Phloem::Logger;
 use Phloem::NodeAdvertiser;
@@ -111,7 +111,7 @@ sub _run_role_component
   my $role = shift or die "No role specified.";
   die "Expected a role object." unless $role->isa('Phloem::Role');
 
-  my $component = Phloem::ComponentFactory::create($node, $role)
+  my $component = Phloem::Component->new('node' => $node, 'role' => $role)
     or die "Failed to create component.";
 
   Phloem::Logger->append('Starting role component.');

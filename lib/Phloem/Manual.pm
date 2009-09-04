@@ -200,8 +200,7 @@ down after the first successful node registration.
 
 =item Component per role
 
-Components are run as thread inside the driver process. Publisher components
-shut down immediately.
+Components are run as thread inside the driver process.
 
 =back
 
@@ -219,8 +218,7 @@ This is run as a thread inside the driver process.
 
 =item Component per role
 
-Components are run as thread inside the driver process. Publisher components
-shut down immediately.
+Components are run as thread inside the driver process.
 
 =back
 
