@@ -62,7 +62,7 @@ sub run
   my $port = shift or die "No port specified.";
   my $host = shift; # Optional second argument.
 
-  # Spawn a new child process to run the component.
+  # Spawn a new child process to run the server.
   my $child_pid = Xylem::Utils::Process::spawn_child('NODAEMON' => 1);
   return $child_pid if $child_pid;
 

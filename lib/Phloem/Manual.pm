@@ -181,9 +181,9 @@ synchronisation, compression, authentication, etc.
 Is the system really lightweight, as intended? Let's examine the proces counts
 for a running (single node) system.
 
-Note that each subscriber component will run an rsync sub-process from time
-to time, in order to transfer data. So the actual process count may be one
-higher than indicated below.
+Note that each subscriber will run an rsync sub-process from time to time, in
+order to transfer data. So the actual process count may be one higher than
+indicated below.
 
 =head3 Root node
 
@@ -197,10 +197,6 @@ higher than indicated below.
 
 This is run as a thread inside the driver process. In any event, this shuts
 down after the first successful node registration.
-
-=item Component per role
-
-Components are run as thread inside the driver process.
 
 =back
 
@@ -216,9 +212,9 @@ Total: 2.
 
 This is run as a thread inside the driver process.
 
-=item Component per role
+=item Subscribers
 
-Components are run as thread inside the driver process.
+Subscribers are run as thread inside the driver process.
 
 =back
 
@@ -235,8 +231,7 @@ here.
 
 Should the threading prove to have portability issues, there is an
 alternative. The main driver process could be re-written to enter a main
-loop, running the node advertiser and role component chores repeatedly in
-series.
+loop, running the node advertiser and subscriber chores repeatedly in series.
 
 =head1 TODO
 

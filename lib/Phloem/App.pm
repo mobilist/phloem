@@ -26,7 +26,7 @@ use diagnostics;
 use threads;
 
 use lib qw(lib);
-use Phloem::Component;
+use Phloem::Subscriber;
 use Phloem::ConfigLoader;
 use Phloem::Logger;
 use Phloem::NodeAdvertiser;
@@ -66,20 +66,20 @@ sub run
   # Start up a node advertiser for the node.
   my $node_advertiser_thread = threads->create(\&_run_node_advertiser, $node);
 
-  # For each subscribe role, start a component running.
-  my @role_component_threads;
+  # For each subscribe role, start a subscriber running.
+  my @subscriber_threads;
   {
     my @subscribe_roles = $node->subscribe_roles();
     foreach my $subscribe_role (@subscribe_roles) {
-      my $role_component_thread =
-        threads->create(\&_run_role_component, $node, $subscribe_role);
-      push(@role_component_threads, $role_component_thread);
+      my $subscriber_thread =
+        threads->create(\&_run_subscriber, $node, $subscribe_role);
+      push(@subscriber_threads, $subscriber_thread);
     }
   }
 
   # Wait for all threads to terminate.
-  foreach my $role_component_thread (@role_component_threads) {
-    $role_component_thread->join();
+  foreach my $subscriber_thread (@subscriber_threads) {
+    $subscriber_thread->join();
   }
   $node_advertiser_thread->join();
 
@@ -102,21 +102,22 @@ sub _run_node_advertiser
 }
 
 #------------------------------------------------------------------------------
-sub _run_role_component
-# Run a component for the specified node and role.
+sub _run_subscriber
+# Run a subscriber for the specified node and role.
 {
   my $node = shift or die "No node specified.";
   die "Expected a node object." unless $node->isa('Phloem::Node');
 
   my $role = shift or die "No role specified.";
-  die "Expected a role object." unless $role->isa('Phloem::Role');
+  die "Expected a subscribe role object."
+    unless $role->isa('Phloem::Role::Subscribe');
 
-  my $component = Phloem::Component->new('node' => $node, 'role' => $role)
-    or die "Failed to create component.";
+  my $subscriber = Phloem::Subscriber->new('node' => $node, 'role' => $role)
+    or die "Failed to create subscriber.";
 
-  Phloem::Logger->append('Starting role component.');
+  Phloem::Logger->append('Starting role subscriber.');
 
-  return $component->run();
+  return $subscriber->run();
 }
 
 1;

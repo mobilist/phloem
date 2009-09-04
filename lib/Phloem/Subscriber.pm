@@ -1,14 +1,14 @@
 =head1 NAME
 
-Phloem::Component
+Phloem::Subscriber
 
 =head1 DESCRIPTION
 
-A class for Phloem components.
+A subscriber for Phloem.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Component;>
+  C<use Phloem::Subscriber;>
 
 =head1 METHODS
 
@@ -28,14 +28,15 @@ Get the role.
 
 =cut
 
-package Phloem::Component;
+package Phloem::Subscriber;
 
 use strict;
 use warnings;
 use diagnostics;
 
-use Class::Struct 'Phloem::Component' => {'node' => 'Phloem::Node',
-                                          'role' => 'Phloem::Role'};
+use Class::Struct
+  'Phloem::Subscriber' => {'node' => 'Phloem::Node',
+                           'role' => 'Phloem::Role::Subscribe'};
 
 use lib qw(lib);
 use Phloem::ConfigLoader;
@@ -44,7 +45,7 @@ use Phloem::Debug;
 use Phloem::Logger;
 use Phloem::Node;
 use Phloem::RegistryClient;
-use Phloem::Role;
+use Phloem::Role::Subscribe;
 use Xylem::Rsync::Transfer;
 use Xylem::Utils::Net;
 
@@ -52,7 +53,7 @@ use Xylem::Utils::Net;
 
 =item run
 
-Run the component.
+Run the subscriber.
 
 =cut
 
@@ -165,7 +166,8 @@ sub _update_from_publisher
   die "Expected a node object." unless $node->isa('Phloem::Node');
 
   my $role = shift or die "No role specified.";
-  die "Expected a role object." unless $role->isa('Phloem::Role');
+  die "Expected a subscribe role object."
+    unless $role->isa('Phloem::Role::Subscribe');
 
   Phloem::Debug->message('About to update from publisher node.');
 
