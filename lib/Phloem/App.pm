@@ -66,13 +66,13 @@ sub run
   # Start up a node advertiser for the node.
   my $node_advertiser_thread = threads->create(\&_run_node_advertiser, $node);
 
-  # For each role, start a component running.
+  # For each subscribe role, start a component running.
   my @role_component_threads;
   {
-    my @roles = $node->roles();
-    foreach my $role (@roles) {
+    my @subscribe_roles = $node->subscribe_roles();
+    foreach my $subscribe_role (@subscribe_roles) {
       my $role_component_thread =
-        threads->create(\&_run_role_component, $node, $role);
+        threads->create(\&_run_role_component, $node, $subscribe_role);
       push(@role_component_threads, $role_component_thread);
     }
   }
