@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 23; # qw(no_plan);
+use Test::More tests => 25; # qw(no_plan);
 
 use Phloem::Role::Publish;
 use Phloem::Role::Subscribe;
@@ -71,6 +71,8 @@ ok(@roles == 1, 'Number of roles in node.');
 ok($node->is_publisher(), 'Node publishes.');
 ok(!$node->is_portal($role->route()), 'Node is not portal for route.');
 
+ok(!$node->subscribe_roles(), 'Should be no subscribe roles.');
+
 ok(my $role2 =
    Phloem::Role::Subscribe->new('route'       => $role->route(),
                                 'directory'   => $role->directory(),
@@ -79,4 +81,5 @@ ok(my $role2 =
 
 ok($node->add_role($role2), 'Adding role to node.');
 ok(@roles == 2, 'Number of roles in node.');
+ok($node->subscribe_roles() == 1, 'Should be one subscribe role.');
 ok($node->is_portal($role->route()), 'Node is portal for route.');

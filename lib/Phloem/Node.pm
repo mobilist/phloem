@@ -205,6 +205,31 @@ sub add_role
 
 #------------------------------------------------------------------------------
 
+=item subscribe_roles
+
+Get an array of the subscriber roles.
+
+=cut
+
+sub subscribe_roles
+{
+  my $self = shift or die "No object reference.";
+  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  my @subscribe_roles;
+  {
+    my @roles = $self->roles();
+    foreach my $current_role (@roles) {
+      push(@subscribe_roles, $current_role)
+        if $current_role->isa('Phloem::Role::Subscribe');
+    }
+  }
+
+  return @subscribe_roles;
+}
+
+#------------------------------------------------------------------------------
+
 =item is_publisher
 
 Does the node fulfil any publisher roles?
