@@ -26,11 +26,11 @@ use diagnostics;
 use threads;
 
 use lib qw(lib);
-use Phloem::Subscriber;
 use Phloem::ConfigLoader;
 use Phloem::Logger;
 use Phloem::NodeAdvertiser;
 use Phloem::RegistryServer;
+use Phloem::Subscriber;
 
 # This is the main --- indeed, the only --- version number for Phloem.
 our $VERSION = 0.01;
