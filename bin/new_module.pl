@@ -87,7 +87,7 @@ use POSIX qw(strftime);
             -sections => 'NAME|COPYRIGHT|LICENSE',
             -exitval  => 0) if $opt_l;
 
-  print <<'xxx_END_GPL_HEADER';
+  print STDERR <<'xxx_END_GPL_HEADER';
     new_module.pl Copyright (C) 2009 Simon Dawson
     This program comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it

@@ -2,15 +2,15 @@
 
 =head1 NAME
 
-phloem.pl
+find_dependencies.pl
 
 =head1 DESCRIPTION
 
-Driver script for Phloem.
+Find module dependencies.
 
 =head1 SYNOPSIS
 
-phloem.pl [options]
+find_dependencies.pl [options]
 
 =head1 OPTIONS
 
@@ -28,9 +28,9 @@ Print this manual page, and then exit.
 
 Print the license terms, and then exit.
 
-=item B<-d, --debug>
+=item B<-f, --filter>
 
-Enable debugging output.
+Filter out Xylem/Phloem module dependencies from the output.
 
 =back
 
@@ -65,21 +65,20 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Fcntl qw(:flock); # Import LOCK_* constants.
+use FileHandle;
+use File::Find;
 use Getopt::Long;
 use Pod::Usage;
-
-use lib qw(lib);
-use Phloem::App;
-use Phloem::Debug;
 
 #==============================================================================
 # Start of main program.
 {
-  my ($opt_h, $opt_m, $opt_l, $opt_d);
+  my ($opt_h, $opt_m, $opt_l, $opt_f);
   pod2usage(-verbose => 0) unless GetOptions('h|help'    => \$opt_h,
                                              'm|man'     => \$opt_m,
                                              'l|license' => \$opt_l,
-                                             'd|debug'   => \$opt_d);
+                                             'f|filter'  => \$opt_f);
   pod2usage(-verbose => 1) if $opt_h;
   pod2usage(-verbose => 2) if $opt_m;
   pod2usage(-verbose  => 99,
@@ -87,16 +86,38 @@ use Phloem::Debug;
             -exitval  => 0) if $opt_l;
 
   print STDERR <<'xxx_END_GPL_HEADER';
-    phloem.pl Copyright (C) 2009 Simon Dawson
+    find_dependencies.pl Copyright (C) 2009 Simon Dawson
     This program comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it
-    under certain conditions; type phloem.pl --license for details.
+    under certain conditions; type find_dependencies.pl --license for details.
 xxx_END_GPL_HEADER
 
-  # Enable/disable debug output, as appropriate.
-  Phloem::Debug->enabled($opt_d);
+  my %deps;
 
-  # Run the application.
-  Phloem::App::run();
+  my $wanted_sub = sub {
+    return unless (-f $File::Find::name);
+
+    my $fh = FileHandle->new("< $File::Find::name")
+      or die "Failed to open file for reading: $!";
+    flock($fh, LOCK_SH) or die "Failed to acquire shared file lock: $!";
+
+    while (my $current_line = <$fh>) {
+      if ($current_line =~ /^\s*(?:use|require) ([\w:]+)/o) {
+        $deps{$1} = 1;
+      }
+    }
+
+    flock($fh, LOCK_UN) or die "Failed to unlock file: $!";
+    $fh->close() or die "Failed to close file: $!";
+  };
+  find({'wanted' => $wanted_sub, 'no_chdir' => 1}, '.');
+
+  foreach my $key (sort(keys(%deps))) {
+    if ($opt_f) {
+      # Filter out Xylem/Phloem module dependencies from the output.
+      next if ($key =~ /^(?:Xylem|Phloem)/o);
+    }
+    print "$key\n";
+  }
 }
 # End of main program.
