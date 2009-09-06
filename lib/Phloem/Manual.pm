@@ -259,7 +259,13 @@ Integration testing.
 
 =item
 
-Make better use of the logger.
+See if the ugly layering of the Debug and Logger modules between Xylem and
+Phloem layers can be sorted out. This adds to the complexity of the code, and
+it would be great if it could be done away with altogether.
+
+=item
+
+Make better use of the logger. Also improve debug message usage.
 
 =item
 
