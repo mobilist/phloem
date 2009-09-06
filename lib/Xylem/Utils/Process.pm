@@ -48,6 +48,9 @@ sub spawn_child
   return $pid if $pid;
 
   # Change the file mode mask.
+  #
+  # N.B. This can fail on some systems --- notably Win32/Cygwin --- so we
+  #      warn rather than die.
   umask(0000) or warn "Failed to set file mode mask: $!";
 
   # Give the child a new process group and session.
