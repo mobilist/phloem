@@ -63,7 +63,7 @@ sub run
   my $host = shift; # Optional second argument.
 
   # Spawn a new child process to run the server.
-  my $child_pid = Xylem::Utils::Process::spawn_child('NODAEMON' => 1);
+  my $child_pid = Xylem::Utils::Process::spawn_child();
   return $child_pid if $child_pid;
 
   # (We're in the child process now.)

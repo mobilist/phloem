@@ -35,19 +35,10 @@ Spawn a new child process.
 
 Returns a non-zero PID to the parent process; the child gets a zero return.
 
-The default behaviour is to fully "daemonise" the child --- the working
-directory is changed to the root, and standard file descriptors are
-redirected to /dev/null. If this behaviour is not required, then a 'NODAEMON'
-flag argument should be provided by the caller.
-
 =cut
 
 sub spawn_child
 {
-  # Are we to fully "daemonise" the child?
-  my %args = @_;
-  my $NODAEMON = exists($args{'NODAEMON'}) && $args{'NODAEMON'};
-
   # Fork a new child process.
   defined(my $pid = fork) or die "Failed to fork: $!";
 
@@ -60,17 +51,14 @@ sub spawn_child
   # Give the child a new process group and session.
   setsid() or die "Failed to start a new session: $!";
 
-  unless ($NODAEMON) {
+  # Change the working directory to the root.
+  chdir('/') or die "Failed to move to / directory: $!";
 
-    # Change the working directory to the root.
-    chdir('/') or die "Failed to move to / directory: $!";
-
-    # Redirect file descriptors to /dev/null.
-    open(STDIN, '/dev/null') or die "Failed to open /dev/null for reading: $!";
-    open(STDOUT, '>/dev/null')
-      or die "Failed to open /dev/null for writing: $!";
-    open(STDERR, '>&STDOUT') or die "Failed to duplicate STDOUT to STDERR: $!";
-  }
+  # Redirect file descriptors to /dev/null.
+  open(STDIN, '/dev/null') or die "Failed to open /dev/null for reading: $!";
+  open(STDOUT, '>/dev/null')
+    or die "Failed to open /dev/null for writing: $!";
+  open(STDERR, '>&STDOUT') or die "Failed to duplicate STDOUT to STDERR: $!";
 
   return $pid;
 }

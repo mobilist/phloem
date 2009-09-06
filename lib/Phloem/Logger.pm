@@ -46,8 +46,8 @@ sub _do_initialise
 
   # Set the log file path.
   #
-  # N.B. We make sure to use an absolute file path here, in case this process
-  #      is ever daemonised.
+  # N.B. We make sure to use an absolute file path here, in case the process
+  #      doing the logging is ever daemonised.
   my $log_file_path = File::Spec->rel2abs($Phloem::Constants::LOG_FILE);
   Xylem::Logger::path($log_file_path);
 }
