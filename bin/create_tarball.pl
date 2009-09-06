@@ -2,15 +2,15 @@
 
 =head1 NAME
 
-find_dependencies.pl
+create_tarball.pl
 
 =head1 DESCRIPTION
 
-Find module dependencies.
+Create a distribution tarball.
 
 =head1 SYNOPSIS
 
-find_dependencies.pl [options]
+create_tarball.pl [options]
 
 =head1 OPTIONS
 
@@ -27,10 +27,6 @@ Print this manual page, and then exit.
 =item B<-l, --license>
 
 Print the license terms, and then exit.
-
-=item B<-f, --filter>
-
-Filter out Xylem/Phloem module dependencies from the output.
 
 =back
 
@@ -65,20 +61,20 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Fcntl qw(:flock); # Import LOCK_* constants.
-use FileHandle;
+use Archive::Tar;
 use File::Find;
 use Getopt::Long;
 use Pod::Usage;
 
+use constant ARCHIVE_FILE_NAME => 'phloem.tar.gz';
+
 #==============================================================================
 # Start of main program.
 {
-  my ($opt_h, $opt_m, $opt_l, $opt_f);
+  my ($opt_h, $opt_m, $opt_l);
   pod2usage(-verbose => 0) unless GetOptions('h|help'    => \$opt_h,
                                              'm|man'     => \$opt_m,
-                                             'l|license' => \$opt_l,
-                                             'f|filter'  => \$opt_f);
+                                             'l|license' => \$opt_l);
   pod2usage(-verbose => 1) if $opt_h;
   pod2usage(-verbose => 2) if $opt_m;
   pod2usage(-verbose  => 99,
@@ -86,13 +82,18 @@ use Pod::Usage;
             -exitval  => 0) if $opt_l;
 
   print STDERR <<'xxx_END_GPL_HEADER';
-    find_dependencies.pl Copyright (C) 2009 Simon Dawson
+    create_tarball.pl Copyright (C) 2009 Simon Dawson
     This program comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it
-    under certain conditions; type find_dependencies.pl --license for details.
+    under certain conditions; type create_tarball.pl --license for details.
 xxx_END_GPL_HEADER
 
-  my %deps;
+  die "Archive file already exists." if (-f ARCHIVE_FILE_NAME);
+
+  my $tar = Archive::Tar->new()
+    or die "Failed to create archive: " . $Archive::Tar::error;
+
+  my @files;
 
   my $wanted_sub = sub {
     return unless (-f $File::Find::name);
@@ -101,27 +102,17 @@ xxx_END_GPL_HEADER
 
     return if ($File::Find::name =~ /~$/o); # Skip backup files.
 
-    my $fh = FileHandle->new("< $File::Find::name")
-      or die "Failed to open file for reading: $!";
-    flock($fh, LOCK_SH) or die "Failed to acquire shared file lock: $!";
+    return if ($File::Find::name =~ /\.log$/o); # Skip log files.
 
-    while (my $current_line = <$fh>) {
-      if ($current_line =~ /^\s*(?:use|require) ([\w:]+)/o) {
-        $deps{$1} = 1;
-      }
-    }
-
-    flock($fh, LOCK_UN) or die "Failed to unlock file: $!";
-    $fh->close() or die "Failed to close file: $!";
+    push(@files, $File::Find::name);
   };
   find({'wanted' => $wanted_sub, 'no_chdir' => 1}, '.');
 
-  foreach my $key (sort(keys(%deps))) {
-    if ($opt_f) {
-      # Filter out Xylem/Phloem module dependencies from the output.
-      next if ($key =~ /^(?:Xylem|Phloem)/o);
-    }
-    print "$key\n";
-  }
+  $tar->add_files(@files) or die "Failed to add files: " . $tar->error();
+
+  $tar->write(ARCHIVE_FILE_NAME, COMPRESS_GZIP, 'phloem')
+    or die "Failed to write archive: " . $tar->error();
+
+  print "Created archive ", ARCHIVE_FILE_NAME, "\n";
 }
 # End of main program.
