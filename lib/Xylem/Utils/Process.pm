@@ -23,6 +23,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use File::Spec;
+
 use POSIX qw(setsid);
 
 use lib qw(lib);
@@ -52,12 +54,13 @@ sub spawn_child
   setsid() or die "Failed to start a new session: $!";
 
   # Change the working directory to the root.
-  chdir('/') or die "Failed to move to / directory: $!";
+  my $root_dir = File::Spec->rootdir();
+  chdir($root_dir) or die "Failed to move to $root_dir directory: $!";
 
-  # Redirect file descriptors to /dev/null.
-  open(STDIN, '/dev/null') or die "Failed to open /dev/null for reading: $!";
-  open(STDOUT, '>/dev/null')
-    or die "Failed to open /dev/null for writing: $!";
+  # Redirect file descriptors to the null device.
+  my $devnull = File::Spec->devnull();
+  open(STDIN, $devnull) or die "Failed to open $devnull for reading: $!";
+  open(STDOUT, ">$devnull") or die "Failed to open $devnull for writing: $!";
   open(STDERR, '>&STDOUT') or die "Failed to duplicate STDOUT to STDERR: $!";
 
   return $pid;

@@ -24,6 +24,7 @@ use diagnostics;
 
 use IPC::Cmd;
 use FileHandle;
+use File::Spec;
 use Time::HiRes;
 
 use lib qw(lib);
@@ -87,7 +88,8 @@ sub _run_rsync_command
     # N.B. Re-instate the default child process signal handler,
     #      because any non-default global handler will mess things up for us.
     local $SIG{'CHLD'} = 'DEFAULT';
-    my $rsync_process_fh = FileHandle->new("$rsync_command 2>/dev/null |")
+    my $devnull = File::Spec->devnull();
+    my $rsync_process_fh = FileHandle->new("$rsync_command 2>$devnull |")
       or die "Failed to open pipe: $!";
     while (my $current_line = $rsync_process_fh->getline()) {
       chomp($current_line);
