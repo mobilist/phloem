@@ -85,7 +85,7 @@ sub clear
 
 =item read
 
-Read the specified file.
+Read the specified file, slurping the entire contents into a scalar.
 
 =cut
 
