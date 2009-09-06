@@ -48,7 +48,7 @@ sub spawn_child
   return $pid if $pid;
 
   # Change the file mode mask.
-  umask(0000) or die "Failed to set file mode mask: $!";
+  umask(0000) or warn "Failed to set file mode mask: $!";
 
   # Give the child a new process group and session.
   setsid() or die "Failed to start a new session: $!";

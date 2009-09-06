@@ -97,6 +97,8 @@ xxx_END_GPL_HEADER
   my $wanted_sub = sub {
     return unless (-f $File::Find::name);
 
+    return if ($File::Find::name =~ /\b\.svn\b/o); # Skip subversion stuff.
+
     my $fh = FileHandle->new("< $File::Find::name")
       or die "Failed to open file for reading: $!";
     flock($fh, LOCK_SH) or die "Failed to acquire shared file lock: $!";
