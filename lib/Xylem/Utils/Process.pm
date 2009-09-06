@@ -37,12 +37,8 @@ Returns a non-zero PID to the parent process; the child gets a zero return.
 
 The default behaviour is to fully "daemonise" the child --- the working
 directory is changed to the root, and standard file descriptors are
-redirected to /dev/null. If this behaviour is not required, then a
-'NODAEMON' flag argument should be provided by the caller.
-
-When daemonising a process, it may be desirable NOT to change the working
-directory to the root. This can be achieved by setting the 'NOCHDIR' flag
-argument. Note that this will have no effect if the 'NODAEMON' flag is up.
+redirected to /dev/null. If this behaviour is not required, then a 'NODAEMON'
+flag argument should be provided by the caller.
 
 =cut
 
@@ -51,7 +47,6 @@ sub spawn_child
   # Are we to fully "daemonise" the child?
   my %args = @_;
   my $NODAEMON = exists($args{'NODAEMON'}) && $args{'NODAEMON'};
-  my $NOCHDIR = exists($args{'NOCHDIR'}) && $args{'NOCHDIR'};
 
   # Fork a new child process.
   defined(my $pid = fork) or die "Failed to fork: $!";
@@ -67,10 +62,8 @@ sub spawn_child
 
   unless ($NODAEMON) {
 
-    # Change the working directory to the root, if appropriate.
-    unless ($NOCHDIR) {
-      chdir('/') or die "Failed to move to / directory: $!";
-    }
+    # Change the working directory to the root.
+    chdir('/') or die "Failed to move to / directory: $!";
 
     # Redirect file descriptors to /dev/null.
     open(STDIN, '/dev/null') or die "Failed to open /dev/null for reading: $!";
