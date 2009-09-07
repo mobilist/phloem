@@ -68,33 +68,55 @@ sub data_load
 
   my $data = shift or die "No textual data specified.";
 
+  # Check the textual data for safety.
+  $class->_check_object_code($data);
+
+  # Okay, now we know that the code is safe. Let's eval it "for real".
+  #
+  # N.B. I have no idea why this is necessary --- it is likely to be a
+  #      namespace problem. The first reval should be sufficient...
+  #
+  #      At http://www.perlmonks.org/?node_id=151604, I found the following
+  #      note.
+  #
+  #        "Safe's restricted environment causes blessed objects to lose their
+  #        'magic' when passed back out. Here we simply re-bless the object to
+  #        correct that."
+  #
+  # However, re-blessing doesn't seem to quite do enough. (I submitted the
+  # re-blessing code in revision 145, but have since reverted to the eval.)
+  my $self = eval " $data ";
+  die "Failed to eval object data: $@" if $@;
+
+  return $self;
+}
+
+#------------------------------------------------------------------------------
+sub _check_object_code
+# Check the specified textual data --- ostensibly, object code --- for safety.
+#
+# N.B. This is a class method.
+{
+  my $class = shift or die "No class name specified.";
+  die "Expected an ordinary scalar." if ref($class);
+  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+
+  my $data = shift or die "No textual data specified.";
+
   # Evaluate the code in an opcode-safe compartment. Only the base-minimum of
   # opcodes are allowed. In particular, no system calls can be made. This is
   # necessary because the data could have come from anywhere, and cannot
   # necessarily be trusted.
-  my $self;
   my $compartment = Safe->new();
-  $compartment->share('$self');
   # N.B. You might think that the next line would be necessary. Indeed, for
   #      some classes it may be. But not for ours.
 #  $compartment->share_from($class, [qw(new)]);
   $compartment->permit_only(qw(:base_core bless padany anonhash anonlist));
   my $STRICT = 1;
-  $self = $compartment->reval($data, $STRICT);
-  die "Failed to reconstruct object: $@" if $@;
+  my $self = $compartment->reval($data, $STRICT) or
+    die "Failed to reconstruct object: $@";
   die "Failed to reconstruct object of class $class."
     unless (ref($self) eq $class);
-
-  # We have to re-bless now.
-  #
-  # At http://www.perlmonks.org/?node_id=151604, I found the following note.
-  #
-  #   "Safe's restricted environment causes blessed objects to lose their
-  #   'magic' when passed back out. Here we simply re-bless the object to
-  #   correct that."
-  $self = bless($self, $class);
-
-  return $self;
 }
 
 1;
