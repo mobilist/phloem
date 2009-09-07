@@ -8,13 +8,17 @@ The Phloem manual.
 
 =head1 SYNOPSIS
 
+This is just a manual, and does not contain any code. To read the manual, do
+
   C<perldoc Phloem::Manual>
 
-But then, if you're reading this, then you've probably figured that out...
+or
+
+  C<pod2text lib/Phloem/Manual.pm>
 
 =head1 INTRODUCTION
 
-Phloem is a free, open-source Content Delivery Network (Phloem) application,
+Phloem is a free, open-source Content Delivery Network (CDN) application,
 written in Perl.
 
 The aim is for the application to be lightweight and easy to configure. A
