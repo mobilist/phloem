@@ -8,7 +8,7 @@ Registry client for Phloem.
 
 =head1 SYNOPSIS
 
-  C<use base qwCDN::RegistryClient;>
+  C<use Phloem::RegistryClient;>
 
 =head1 METHODS
 
