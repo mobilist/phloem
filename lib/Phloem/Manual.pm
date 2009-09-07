@@ -86,6 +86,20 @@ NOT YET WRITTEN!
 
 A basic conceptual overview of Phloem follows.
 
+=head2 PURPOSE
+
+Phloem can serve many purposes. It should be suitable for almost any
+application in which content is to be delivered automatically around a
+network, from designated directories on each participating host.
+
+Phloem can be configured as a "classical" CDN, in which content flows
+automatically from the root node out to the leaves. Content can also be
+flowed in the opposite direction; this might be useful for auditing etc.
+
+Another application would be to allow a pair of hosts to share content
+automatically between nominated directories --- a "drop box" style file
+transfer system.
+
 =head2 NETWORK
 
 =over 8
@@ -102,8 +116,21 @@ acyclic graph, in other words.
 
 =item
 
-There are two "routes" from the "root" node to a leaf node: "leaf2root"
-and "root2leaf".
+There are two "routes" through the network:
+
+=over 8
+
+=item "root2leaf"
+
+This is the route flowing from the root node in the direction of the leaf
+nodes.
+
+=item "leaf2root"
+
+This is the route flowing from the leaf nodes in the direction of the root
+node.
+
+=back
 
 =item
 
