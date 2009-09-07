@@ -80,6 +80,29 @@ perl Build.PL
 
 =head1 CONFIGURATION
 
+=head2 Initial network configuration
+
+It is assumed that you have already configured a basic network of hosts on
+which you wish to deploy a Phloem CDN. This will include tasks such as
+configuring host names, assigning IP addresses, installing rsync and ssh,
+choosing or adding a user account for Phloem to use, generating RSA keys for
+ssh, creating directories for content etc.
+
+One important preliminary task is to choose a port number for the registry
+server which will be run on the Phloem "root" node. This port must be
+accessible as a service port from all other hosts in the Phloem network, and
+so any firewall(s) on the "root" host must be configured appropriately.
+
+With the network configuration complete, the main task is to configure Phloem
+on each host in the network. This is achieved by editing a single
+configuration file (in an XML format for each host.
+
+=head2 Root node configuration
+
+NOT YET WRITTEN!
+
+=head2 Leaf node configuration
+
 NOT YET WRITTEN!
 
 =head1 OVERVIEW
