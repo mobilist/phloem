@@ -85,12 +85,14 @@ sub data_load
   die "Failed to reconstruct object of class $class."
     unless (ref($self) eq $class);
 
-  # Okay, now we know that the code is safe. Let's eval it for real now.
+  # We have to re-bless now.
   #
-  # N.B. I have no idea why this is necessary --- it is likely to be a
-  #      namespace problem. The first reval should be sufficient...
-  $self = eval " $data ";
-  die "Failed to eval object data: $@" if $@;
+  # At http://www.perlmonks.org/?node_id=151604, I found the following note.
+  #
+  #   "Safe's restricted environment causes blessed objects to lose their
+  #   'magic' when passed back out. Here we simply re-bless the object to
+  #   correct that."
+  $self = bless($self, $class);
 
   return $self;
 }
