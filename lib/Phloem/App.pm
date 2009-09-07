@@ -55,35 +55,46 @@ sub run
   my $node = Phloem::ConfigLoader::load()
     or die "Failed to load configuration file.";
 
-  # If this is the root node, then start the registry server running.
-  if ($node->is_root()) {
-    my $child_pid = Phloem::RegistryServer->run($node->root())
-      or die "Failed to run registry server.";
-    Phloem::Logger->append(
-      "Registry server child process started as PID $child_pid.");
-  }
+  # Run a registry server for the node, if appropriate.
+  _run_registry_server($node);
 
   # Start up a node advertiser for the node.
-  my $node_advertiser_thread = threads->create(\&_run_node_advertiser, $node);
+  threads->create(\&_run_node_advertiser, $node)
+      or die "Failed to create node advertiser thread: $!";
 
   # For each subscribe role, start a subscriber running.
-  my @subscriber_threads;
   {
     my @subscribe_roles = $node->subscribe_roles();
     foreach my $subscribe_role (@subscribe_roles) {
-      my $subscriber_thread =
-        threads->create(\&_run_subscriber, $node, $subscribe_role);
-      push(@subscriber_threads, $subscriber_thread);
+      threads->create(\&_run_subscriber, $node, $subscribe_role)
+        or die "Failed to create subscriber thread: $!";
     }
   }
 
   # Wait for all threads to terminate.
-  foreach my $subscriber_thread (@subscriber_threads) {
-    $subscriber_thread->join();
+  foreach my $current_thread (threads->list()) {
+    $current_thread->join();
   }
-  $node_advertiser_thread->join();
+
+  Phloem::Logger->append('Shutting down.');
 
   exit(0);
+}
+
+#------------------------------------------------------------------------------
+sub _run_registry_server
+# Run a registry server for the specified node, if appropriate.
+{
+  my $node = shift or die "No node specified.";
+  die "Expected a node object." unless $node->isa('Phloem::Node');
+
+  # A registry server runs only on a root node.
+  return unless $node->is_root();
+
+  my $child_pid = Phloem::RegistryServer->run($node->root())
+    or die "Failed to run registry server.";
+  Phloem::Logger->append(
+    "Registry server child process started as PID $child_pid.");
 }
 
 #------------------------------------------------------------------------------
