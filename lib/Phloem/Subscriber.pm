@@ -185,7 +185,8 @@ sub _update_from_publisher
     Xylem::Rsync::Transfer::go($remote_ip_address,
                                $remote_user,
                                $remote_path,
-                               $local_path);
+                               $local_path,
+                               $Phloem::Constants::SSH_IDENTITY_FILE);
 
   # If we got an ordinary scalar, then it is an error string.
   die "ERROR: $rsync_stats" unless ref($rsync_stats);

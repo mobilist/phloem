@@ -9,7 +9,11 @@ A utility module for transfering data using rsync.
 =head1 SYNOPSIS
 
   C<use Xylem::Rsync::Transfer;>
-  C<Xylem::Rsync::Transfer::go(10.20.30.40, 'lemuelg', '/home/lemuelg/', '/');>
+  C<Xylem::Rsync::Transfer::go('10.20.30.40',>
+  C<                           'lemuelg',>
+  C<                           '/home/lemuelg/',>
+  C<                           '/',>
+  C<                           '~/.ssh/id_rsa');>
 
 =head1 METHODS
 
@@ -51,6 +55,7 @@ sub go
   my $remote_user = shift or die "No remote user specified.";
   my $remote_path = shift or die "No remote path specified.";
   my $local_path = shift or die "No local path specified.";
+  my $ssh_identity_file = shift or die "No SSH identity file specified.";
 
   # N.B. Make sure that there is a trailing forward slash on the source
   #      (remote) path.
@@ -65,7 +70,7 @@ sub go
 
   my $shell_opts =
     '--rsh=\'' .
-    'ssh -i etc/.ssh/id_rsa -q ' .
+    "ssh -i $ssh_identity_file -q " .
     '-o "CheckHostIP=no" -o "StrictHostKeyChecking=no"\'';
   my $rsync_command =
     'rsync --archive --compress --update --verbose --delete --stats ' .
