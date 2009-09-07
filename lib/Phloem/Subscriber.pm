@@ -47,6 +47,7 @@ use Phloem::Node;
 use Phloem::RegistryClient;
 use Phloem::Role::Publish;
 use Phloem::Role::Subscribe;
+use Xylem::Rsync::Stats;
 use Xylem::Rsync::Transfer;
 use Xylem::Utils::Net;
 
@@ -179,10 +180,28 @@ sub _update_from_publisher
   my $local_path = $self->role()->directory();
 
   # Transfer data from the remote host.
-  Xylem::Rsync::Transfer::go($remote_ip_address,
-                             $remote_user,
-                             $remote_path,
-                             $local_path) or die "Failed to transfer data.";
+  Phloem::Logger->append('Starting data transfer.');
+  my ($rsync_stats, $transfer_duration) =
+    Xylem::Rsync::Transfer::go($remote_ip_address,
+                               $remote_user,
+                               $remote_path,
+                               $local_path);
+
+  # If we got an ordinary scalar, then it is an error string.
+  die "ERROR: $rsync_stats" unless ref($rsync_stats);
+
+  # Log the transfer statistics.
+  Phloem::Logger->append("Finished data transfer in ${transfer_duration}s.");
+  my $transfer_details_string =
+    "Transferred " . $rsync_stats->num_files_transferred() .
+    " of " . $rsync_stats->num_files() .
+    " files. Sent " .
+    $rsync_stats->total_bytes_sent() .
+    " bytes, received " .
+    $rsync_stats->total_bytes_received() .
+    " bytes. Transfer rate: " . $rsync_stats->transfer_rate() .
+    " bytes/sec.";
+  Phloem::Logger->append($transfer_details_string);
 }
 
 1;

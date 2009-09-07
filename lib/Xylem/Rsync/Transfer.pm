@@ -9,6 +9,7 @@ A utility module for transfering data using rsync.
 =head1 SYNOPSIS
 
   C<use Xylem::Rsync::Transfer;>
+  C<Xylem::Rsync::Transfer::go(10.20.30.40, 'lemuelg', '/home/lemuelg/', '/');>
 
 =head1 METHODS
 
@@ -36,7 +37,10 @@ use Xylem::Rsync::Stats;
 
 Transfer data from a remote host.
 
-Returns true on success, and false otherwise.
+Returns transfer statistics on success; an error string otherwise.
+
+In array context, a second return value is given: a high-resolution transfer
+duration, in seconds.
 
 =cut
 
@@ -48,10 +52,16 @@ sub go
   my $remote_path = shift or die "No remote path specified.";
   my $local_path = shift or die "No local path specified.";
 
-  print "Starting data transfer.\n";
+  # N.B. Make sure that there is a trailing forward slash on the source
+  #      (remote) path.
+  #
+  #      This causes rsync to copy the *contents* of the directory, rather than
+  #      the directory itself, to the destination. Subtle, but important.
+  $remote_path =~ s/\/$//o; # Remove any existing trailing slash.
+  $remote_path .= '/'; # Add trailing slash.
+
   my $full_remote_path =
     $remote_user . '@' . $remote_ip_address . ':' . $remote_path;
-  $local_path =~ s/\/$//; # N.B. No trailing forward slash on local path.
 
   my $shell_opts =
     '--rsh=\'' .
@@ -72,6 +82,11 @@ sub go
 #------------------------------------------------------------------------------
 sub _run_rsync_command
 # Run the specified rsync command.
+#
+# Returns transfer statistics on success; an error string otherwise.
+# 
+# In array context, a second return value is given: a high-resolution transfer
+# duration, in seconds.
 {
   my $rsync_command = shift or die "No rsync command specified.";
 
@@ -97,10 +112,9 @@ sub _run_rsync_command
     }
     $rsync_process_fh->close() or die "Failed to close pipe: $!";
   };
-  if ($@) {
-    print "Data transfer failed: $@\n";
-    return;
-  }
+
+  # Return error details, if necessary.
+  return ("Data transfer failed: $@", undef) if $@;
 
   # Work out how long the transfer took.
   my $transfer_duration = Time::HiRes::time() - $start_time;
@@ -108,19 +122,7 @@ sub _run_rsync_command
   # Analyse the caught output to collect transfer statistics.
   my $rsync_stats = _get_rsync_stats(@caught_output);
 
-  print "Finished data transfer in ${transfer_duration}s.\n";
-
-  print
-    "Transferred " . $rsync_stats->num_files_transferred() .
-    " of " . $rsync_stats->num_files() .
-    " files. Sent " .
-    $rsync_stats->total_bytes_sent() .
-    " bytes, received " .
-    $rsync_stats->total_bytes_received() .
-    " bytes. Transfer rate: " . $rsync_stats->transfer_rate() .
-    " bytes/sec.\n";
-
-  return 1;
+  return ($rsync_stats, $transfer_duration);
 }
 
 #------------------------------------------------------------------------------
