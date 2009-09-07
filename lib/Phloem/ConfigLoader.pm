@@ -23,6 +23,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use File::Spec;
+
 use lib qw(lib);
 use Phloem::Constants;
 use Phloem::Filter;
@@ -91,6 +93,9 @@ sub _node_from_xml_data
     my $role_directory_path = $current_role->{'directory'}->[0]->{'path'};
     my $role_description = $current_role->{'description'}->[0] // '';
 
+    # Convert the directory path to an absolute path.
+    my $role_directory_path_abs = File::Spec->rel2abs($role_directory_path);
+
     unless ($role_active) {
       Phloem::Logger->append(
         "Role to $role_type on $role_route route is disabled.");
@@ -99,7 +104,7 @@ sub _node_from_xml_data
 
     # Create a role object.
     my %role_options = ('route'       => $role_route,
-                        'directory'   => $role_directory_path,
+                        'directory'   => $role_directory_path_abs,
                         'description' => $role_description);
     my $role_object;
     if ($role_type eq 'publish') {
