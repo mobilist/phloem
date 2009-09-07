@@ -22,7 +22,8 @@
 
 -->
 
-<node id="egg12345" group="eggs" is_root="1" host="localhost">
+<node id="egg12345" group="eggs" is_root="1" host="localhost"
+  register_frequency_s="15">
 
   <description>
     This is just a dummy node, for testing purposes.
@@ -46,7 +47,7 @@
     </description>
   </role>
 
-  <role type="subscribe" route="root2leaf">
+  <role type="subscribe" route="root2leaf" update_frequency_s="10">
     <directory path="/a/path" />
     <filter type="group" value="^egg\w+" rule="match" />
     <description>
@@ -54,7 +55,8 @@
     </description>
   </role>
 
-  <role type="subscribe" route="leaf2root" active="0">
+  <role type="subscribe" route="leaf2root" update_frequency_s="5"
+    active="0">
     <directory path="/another/path" />
     <description>
       Subscribe to leaf2root content from any publisher node.
