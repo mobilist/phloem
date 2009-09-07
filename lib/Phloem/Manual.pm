@@ -276,12 +276,6 @@ loop, running the node advertiser and subscriber chores repeatedly in series.
 
 =item
 
-Reduce the number of processes that are required to run (see above). The
-current state of affairs violates the requirement that the system be
-"lightweight".
-
-=item
-
 Expand unit test coverage.
 
 =item
