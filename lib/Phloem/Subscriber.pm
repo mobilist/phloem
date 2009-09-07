@@ -45,6 +45,7 @@ use Phloem::Debug;
 use Phloem::Logger;
 use Phloem::Node;
 use Phloem::RegistryClient;
+use Phloem::Role::Publish;
 use Phloem::Role::Subscribe;
 use Xylem::Rsync::Transfer;
 use Xylem::Utils::Net;
@@ -166,8 +167,8 @@ sub _update_from_publisher
   die "Expected a node object." unless $node->isa('Phloem::Node');
 
   my $role = shift or die "No role specified.";
-  die "Expected a subscribe role object."
-    unless $role->isa('Phloem::Role::Subscribe');
+  die "Expected a publish role object."
+    unless $role->isa('Phloem::Role::Publish');
 
   Phloem::Debug->message('About to update from publisher node.');
 
