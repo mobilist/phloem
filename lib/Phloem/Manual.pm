@@ -251,7 +251,7 @@ This is run as a thread inside the driver process.
 
 =item Subscribers
 
-Subscribers are run as thread inside the driver process.
+Subscribers are run as threads inside the driver process.
 
 =back
 
