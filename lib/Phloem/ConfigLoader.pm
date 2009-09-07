@@ -73,14 +73,19 @@ sub _node_from_xml_data
   my $node_group = $xml_data->{'group'};
   my $node_description = $xml_data->{'description'}->[0] // '';
   my $node_is_root = $xml_data->{'is_root'} // 0;
+  my $node_register_frequency_s =
+    $xml_data->{'register_frequency_s'} //
+    $Phloem::Constants::DEFAULT_NODE_REGISTER_FREQUENCY_S;
   my $node_host = $xml_data->{'host'} // 'localhost';
-  my $node_object = Phloem::Node->new('id'          => $node_id,
-                                      'group'       => $node_group,
-                                      'description' => $node_description,
-                                      'is_root'     => $node_is_root,
-                                      'host'        => $node_host,
-                                      'root'        => $root_object,
-                                      'rsync'       => $rsync_object)
+  my $node_object =
+    Phloem::Node->new('id'                   => $node_id,
+                      'group'                => $node_group,
+                      'description'          => $node_description,
+                      'is_root'              => $node_is_root,
+                      'register_frequency_s' => $node_register_frequency_s,
+                      'host'                 => $node_host,
+                      'root'                 => $root_object,
+                      'rsync'                => $rsync_object)
     or die "Failed to create node object.";
 
   # Add roles to the node.
@@ -120,6 +125,13 @@ sub _node_from_xml_data
                                          'rule'  => $role_filter_rule)
           or die "Failed to create filter object.";
         $role_options{'filter'} = $filter;
+      }
+
+      {
+        my $role_update_frequency_s =
+          $current_role->{'update_frequency_s'} //
+          $Phloem::Constants::DEFAULT_SUBSCRIBER_UPDATE_FREQUENCY_S;
+        $role_options{'update_frequency_s'} = $role_update_frequency_s;
       }
 
       $role_object = Phloem::Role::Subscribe->new(%role_options);

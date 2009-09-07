@@ -21,10 +21,11 @@
 
 <!ELEMENT node (root, rsync, role+, description?)>
 <!ATTLIST node
-  id       ID     #REQUIRED
-  group    CDATA  #IMPLIED
-  is_root  (0|1)  "0"
-  host     CDATA  #IMPLIED
+  id                    ID     #REQUIRED
+  group                 CDATA  #IMPLIED
+  is_root               (0|1)  "0"
+  host                  CDATA  #IMPLIED
+  register_frequency_s  CDATA  #IMPLIED
 >
 
 <!ELEMENT root EMPTY>
@@ -42,9 +43,10 @@
      filter... -->
 <!ELEMENT role (directory, filter?, description?)>
 <!ATTLIST role
-  type    (publish|subscribe)    #REQUIRED
-  route   (leaf2root|root2leaf)  #REQUIRED
-  active  (0|1)  "1"
+  type                (publish|subscribe)    #REQUIRED
+  route               (leaf2root|root2leaf)  #REQUIRED
+  active              (0|1)  "1"
+  update_frequency_s  CDATA  #IMPLIED
 >
 
 <!ELEMENT description (#PCDATA)>

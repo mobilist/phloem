@@ -64,6 +64,9 @@ sub run
   my $self = shift or die "No object reference.";
   die "Unexpected object class." unless $self->isa(__PACKAGE__);
 
+  # Get the update frequency (in seconds) for the role.
+  my $role_update_frequency_s = $self->role()->update_frequency_s();
+
   # Sit in a loop, periodically updating our content from the "best"
   # available publisher node and role.
   while (1) {
@@ -72,7 +75,7 @@ sub run
       $self->_choose_best_publisher() or next;
     $self->_update_from_publisher($best_publisher_node, $best_publisher_role);
   } continue {
-    sleep($Phloem::Constants::SUBSCRIBER_UPDATE_FREQUENCY_S);
+    sleep($role_update_frequency_s);
   }
 }
 

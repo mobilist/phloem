@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 25; # qw(no_plan);
+use Test::More tests => 26; # qw(no_plan);
 
 use Phloem::Role::Publish;
 use Phloem::Role::Subscribe;
@@ -36,14 +36,15 @@ my $root;
 ok(my $rsync = Phloem::Rsync->new('user' => 'A man'),
    'Creating rsync object.');
 my @roles;
-my %object_data = ('id'          => 'egg',
-                   'group'       => 'ova',
-                   'is_root'     => 1,
-                   'host'        => '0.0.0.0',
-                   'description' => 'This is the egg.',
-                   'root'        => $root,
-                   'rsync'       => $rsync,
-                   'roles'       => \@roles);
+my %object_data = ('id'                   => 'egg',
+                   'group'                => 'ova',
+                   'is_root'              => 1,
+                   'host'                 => '0.0.0.0',
+                   'register_frequency_s' => 30,
+                   'description'          => 'This is the egg.',
+                   'root'                 => $root,
+                   'rsync'                => $rsync,
+                   'roles'                => \@roles);
 
 ok(my $node = Phloem::Node->new(%object_data), 'Creating node object.');
 
@@ -52,6 +53,8 @@ ok($node->id() eq $object_data{'id'}, 'Accessor for id.');
 ok($node->group() eq $object_data{'group'}, 'Accessor for group.');
 ok($node->is_root() eq $object_data{'is_root'}, 'Accessor for is_root.');
 ok($node->host() eq $object_data{'host'}, 'Accessor for host.');
+ok($node->register_frequency_s() == $object_data{'register_frequency_s'},
+   'Accessor for register frequency in seconds.');
 ok($node->description() eq $object_data{'description'},
    'Accessor for description.');
 ok(!defined($node->root()), 'Accessor for root.');

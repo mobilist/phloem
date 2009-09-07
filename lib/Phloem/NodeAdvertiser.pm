@@ -33,7 +33,6 @@ use diagnostics;
 use Class::Struct 'Phloem::NodeAdvertiser' => {'node'  => 'Phloem::Node'};
 
 use lib qw(lib);
-use Phloem::Constants;
 use Phloem::Logger;
 use Phloem::RegistryClient;
 
@@ -56,6 +55,9 @@ sub run
     return;
   }
 
+  # Get the update frequency (in seconds) for the node.
+  my $node_register_frequency_s = $self->node()->register_frequency_s();
+
   # Sit in a loop, periodically registering our node with the "root" node.
   while (1) {
     if ($self->_register_node()) {
@@ -69,7 +71,7 @@ sub run
       Phloem::Logger->append('Failed to register node.');
     }
   } continue {
-    sleep($Phloem::Constants::NODE_REGISTER_FREQUENCY_S);
+    sleep($node_register_frequency_s);
   }
 }
 

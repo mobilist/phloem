@@ -43,14 +43,15 @@ sub new
   die "Expected an ordinary scalar." if ref($class);
   die "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  my $self = {'id'          => undef,
-              'group'       => '',
-              'is_root'     => 0,
-              'host'        => 'localhost',
-              'description' => '',
-              'root'        => undef,
-              'rsync'       => undef,
-              'roles'       => [],
+  my $self = {'id'                   => undef,
+              'group'                => '',
+              'is_root'              => 0,
+              'host'                 => 'localhost',
+              'register_frequency_s' => undef,
+              'description'          => '',
+              'root'                 => undef,
+              'rsync'                => undef,
+              'roles'                => [],
               @_};
   return bless($self, $class);
 }
@@ -117,6 +118,22 @@ sub host
   die "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'host'};
+}
+
+#------------------------------------------------------------------------------
+
+=item register_frequency_s
+
+Get the register frequency, in seconds.
+
+=cut
+
+sub register_frequency_s
+{
+  my $self = shift or die "No object reference.";
+  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  return $self->{'register_frequency_s'};
 }
 
 #------------------------------------------------------------------------------

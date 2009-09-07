@@ -280,12 +280,6 @@ Make the SSH identity file path configurable.
 
 =item
 
-Make the node registration and subscriber update frequencies configurable; the
-constants should just be used to provide defaults when the configuration XML is
-parsed.
-
-=item
-
 Expand unit test coverage.
 
 =item

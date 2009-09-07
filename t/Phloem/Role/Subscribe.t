@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 8; # qw(no_plan);
+use Test::More tests => 9; # qw(no_plan);
 
 use Phloem::Filter;
 
@@ -32,10 +32,11 @@ BEGIN { use_ok('Phloem::Role::Subscribe'); }
 ok(my $filter = Phloem::Filter->new('type'  => 'group',
                                     'value' => '^ova\d+',
                                     'rule'  => 'match'), 'Creating filter.');
-my %object_data = ('route'       => 'leaf2root',
-                   'directory'   => 'some/dir/path',
-                   'description' => 'Dummy role.',
-                   'filter'      => $filter);
+my %object_data = ('route'              => 'leaf2root',
+                   'directory'          => 'some/dir/path',
+                   'description'        => 'Dummy role.',
+                   'filter'             => $filter,
+                   'update_frequency_s' => 45);
 
 ok(my $role = Phloem::Role::Subscribe->new(%object_data),
    'Creating subscribe role object.');
@@ -46,3 +47,5 @@ ok($role->description() eq $object_data{'description'},
    'Accessor for description.');
 ok(my $filter2 = $role->filter(), 'Accessor for filter.');
 is_deeply($filter2, $filter, 'Filters should match.');
+ok($role->update_frequency_s() == $object_data{'update_frequency_s'},
+   'Accessor for update frequency in seconds.');

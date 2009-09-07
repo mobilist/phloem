@@ -42,7 +42,9 @@ sub new
   die "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   # Construct the base class part.
-  my $self = $class->SUPER::new('filter' => undef, @_);
+  my $self = $class->SUPER::new('filter'             => undef,
+                                'update_frequency_s' => undef,
+                                @_);
 
   # Re-bless into the subclass.
   return bless($self, $class);
@@ -62,6 +64,22 @@ sub filter
   die "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'filter'};
+}
+
+#------------------------------------------------------------------------------
+
+=item update_frequency_s
+
+Get the update frequency, in seconds.
+
+=cut
+
+sub update_frequency_s
+{
+  my $self = shift or die "No object reference.";
+  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  return $self->{'update_frequency_s'};
 }
 
 1;
