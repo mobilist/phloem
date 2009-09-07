@@ -72,7 +72,7 @@ sub run
       $self->_choose_best_publisher() or next;
     $self->_update_from_publisher($best_publisher_node, $best_publisher_role);
   } continue {
-    sleep($Phloem::Constants::SUBSCRIBER_UPDATE_SLEEP_TIME_S);
+    sleep($Phloem::Constants::SUBSCRIBER_UPDATE_FREQUENCY_S);
   }
 }
 

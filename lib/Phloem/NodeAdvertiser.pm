@@ -69,7 +69,7 @@ sub run
       Phloem::Logger->append('Failed to register node.');
     }
   } continue {
-    sleep($Phloem::Constants::NODE_REGISTER_SLEEP_TIME_S);
+    sleep($Phloem::Constants::NODE_REGISTER_FREQUENCY_S);
   }
 }
 
