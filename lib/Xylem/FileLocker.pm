@@ -97,7 +97,7 @@ sub new
 
 #------------------------------------------------------------------------------
 
-=item
+=item filehandle
 
 Get the locked filehandle.
 

@@ -136,17 +136,17 @@ transfer system.
 
 =over 8
 
-=item
+=item *
 
 The network is a hierarchical arrangement of nodes, precisely one of which
 is designated as the "root" node.
 
-=item
+=item *
 
 The network topology is tree-like, having no closed loops: a directed
 acyclic graph, in other words.
 
-=item
+=item *
 
 There are two "routes" through the network:
 
@@ -164,14 +164,14 @@ node.
 
 =back
 
-=item
+=item *
 
 Each node has a set of "roles", which is a subset of the following set.
 
   {publisher(root2leaf), publisher(leaf2root),
    subscriber(root2leaf), subscriber(leaf2root)}
 
-=item
+=item *
 
 Each node is manually assigned a unique identifier on the network.
 
@@ -181,7 +181,7 @@ Each node is manually assigned a unique identifier on the network.
 
 =over 8
 
-=item
+=item *
 
 Each publisher role nominates a base directory from which content will be
 delivered.
@@ -189,7 +189,7 @@ delivered.
 N.B. A given node may have 0, 1 or 2 such "outgoing" directories, depending
      on the precise details of the node configuration.
 
-=item
+=item *
 
 Each subscriber role nominates a base directry into which content will be
 retrieved.
@@ -197,12 +197,12 @@ retrieved.
 N.B. A given node may have 0, 1 or 2 such "incoming" directories, depending
      on the precise details of the node configuration.
 
-=item
+=item *
 
 For a given node having both publish and subscribe roles for a given route,
 the "incoming" and "outgoing" base directories may be the same.
 
-=item
+=item *
 
 Each publisher node is responsible for populating its own "outgoing"
 directory/directories. Note, however, that this does not prevent the node from
@@ -216,7 +216,7 @@ populate the root2leaf "outgoing" directory of the top-level node. Phloem is
 a pure Phloem system --- it makes no claim to content generation and/or
 management.
 
-=item
+=item *
 
 Each publisher node has a mechanism for "advertising" its services to
 subscribers on the relevant route through the network.
@@ -224,7 +224,7 @@ subscribers on the relevant route through the network.
 In practice, this mechanism amounts to a "registration" of the publisher
 node with the "root" node.
 
-=item
+=item *
 
 Each subscriber node has a mechanism for "querying" the network for
 publishers on the relevant route.
@@ -232,7 +232,7 @@ publishers on the relevant route.
 In practice, this mechanism amounts to a "querying" of a "registry" provided
 by the "root" node.
 
-=item
+=item *
 
 Each subscriber may define a "filter" to define "preferred" publisher node(s)
 from which to retreive its content on the relevant route.
@@ -306,33 +306,33 @@ loop, running the node advertiser and subscriber chores repeatedly in series.
 
 =over 8
 
-=item
+=item *
 
 Continue to work on the Phloem manual.
 
-=item
+=item *
 
 Expand unit test coverage.
 
-=item
+=item *
 
 Continue integration testing, and fix any bugs that are found.
 
-=item
+=item *
 
 See if the ugly layering of the Debug and Logger modules between Xylem and
 Phloem layers can be sorted out. This adds to the complexity of the code, and
 it would be great if it could be done away with altogether.
 
-=item
+=item *
 
 Make better use of the logger. Also improve debug message usage.
 
-=item
+=item *
 
 Add support for custom content update/transport mechanisms (via "plugins").
 
-=item
+=item *
 
 Write some more detailed module documentation.
 

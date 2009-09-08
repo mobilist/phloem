@@ -13,10 +13,6 @@ Logging utilities for Phloem.
   C<Phloem::Logger->clear();>
   C<Phloem::Logger->append('Hello teh world!');>
 
-=head1 METHODS
-
-=over 8
-
 =cut
 
 package Phloem::Logger;
@@ -53,8 +49,6 @@ sub _do_initialise
 }
 
 1;
-
-=back
 
 =head1 SEE ALSO
 
