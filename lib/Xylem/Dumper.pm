@@ -8,12 +8,12 @@ A base class for dumpable objects.
 
 =head1 SYNOPSIS
 
-package MyClass;
-use base qw(Xylem::Dumper);
-sub new { bless({}, __PACKAGE__); };
-package main;
-my $object = MyClass->new();
-print $object->data_dump();
+  package MyClass;
+  use base qw(Xylem::Dumper);
+  sub new { bless({}, __PACKAGE__); };
+  package main;
+  my $object = MyClass->new();
+  print $object->data_dump();
 
 =head1 METHODS
 

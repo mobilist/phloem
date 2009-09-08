@@ -8,7 +8,7 @@ An object to handle the registration of a node with the "root" node.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::NodeAdvertiser;>
+  use Phloem::NodeAdvertiser;
 
 =head1 METHODS
 

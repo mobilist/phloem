@@ -8,8 +8,8 @@ A registry of the nodes in a Phloem network.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Registry;>
-  C<my $registry = Phloem::Registry->load();>
+  use Phloem::Registry;
+  my $registry = Phloem::Registry->load();
 
 =head1 METHODS
 

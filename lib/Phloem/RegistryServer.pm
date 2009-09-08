@@ -8,7 +8,7 @@ Registry server for Phloem.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::RegistryServer;>
+  use Phloem::RegistryServer;
 
 =head1 METHODS
 

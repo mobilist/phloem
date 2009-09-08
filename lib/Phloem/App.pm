@@ -8,8 +8,8 @@ Phloem Content Delivery Network application.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::App;>
-  C<Phloem::App::run() or die "Failed to run Phloem.";>
+  use Phloem::App;
+  Phloem::App::run() or die "Failed to run Phloem.";
 
 =head1 METHODS
 

@@ -8,7 +8,7 @@ A subscribe role for a node in a Phloem network.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Role::Subscribe;>
+  use Phloem::Role::Subscribe;
 
 =head1 METHODS
 

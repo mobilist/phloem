@@ -8,17 +8,17 @@ Simple server for Xylem.
 
 =head1 SYNOPSIS
 
-use Xylem::Server;
-package DummyServer;
-use base qw(Xylem::Server);
-sub process_request {
-  my $class = shift or die "No class.";
-  my $sock = shift or die "No socket.";
-  print $sock 'Hello there client!';
-}
-package main;
-my $port = 9999;
-my $child_pid = DummyServer->run($port);
+  use Xylem::Server;
+  package DummyServer;
+  use base qw(Xylem::Server);
+  sub process_request {
+    my $class = shift or die "No class.";
+    my $sock = shift or die "No socket.";
+    print $sock 'Hello there client!';
+  }
+  package main;
+  my $port = 9999;
+  my $child_pid = DummyServer->run($port);
 
 =head1 METHODS
 

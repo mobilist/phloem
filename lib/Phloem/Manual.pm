@@ -10,11 +10,11 @@ The Phloem manual.
 
 This is just a manual, and does not contain any code. To read the manual, do
 
-  C<perldoc Phloem::Manual>
+  perldoc Phloem::Manual
 
 or
 
-  C<pod2text lib/Phloem/Manual.pm>
+  pod2text lib/Phloem/Manual.pm
 
 =head1 INTRODUCTION
 

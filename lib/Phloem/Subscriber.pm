@@ -8,7 +8,7 @@ A subscriber for Phloem.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Subscriber;>
+  use Phloem::Subscriber;
 
 =head1 METHODS
 

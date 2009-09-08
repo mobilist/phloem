@@ -8,12 +8,12 @@ A utility module for transfering data using rsync.
 
 =head1 SYNOPSIS
 
-use Xylem::Rsync::Transfer;
-Xylem::Rsync::Transfer::go('10.20.30.40',
-                           'lemuelg',
-                           '/home/lemuelg/',
-                           '/',
-                           '~/.ssh/id_rsa');
+  use Xylem::Rsync::Transfer;
+  Xylem::Rsync::Transfer::go('10.20.30.40',
+                             'lemuelg',
+                             '/home/lemuelg/',
+                             '/',
+                             '~/.ssh/id_rsa');
 
 =head1 METHODS
 

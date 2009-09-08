@@ -8,8 +8,8 @@ A utility module for loading the Phloem configuration settings from file.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::ConfigLoader;>
-  C<my $config = Phloem::ConfigLoader::load();>
+  use Phloem::ConfigLoader;
+  my $config = Phloem::ConfigLoader::load();
 
 =head1 METHODS
 

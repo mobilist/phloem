@@ -8,9 +8,9 @@ Debugging utilities for Phloem.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Debug;>
-  C<Phloem::Debug->enabled(1);>
-  C<Phloem::Debug->message('Hello teh world!');>
+  use Phloem::Debug;
+  Phloem::Debug->enabled(1);
+  Phloem::Debug->message('Hello teh world!');
 
 =head1 METHODS
 

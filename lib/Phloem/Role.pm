@@ -8,7 +8,7 @@ Base class for a role for a node in a Phloem network.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Role;>
+  use Phloem::Role;
 
 =head1 METHODS
 

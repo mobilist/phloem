@@ -8,7 +8,7 @@ A node in a Phloem network.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Node;>
+  use Phloem::Node;
 
 =head1 METHODS
 

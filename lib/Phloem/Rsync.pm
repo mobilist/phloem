@@ -8,7 +8,7 @@ Rsync parameters and settings for Phloem.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Rsync;>
+  use Phloem::Rsync;
 
 =head1 METHODS
 

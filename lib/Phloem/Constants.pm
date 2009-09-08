@@ -8,7 +8,7 @@ Constants for Phloem.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Constants;>
+  use Phloem::Constants;
 
 =head1 COPYRIGHT
 

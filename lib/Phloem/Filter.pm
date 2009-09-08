@@ -8,7 +8,7 @@ A node filter for Phloem.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Filter;>
+  use Phloem::Filter;
 
 =head1 METHODS
 

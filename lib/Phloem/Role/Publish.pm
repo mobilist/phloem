@@ -8,7 +8,7 @@ A publish role for a node in a Phloem network.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Role::Publish;>
+  use Phloem::Role::Publish;
 
 =head1 SEE ALSO
 

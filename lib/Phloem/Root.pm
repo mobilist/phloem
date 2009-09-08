@@ -8,7 +8,7 @@ Root node information for Phloem.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Root;>
+  use Phloem::Root;
 
 =head1 METHODS
 

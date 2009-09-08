@@ -8,10 +8,10 @@ Logging utilities for Phloem.
 
 =head1 SYNOPSIS
 
-  C<use Phloem::Logger;>
-  C<Phloem::Logger->initialise();>
-  C<Phloem::Logger->clear();>
-  C<Phloem::Logger->append('Hello teh world!');>
+  use Phloem::Logger;
+  Phloem::Logger->initialise();
+  Phloem::Logger->clear();
+  Phloem::Logger->append('Hello teh world!');
 
 =cut
 
