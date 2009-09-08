@@ -56,7 +56,7 @@ sub run
   my $host = $root->host();
   my $port = $root->port();
 
-  return $class->SUPER::run($port, $host);
+  return $class->SUPER::run($port, {'host' => $host});
 }
 
 #------------------------------------------------------------------------------

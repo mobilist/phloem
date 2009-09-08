@@ -45,9 +45,13 @@ use Xylem::Utils::Process;
 
 Run the server on the specified port.
 
-A host can optionally be specified, as the second argument.
+A hash reference of options can optionally be specified, as the second
+argument. This can include 'host' (server host name/address) and 'daemon'
+(flag --- seee below) entries.
 
-Spawns a child process, and returns the PID.
+By default, the server runs as a daemon: this method spawns a child process
+and returns the PID. However, if the 'daemon' flag is explicitly set down,
+then the server will be run in-process.
 
 N.B. This is a class method.
 
@@ -60,13 +64,24 @@ sub run
   die "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   my $port = shift or die "No port specified.";
-  my $host = shift; # Optional second argument.
+  my $args_hash = shift || {}; # Optional second argument.
+  die "Expected a hash reference." unless (ref($args_hash) eq 'HASH');
 
-  # Spawn a new child process to run the server.
-  my $child_pid = Xylem::Utils::Process::spawn_child();
-  return $child_pid if $child_pid;
+  # Did we get a host name/address?
+  my $host;
+  $host = $args_hash->{'host'} if exists($args_hash->{'host'});
 
-  # (We're in the child process now.)
+  # Is the daemon flag up? (The flag is up by default.)
+  my $daemon = 1;
+  $daemon = $args_hash->{'daemon'} if exists($args_hash->{'daemon'});
+
+  # Spawn a new child process to run the server, if running as a daemon.
+  if ($daemon) {
+    my $child_pid = Xylem::Utils::Process::spawn_child();
+    return $child_pid if $child_pid;
+  }
+
+  # (We're in the child process now, if we're running as a daemon.)
 
   # Create the server socket.
   my $server_sock = Xylem::Utils::Net::get_server_tcp_socket($port, $host)

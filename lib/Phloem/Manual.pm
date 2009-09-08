@@ -299,7 +299,7 @@ be possible to run the server as a thread; further investigation is required
 here.
 
 Should the threading prove to have portability issues, there is an
-alternative. The main driver process could be re-written to enter a main
+alternative: the main driver process could be re-written to enter a main
 loop, running the node advertiser and subscriber chores repeatedly in series.
 
 =head1 TODO
@@ -308,7 +308,7 @@ loop, running the node advertiser and subscriber chores repeatedly in series.
 
 =item
 
-Make the SSH identity file path configurable.
+Continue to work on the Phloem manual.
 
 =item
 
@@ -316,7 +316,7 @@ Expand unit test coverage.
 
 =item
 
-Integration testing.
+Continue integration testing, and fix any bugs that are found.
 
 =item
 
