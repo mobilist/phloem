@@ -172,7 +172,7 @@ A module.
 
 \=head1 SYNOPSIS
 
-  C<use $module_name;>
+use $module_name;
 
 \=head1 METHODS
 

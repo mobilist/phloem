@@ -8,13 +8,13 @@ Logging utilities for Xylem.
 
 =head1 SYNOPSIS
 
-  C<package MyLogger;>
-  C<use base qw(Xylem::Logger);>
-  C<sub _do_initialise { Xylem::Logger::path('eggs.log'); };>
-  C<package main;>
-  C<MyLogger->initialise();>
-  C<MyLogger->clear();>
-  C<MyLogger->append('Hello teh world!');>
+package MyLogger;
+use base qw(Xylem::Logger);
+sub _do_initialise { Xylem::Logger::path('eggs.log'); };
+package main;
+MyLogger->initialise();
+MyLogger->clear();
+MyLogger->append('Hello teh world!');
 
 =head1 METHODS
 

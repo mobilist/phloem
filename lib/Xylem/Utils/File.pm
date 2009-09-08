@@ -8,7 +8,7 @@ File utilities for Xylem.
 
 =head1 SYNOPSIS
 
-  C<use Xylem::Utils::File;>
+use Xylem::Utils::File;
 
 =head1 METHODS
 

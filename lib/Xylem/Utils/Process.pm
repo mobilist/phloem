@@ -8,8 +8,8 @@ Utilities for working with processes in Xylem.
 
 =head1 SYNOPSIS
 
-  C<use Xylem::Utils::Process;>
-  C<my $child_pid = Xylem::Utils::Process::spawn_child();>
+use Xylem::Utils::Process;
+my $child_pid = Xylem::Utils::Process::spawn_child();
 
 =head1 METHODS
 

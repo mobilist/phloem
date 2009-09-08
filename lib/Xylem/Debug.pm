@@ -8,9 +8,9 @@ Debugging utilities for Xylem.
 
 =head1 SYNOPSIS
 
-  C<use Xylem::Debug;>
-  C<Xylem::Debug->enabled(1);>
-  C<Xylem::Debug->message('Hello teh World.');>
+use Xylem::Debug;
+Xylem::Debug->enabled(1);
+Xylem::Debug->message('Hello teh World.');
 
 =head1 METHODS
 

@@ -8,8 +8,8 @@ Time-stamp functionality for Xylem.
 
 =head1 SYNOPSIS
 
-  C<use Xylem::TimeStamp;>
-  C<my $ts = Xylem::TimeStamp::create();>
+use Xylem::TimeStamp;
+my $ts = Xylem::TimeStamp::create();
 
 =head1 METHODS
 

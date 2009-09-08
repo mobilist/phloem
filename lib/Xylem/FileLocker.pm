@@ -17,15 +17,15 @@ or for concurrent logging to a single file, for example.
 
 =head1 SYNOPSIS
 
-  C<use Xylem::FileLocker;>
-  C<# Enter the scope within which a file is to be locked.>
-  C<{>
-  C<  my $locker = Xylem::FileLocker->new('/etc/passwd', 'a');>
-  C<  # Append to the locked file...>
-  C<  my $fh = $locker->filehandle();>
-  C<  print $fh "root:x:0:0:root:/root:/bin/bash\n";>
-  C<  # File is automatically unlocked when $locker goes out of scope.>
-  C<}>
+use Xylem::FileLocker;
+# Enter the scope within which a file is to be locked.
+{
+  my $locker = Xylem::FileLocker->new('/etc/passwd', 'a');
+  # Append to the locked file...
+  my $fh = $locker->filehandle();
+  print $fh "root:x:0:0:root:/root:/bin/bash\n";
+  # File is automatically unlocked when $locker goes out of scope.
+}
 
 =head1 METHODS
 

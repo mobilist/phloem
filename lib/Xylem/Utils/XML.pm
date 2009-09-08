@@ -8,7 +8,9 @@ Utilities for working with XML in Xylem.
 
 =head1 SYNOPSIS
 
-  C<use Xylem::Utils::XML;>
+use Xylem::Utils::XML;
+my $xml_data = Xylem::Utils::XML::parse('file.xml')
+  or die "Failed to parse XML.";
 
 =head1 METHODS
 

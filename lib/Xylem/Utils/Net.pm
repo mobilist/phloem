@@ -8,7 +8,7 @@ Network utilities for Xylem.
 
 =head1 SYNOPSIS
 
-  C<use Xylem::Utils::Net;>
+use Xylem::Utils::Net;
 
 =head1 METHODS
 

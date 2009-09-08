@@ -8,7 +8,7 @@ Statistics for an rsync data transfer.
 
 =head1 SYNOPSIS
 
-  C<use Xylem::Rsync::Stats;>
+use Xylem::Rsync::Stats;
 
 =head1 METHODS
 
