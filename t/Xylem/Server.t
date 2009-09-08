@@ -23,8 +23,10 @@ use strict;
 use warnings;
 use diagnostics;
 
+use threads;
+
 use IO::Socket::INET;
-use Test::More tests => 6; # qw(no_plan);
+use Test::More tests => 9; # qw(no_plan);
 
 use constant TEST_PORT => 9999;
 use constant TEST_MESSAGE => "Hello teh World!\r\n";;
@@ -56,3 +58,11 @@ ok(my $sock = IO::Socket::INET->new('PeerAddr' => 'localhost',
 ok(my $data = <$sock>, 'Reading data from the server.');
 is($data, TEST_MESSAGE, 'Server sent correct data.');
 ok(1, 'Still running, after the server has shut down.');
+ok($sock->shutdown(2), 'Shutting down client socket.');
+diag('Attempting to run an in-process (threaded) server.');
+ok(my $thr = threads->create(
+     sub { DummyServer->run(TEST_PORT, {'DAEMON' => 0}); threads->detach(); }),
+   'Creating server thread.');
+diag('Waiting for a while before killing the server thread.');
+sleep(2);
+ok($thr->kill('KILL'), 'Killing server thread.');

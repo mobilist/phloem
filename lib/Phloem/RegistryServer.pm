@@ -39,11 +39,11 @@ use Phloem::Root;
 Run the server on the specified root.
 
 A hash reference of options can optionally be specified, as the second
-argument. This can include the 'host' (server host name/address) and 'daemon'
+argument. This can include the 'HOST' (server host name/address) and 'DAEMON'
 (flag --- seee below) entries.
 
 By default, the server runs as a daemon: this method spawns a child process
-and returns the PID. However, if the 'daemon' flag is explicitly set down,
+and returns the PID. However, if the 'DAEMON' flag is explicitly set down,
 then the server will be run in-process.
 
 N.B. This is a class method.
@@ -64,7 +64,7 @@ sub run
 
   my $port = $root->port();
 
-  $args_hash->{'host'} = $root->host();
+  $args_hash->{'HOST'} = $root->host();
 
   return $class->SUPER::run($port, $args_hash);
 }
