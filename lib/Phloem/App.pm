@@ -62,7 +62,10 @@ sub run
     or die "Failed to load configuration file.";
 
   # Run a registry server for the node, if appropriate.
-  _run_registry_server($node);
+  if ($node->is_root()) {
+    threads->create(\&_run_registry_server, $node)
+      or die "Failed to create registry server thread: $!";
+  }
 
   # Start up a node advertiser for the node.
   threads->create(\&_run_node_advertiser, $node)
@@ -89,31 +92,17 @@ sub run
 
 #------------------------------------------------------------------------------
 sub _run_registry_server
-# Run a registry server for the specified node, if appropriate.
+# Run a registry server for the specified node.
 {
   my $node = shift or die "No node specified.";
   die "Expected a node object." unless $node->isa('Phloem::Node');
 
-  # A registry server runs only on a root node.
-  return unless $node->is_root();
+  Phloem::Logger->append('Starting registry server.');
 
-  # Legacy code to enable the registry server to be run as a separate process.
-  #
-  # N.B. This legacy code should be removed as soon as integration testing has
-  #      confirmed that running an in-process registry server is successful.
-  use constant RUN_REGISTRY_SERVER_AS_PROCESS => 0;
-  if (RUN_REGISTRY_SERVER_AS_PROCESS) {
-    my $child_pid = Phloem::RegistryServer->run($node->root())
-      or die "Failed to run registry server.";
-    Phloem::Logger->append(
-      "Registry server child process started as PID $child_pid.");
-  } else {
-    Phloem::Logger->append('Starting registry server.');
-    threads->create(
-      sub { Phloem::RegistryServer->run($node->root(), {'DAEMON' => 0});
-            threads->detach(); })
-      or die "Failed to create registry server thread: $!";
-  }
+  Phloem::RegistryServer->run($node->root(), {'DAEMON' => 0});
+
+  # The registry server thread detaches itself now.
+  threads->detach();
 }
 
 #------------------------------------------------------------------------------
