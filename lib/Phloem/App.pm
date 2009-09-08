@@ -9,7 +9,7 @@ Phloem Content Delivery Network application.
 =head1 SYNOPSIS
 
   use Phloem::App;
-  Phloem::App::run() or die "Failed to run Phloem.";
+  Phloem::App->run() or die "Failed to run Phloem.";
 
 =head1 METHODS
 
@@ -41,10 +41,16 @@ our $VERSION = 0.01;
 
 Run the application.
 
+N.B. This is a class method.
+
 =cut
 
 sub run
 {
+  my $class = shift or die "No class name specified.";
+  die "Expected an ordinary scalar." if ref($class);
+  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+
   # Initialise the logging subsystem, clear the log file, and write a
   # start-up message.
   Phloem::Logger->initialise();

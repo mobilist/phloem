@@ -97,6 +97,6 @@ xxx_END_GPL_HEADER
   Phloem::Debug->enabled($opt_d);
 
   # Run the application.
-  Phloem::App::run();
+  Phloem::App->run();
 }
 # End of main program.
