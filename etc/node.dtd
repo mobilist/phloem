@@ -36,7 +36,8 @@
 
 <!ELEMENT rsync EMPTY>
 <!ATTLIST rsync
-  user  CDATA  #REQUIRED
+  user         CDATA  #REQUIRED
+  ssh_id_file  CDATA  #REQUIRED
 >
 
 <!-- N.B. Ideally, only roles of type subscribe should be allowed to define a

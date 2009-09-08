@@ -40,7 +40,7 @@ sub new
 
   my $self = {'route'       => undef,
               'directory'   => undef,
-              'description' => '',
+              'description' => undef,
               @_};
   return bless($self, $class);
 }

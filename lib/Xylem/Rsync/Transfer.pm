@@ -55,7 +55,7 @@ sub go
   my $remote_user = shift or die "No remote user specified.";
   my $remote_path = shift or die "No remote path specified.";
   my $local_path = shift or die "No local path specified.";
-  my $ssh_identity_file = shift or die "No SSH identity file specified.";
+  my $ssh_id_file = shift or die "No SSH identity file specified.";
 
   # N.B. Make sure that there is a trailing forward slash on the source
   #      (remote) path.
@@ -70,7 +70,7 @@ sub go
 
   my $shell_opts =
     '--rsh=\'' .
-    "ssh -i $ssh_identity_file -q " .
+    "ssh -i $ssh_id_file -q " .
     '-o "CheckHostIP=no" -o "StrictHostKeyChecking=no"\'';
   my $rsync_command =
     'rsync --archive --compress --update --verbose --delete --stats ' .

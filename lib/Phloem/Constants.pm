@@ -41,7 +41,7 @@ package Phloem::Constants;
 
 our $LOG_FILE                              = 'phloem.log';
 our $CONFIG_FILE                           = 'etc/node.xml';
-our $SSH_IDENTITY_FILE                     = 'etc/.ssh/id_rsa';
+our $SSH_ID_FILE                           = 'etc/.ssh/id_rsa';
 
 our $REGISTRY_SERVER_TIMEOUT_S             = 30;
 

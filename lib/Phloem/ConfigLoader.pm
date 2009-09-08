@@ -70,7 +70,7 @@ sub _node_from_xml_data
 
   # Create a node object.
   my $node_id = $xml_data->{'id'} or die "No node ID.";
-  my $node_group = $xml_data->{'group'};
+  my $node_group = $xml_data->{'group'} // '';
   my $node_description = $xml_data->{'description'}->[0] // '';
   my $node_is_root = $xml_data->{'is_root'} // 0;
   my $node_register_frequency_s =
@@ -92,10 +92,12 @@ sub _node_from_xml_data
   my $roles = $xml_data->{'role'};
  ROLE:
   foreach my $current_role (@$roles) {
-    my $role_type = $current_role->{'type'};
-    my $role_route = $current_role->{'route'};
+    my $role_type = $current_role->{'type'} or die "No role type.";
+    my $role_route = $current_role->{'route'} or die "No role route.";
     my $role_active = $current_role->{'active'} // 1;
-    my $role_directory_path = $current_role->{'directory'}->[0]->{'path'};
+    my $role_directory = $current_role->{'directory'} or die "No directory.";
+    my $role_directory_path =
+      $role_directory->[0]->{'path'} or die "No directory path.";
     my $role_description = $current_role->{'description'}->[0] // '';
 
     # Convert the directory path to an absolute path.
@@ -117,8 +119,10 @@ sub _node_from_xml_data
     } else {
       my $role_filter = $current_role->{'filter'};
       if ($role_filter) {
-        my $role_filter_type = $role_filter->[0]->{'type'};
-        my $role_filter_value = $role_filter->[0]->{'value'};
+        my $role_filter_type = $role_filter->[0]->{'type'}
+          or die "No filter type.";
+        my $role_filter_value = $role_filter->[0]->{'value'}
+          or die "No filter value.";
         my $role_filter_rule = $role_filter->[0]->{'rule'} // 'exact';
         my $filter = Phloem::Filter->new('type'  => $role_filter_type,
                                          'value' => $role_filter_value,
@@ -156,8 +160,8 @@ sub _root_from_xml_data
   {
     my $node_root = $xml_data->{'root'} or die "No root.";
     {
-      my $node_root_host = $node_root->[0]->{'host'};
-      my $node_root_port = $node_root->[0]->{'port'};
+      my $node_root_host = $node_root->[0]->{'host'} or die "No root host.";
+      my $node_root_port = $node_root->[0]->{'port'} or die "No root port.";
       $root_object = Phloem::Root->new('host' => $node_root_host,
                                        'port' => $node_root_port)
         or die "Failed to create root object.";
@@ -178,8 +182,12 @@ sub _rsync_from_xml_data
   {
     my $node_rsync = $xml_data->{'rsync'} or die "No rsync.";
     {
-      my $node_rsync_user = $node_rsync->[0]->{'user'};
-      $rsync_object = Phloem::Rsync->new('user' => $node_rsync_user)
+      my $node_rsync_user = $node_rsync->[0]->{'user'} or die "No rsync user.";
+      my $node_rsync_ssh_id_file =
+        $node_rsync->[0]->{'ssh_id_file'} or die "No SSH identity file.";
+      $rsync_object =
+        Phloem::Rsync->new('user'        => $node_rsync_user,
+                           'ssh_id_file' => $node_rsync_ssh_id_file)
         or die "Failed to create rsync object.";
     }
   }

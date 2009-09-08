@@ -31,7 +31,7 @@
 
   <root host="localhost" port="9999" />
 
-  <rsync user="simond" />
+  <rsync user="simond" ssh_id_file="etc/.ssh/id_rsa" />
 
   <role type="publish" route="root2leaf">
     <directory path="/some/path" />

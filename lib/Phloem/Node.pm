@@ -44,11 +44,11 @@ sub new
   die "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   my $self = {'id'                   => undef,
-              'group'                => '',
+              'group'                => undef,
               'is_root'              => 0,
-              'host'                 => 'localhost',
+              'host'                 => undef,
               'register_frequency_s' => undef,
-              'description'          => '',
+              'description'          => undef,
               'root'                 => undef,
               'rsync'                => undef,
               'roles'                => [],
