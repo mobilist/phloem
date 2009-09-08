@@ -140,7 +140,7 @@ sub _get_socket
   my $host = $root->host();
   my $port = $root->port();
 
-  Phloem::Logger->append("Creating client socket on ${host}:${port}.");
+  Phloem::Debug->message("Creating client socket on ${host}:${port}.");
 
   # Create the server socket.
   my $sock;

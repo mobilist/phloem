@@ -97,10 +97,23 @@ sub _run_registry_server
   # A registry server runs only on a root node.
   return unless $node->is_root();
 
-  my $child_pid = Phloem::RegistryServer->run($node->root())
-    or die "Failed to run registry server.";
-  Phloem::Logger->append(
-    "Registry server child process started as PID $child_pid.");
+  # Legacy code to enable the registry server to be run as a separate process.
+  #
+  # N.B. This legacy code should be removed as soon as integration testing has
+  #      confirmed that running an in-process registry server is successful.
+  use constant RUN_REGISTRY_SERVER_AS_PROCESS => 0;
+  if (RUN_REGISTRY_SERVER_AS_PROCESS) {
+    my $child_pid = Phloem::RegistryServer->run($node->root())
+      or die "Failed to run registry server.";
+    Phloem::Logger->append(
+      "Registry server child process started as PID $child_pid.");
+  } else {
+    Phloem::Logger->append('Starting registry server.');
+    threads->create(
+      sub { Phloem::RegistryServer->run($node->root(), {'DAEMON' => 0});
+            threads->detach(); })
+      or die "Failed to create registry server thread: $!";
+  }
 }
 
 #------------------------------------------------------------------------------

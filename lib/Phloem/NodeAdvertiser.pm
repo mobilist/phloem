@@ -60,6 +60,7 @@ sub run
 
   # Sit in a loop, periodically registering our node with the "root" node.
   while (1) {
+    Phloem::Logger->append('Registering this node with the root.');
     if ($self->_register_node()) {
       # If we are handling the root node, then we can shut down as soon as
       # we've registered it.
