@@ -38,7 +38,13 @@ use Phloem::Root;
 
 Run the server on the specified root.
 
-Spawns a child process, and returns the PID.
+A hash reference of options can optionally be specified, as the second
+argument. This can include the 'host' (server host name/address) and 'daemon'
+(flag --- seee below) entries.
+
+By default, the server runs as a daemon: this method spawns a child process
+and returns the PID. However, if the 'daemon' flag is explicitly set down,
+then the server will be run in-process.
 
 N.B. This is a class method.
 
@@ -53,10 +59,14 @@ sub run
   my $root = shift or die "No root specified.";
   die "Expected a root object." unless $root->isa('Phloem::Root');
 
-  my $host = $root->host();
+  my $args_hash = shift || {}; # Optional second argument.
+  die "Expected a hash reference." unless (ref($args_hash) eq 'HASH');
+
   my $port = $root->port();
 
-  return $class->SUPER::run($port, {'host' => $host});
+  $args_hash->{'host'} = $root->host();
+
+  return $class->SUPER::run($port, $args_hash);
 }
 
 #------------------------------------------------------------------------------

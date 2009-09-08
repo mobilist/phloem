@@ -192,7 +192,10 @@ sub _update_from_publisher
                                $ssh_id_file);
 
   # If we got an ordinary scalar, then it is an error string.
-  die "ERROR: $rsync_stats" unless ref($rsync_stats);
+  unless (ref($rsync_stats)) {
+    Phloem::Logger->append("ERROR: $rsync_stats");
+    return;
+  }
 
   # Log the transfer statistics.
   Phloem::Logger->append("Finished data transfer in ${transfer_duration}s.");
