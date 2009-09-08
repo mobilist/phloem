@@ -85,14 +85,25 @@ use Pod::Usage;
     under certain conditions; type Build.PL --license for details.
 xxx_END_GPL_HEADER
 
-  my $builder =
-    Module::Build->new('module_name' => 'Phloem::App',
-                       'dist_author' => 'Simon Dawson <spdawson@gmail.com>',
-                       'license'     => 'gpl',
-                       'requires'    => {'perl'        => '5.10.0',
-                                         'XML::Simple' => 0,
-					 'App::Prove'  => 0},
-                       'recursive_test_files' => 1);
+  # N.B. We're a bit sneaky here: there is no version number in Phloem::Manual.
+  #      (Indeed, the only version number anywhere in Phloem is the one
+  #      specified in here.)
+  #
+  #      We [ab]use the 'dist_version_from' parameter to tell the build script
+  #      where to get the information from for the README file.
+  my $builder = Module::Build->new(
+    'dist_name'     => 'Phloem',
+    'dist_version'  => '0.01',
+    'dist_abstract' => 'The Phloem Content Delivery Network (CDN) application',
+    'dist_version_from' => 'lib/Phloem/Manual.pm',
+    'create_readme' => 1,
+    'dist_author'   => 'Simon Dawson <spdawson@gmail.com>',
+    'license'       => 'gpl',
+    'requires'      => {'perl'        => '5.10.0',
+                        'XML::Simple' => 0,
+                        'App::Prove'  => 0},
+    'create_makefile_pl'   => 'passthrough',
+    'recursive_test_files' => 1);
 
   $builder->create_build_script();
 }

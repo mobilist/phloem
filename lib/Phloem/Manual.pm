@@ -323,6 +323,11 @@ Continue integration testing, and fix any bugs that are found.
 
 =item *
 
+Work out how to exclude *.log files from the Module::Build build process, so
+that they do not find their way into the distribution.
+
+=item *
+
 See if the ugly layering of the Debug and Logger modules between Xylem and
 Phloem layers can be sorted out. This adds to the complexity of the code, and
 it would be great if it could be done away with altogether.

@@ -63,6 +63,6 @@ diag('Attempting to run an in-process (threaded) server.');
 ok(my $thr = threads->create(
      sub { DummyServer->run(TEST_PORT, {'DAEMON' => 0}); threads->detach(); }),
    'Creating server thread.');
-diag('Waiting for a while before killing the server thread.');
+diag('Waiting for a while before killing the server thread...');
 sleep(2);
 ok($thr->kill('KILL'), 'Killing server thread.');

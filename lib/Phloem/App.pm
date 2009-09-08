@@ -32,9 +32,6 @@ use Phloem::NodeAdvertiser;
 use Phloem::RegistryServer;
 use Phloem::Subscriber;
 
-# This is the main --- indeed, the only --- version number for Phloem.
-our $VERSION = 0.01;
-
 #------------------------------------------------------------------------------
 
 =item run
