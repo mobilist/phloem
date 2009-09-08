@@ -118,7 +118,7 @@ sub append
 
   # Generate a time-stamp.
   my $ts = Xylem::TimeStamp::create();
- 
+
   # Assemble the message: prefix it with the time-stamp.
   $message = "$ts --- $message\n";
 
