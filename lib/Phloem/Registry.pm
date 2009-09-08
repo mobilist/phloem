@@ -29,7 +29,6 @@ use lib qw(lib);
 
 use base qw(Xylem::Dumper);
 
-use Phloem::Constants;
 use Phloem::Node;
 use Xylem::TimeStamp;
 use Xylem::Utils::File;

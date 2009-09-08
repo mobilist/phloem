@@ -57,7 +57,8 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Class::Struct 'Phloem::Rsync' => {'user' => '$'};
+use Class::Struct 'Phloem::Rsync' => {'user'        => '$',
+                                      'ssh_id_file' => '$'};
 
 use lib qw(lib);
 

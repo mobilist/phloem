@@ -105,6 +105,15 @@ NOT YET WRITTEN!
 
 NOT YET WRITTEN!
 
+=head2 File/directory paths
+
+A number of file/directory paths must be specified in the the node
+configuration XML file. In each case, if an absolute path is not specified,
+then the path will be assumed to be relative to the directory from which the
+Phloem process is run.
+
+To avoid confusion, therefore, it is best to specify absolute paths.
+
 =head1 OVERVIEW
 
 A basic conceptual overview of Phloem follows.

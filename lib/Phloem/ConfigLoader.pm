@@ -185,9 +185,14 @@ sub _rsync_from_xml_data
       my $node_rsync_user = $node_rsync->[0]->{'user'} or die "No rsync user.";
       my $node_rsync_ssh_id_file =
         $node_rsync->[0]->{'ssh_id_file'} or die "No SSH identity file.";
+
+      # Convert the SSH identity file path to an absolute path.
+      my $node_rsync_ssh_id_file_abs =
+        File::Spec->rel2abs($node_rsync_ssh_id_file);
+
       $rsync_object =
         Phloem::Rsync->new('user'        => $node_rsync_user,
-                           'ssh_id_file' => $node_rsync_ssh_id_file)
+                           'ssh_id_file' => $node_rsync_ssh_id_file_abs)
         or die "Failed to create rsync object.";
     }
   }

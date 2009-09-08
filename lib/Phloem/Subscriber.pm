@@ -40,7 +40,6 @@ use Class::Struct
 
 use lib qw(lib);
 use Phloem::ConfigLoader;
-use Phloem::Constants;
 use Phloem::Debug;
 use Phloem::Logger;
 use Phloem::Node;
@@ -181,6 +180,7 @@ sub _update_from_publisher
   my $remote_user = $node->rsync()->user();
   my $remote_path = $role->directory();
   my $local_path = $self->role()->directory();
+  my $ssh_id_file = $node->rsync()->ssh_id_file();
 
   # Transfer data from the remote host.
   Phloem::Logger->append('Starting data transfer.');
@@ -189,7 +189,7 @@ sub _update_from_publisher
                                $remote_user,
                                $remote_path,
                                $local_path,
-                               $Phloem::Constants::SSH_ID_FILE);
+                               $ssh_id_file);
 
   # If we got an ordinary scalar, then it is an error string.
   die "ERROR: $rsync_stats" unless ref($rsync_stats);
