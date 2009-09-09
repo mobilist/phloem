@@ -98,6 +98,10 @@ xxx_END_GPL_HEADER
 
     return if ($File::Find::name =~ /~$/o); # Skip backup files.
 
+    return if ($File::Find::name =~ /\.log$/o); # Skip log files.
+
+    return unless (-T $File::Find::name); # Skip non-text files.
+
     # Check the file, and return immediately if it is okay.
     return if _check_file($File::Find::name);
 

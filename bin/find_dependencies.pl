@@ -101,6 +101,10 @@ xxx_END_GPL_HEADER
 
     return if ($File::Find::name =~ /~$/o); # Skip backup files.
 
+    return if ($File::Find::name =~ /\.log$/o); # Skip log files.
+
+    return unless (-T $File::Find::name); # Skip non-text files.
+
     my $fh = FileHandle->new("< $File::Find::name")
       or die "Failed to open file for reading: $!";
     flock($fh, LOCK_SH) or die "Failed to acquire shared file lock: $!";

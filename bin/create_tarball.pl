@@ -104,6 +104,8 @@ xxx_END_GPL_HEADER
 
     return if ($File::Find::name =~ /\.log$/o); # Skip log files.
 
+    return unless (-T $File::Find::name); # Skip non-text files.
+
     push(@files, $File::Find::name);
   };
   find({'wanted' => $wanted_sub, 'no_chdir' => 1}, '.');
