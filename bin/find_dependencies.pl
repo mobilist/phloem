@@ -106,9 +106,7 @@ xxx_END_GPL_HEADER
     flock($fh, LOCK_SH) or die "Failed to acquire shared file lock: $!";
 
     while (my $current_line = <$fh>) {
-      if ($current_line =~ /^\s*(?:use|require) ([\w:]+)/o) {
-        $deps{$1} = 1;
-      }
+      $deps{$1} = 1 if ($current_line =~ /^\s*(?:use|require) ([\w:]+)/o);
     }
 
     flock($fh, LOCK_UN) or die "Failed to unlock file: $!";
