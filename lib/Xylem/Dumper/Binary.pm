@@ -1,62 +1,53 @@
 =head1 NAME
 
-Xylem::Dumper
+Xylem::Dumper::Binary
 
 =head1 DESCRIPTION
 
-An abstract base class for objects that are, in some sense, dumpable.
+A base class for objects that are dumpable as binary data.
 
 =head1 SYNOPSIS
 
   package MyClass;
-  use base qw(Xylem::Dumper);
+  use base qw(Xylem::Dumper::Binary);
   sub new { bless({}, __PACKAGE__); };
   package main;
+  use FileHandle;
   my $object = MyClass->new();
-  print $object->data_dump();
-
-=head1 METHODS
-
-=over 8
+  my $fh = FileHandle->new('> myclass.dat');
+  print $fh $object->data_dump();
 
 =cut
 
-package Xylem::Dumper;
+package Xylem::Dumper::Binary;
 
 use strict;
 use warnings;
 use diagnostics;
 
 use Carp;
+use Storable qw(nfreeze thaw);
+
+use lib qw(lib);
+
+use base qw(Xylem::Dumper);
 
 #------------------------------------------------------------------------------
-
-=item data_dump
-
-Generate a dump (textual or binary) of the object data.
-
-=cut
-
-sub data_dump
+sub _do_data_dump
+# Generate an object dump --- "protected" method.
 {
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  return $self->_do_data_dump();
+  my $data = nfreeze($self) or croak "Failed to freeze data: $!";
+  return $data;
 }
 
 #------------------------------------------------------------------------------
-
-=item data_load
-
-Attempt to recreate an object from the specified data, which may be textual or
-binary.
-
-N.B. This is a class method.
-
-=cut
-
-sub data_load
+sub _do_data_load
+# Recreate an object from the specified dumped data --- "protected" method.
+#
+# N.B. This is a class method.
 {
   my $class = shift or croak "No class name specified.";
   croak "Expected an ordinary scalar." if ref($class);
@@ -64,36 +55,15 @@ sub data_load
 
   my $data = shift or croak "No object data specified.";
 
-  return $class->_do_data_load($data);
-}
-
-#------------------------------------------------------------------------------
-sub _do_data_dump
-# Generate an object dump --- "protected" method.
-#
-# Subclasses must provide an implementation for this pure virtual method.
-{
-  croak "PURE VIRTUAL BASE CLASS METHOD! MUST BE OVERRIDDEN!";
-}
-
-#------------------------------------------------------------------------------
-sub _do_data_load
-# Recreate an object from the specified dumped data --- "protected" method.
-#
-# Subclasses must provide an implementation for this pure virtual method.
-#
-# N.B. This is a class method.
-{
-  croak "PURE VIRTUAL BASE CLASS METHOD! MUST BE OVERRIDDEN!";
+  my $self = thaw($data) or croak "Failed to thaw data.";
+  return bless($self, $class);
 }
 
 1;
 
-=back
-
 =head1 SEE ALSO
 
-L<Xylem::Dumper::Binary>, L<Xylem::Dumper::Text>
+L<Xylem::Dumper>, L<Xylem::Dumper::Text>
 
 =head1 COPYRIGHT
 

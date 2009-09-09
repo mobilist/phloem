@@ -24,7 +24,7 @@ use diagnostics;
 
 use lib qw(lib);
 
-use base qw(Xylem::Dumper);
+use base qw(Phloem::Dumper);
 
 use Phloem::Role;
 use Phloem::Root;

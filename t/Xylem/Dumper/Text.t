@@ -25,16 +25,13 @@ use diagnostics;
 
 use Test::More tests => 7; # qw(no_plan);
 
-BEGIN { use_ok('Xylem::Dumper'); }
+BEGIN { use_ok('Xylem::Dumper::Text'); }
 
 package Dummy;
 
-use base qw(Xylem::Dumper);
+use base qw(Xylem::Dumper::Text);
 
-my %object_data = ('shoe' => 'horse');
-sub new { return bless(\%object_data, __PACKAGE__); };
-sub _do_data_dump { return 'This is just some dummy text.'; };
-sub _do_data_load { return __PACKAGE__->new(); };
+sub new { return bless({'shoe' => 'horse'}, __PACKAGE__); };
 
 package main;
 

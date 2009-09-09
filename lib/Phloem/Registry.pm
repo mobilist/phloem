@@ -27,7 +27,7 @@ use File::Temp;
 
 use lib qw(lib);
 
-use base qw(Xylem::Dumper);
+use base qw(Phloem::Dumper);
 
 use Phloem::Debug;
 use Phloem::Node;
