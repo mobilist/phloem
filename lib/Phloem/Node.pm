@@ -22,8 +22,6 @@ use strict;
 use warnings;
 use diagnostics;
 
-use lib qw(lib);
-
 use base qw(Phloem::Dumper);
 
 use Phloem::Role;

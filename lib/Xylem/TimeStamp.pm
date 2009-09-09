@@ -25,8 +25,6 @@ use diagnostics;
 
 use POSIX qw(strftime);
 
-use lib qw(lib);
-
 #------------------------------------------------------------------------------
 
 =item create

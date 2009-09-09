@@ -64,6 +64,4 @@ use diagnostics;
 use Class::Struct 'Phloem::Root' => {'host' => '$',
                                      'port' => '$'};
 
-use lib qw(lib);
-
 1;

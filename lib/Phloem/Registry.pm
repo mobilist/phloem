@@ -25,8 +25,6 @@ use diagnostics;
 
 use File::Temp;
 
-use lib qw(lib);
-
 use base qw(Phloem::Dumper);
 
 use Phloem::Debug;

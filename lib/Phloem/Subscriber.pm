@@ -38,7 +38,6 @@ use Class::Struct
   'Phloem::Subscriber' => {'node' => 'Phloem::Node',
                            'role' => 'Phloem::Role::Subscribe'};
 
-use lib qw(lib);
 use Phloem::ConfigLoader;
 use Phloem::Debug;
 use Phloem::Logger;

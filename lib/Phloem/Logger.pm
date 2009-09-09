@@ -23,7 +23,6 @@ use diagnostics;
 
 use File::Spec;
 
-use lib qw(lib);
 use Phloem::Constants;
 
 use base qw(Xylem::Logger);

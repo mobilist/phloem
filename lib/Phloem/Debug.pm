@@ -24,7 +24,6 @@ use strict;
 use warnings;
 use diagnostics;
 
-use lib qw(lib);
 use Phloem::Logger;
 
 use base qw(Xylem::Debug);

@@ -24,7 +24,6 @@ use diagnostics;
 
 use IO::Socket::INET;
 
-use lib qw(lib);
 use Phloem::Debug;
 use Phloem::Logger;
 use Phloem::Node;

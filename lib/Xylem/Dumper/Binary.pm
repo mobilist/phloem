@@ -28,8 +28,6 @@ use diagnostics;
 use Carp;
 use Storable qw(nfreeze thaw);
 
-use lib qw(lib);
-
 use base qw(Xylem::Dumper);
 
 #------------------------------------------------------------------------------

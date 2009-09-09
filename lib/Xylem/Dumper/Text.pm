@@ -27,8 +27,6 @@ use Carp;
 use Data::Dumper;
 use Safe;
 
-use lib qw(lib);
-
 use base qw(Xylem::Dumper);
 
 #------------------------------------------------------------------------------

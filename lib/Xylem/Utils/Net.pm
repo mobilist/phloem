@@ -26,8 +26,6 @@ use Carp;
 use IO::Socket::INET;
 use Net::Ping;
 
-use lib qw(lib);
-
 use constant XYLEM_SOCK_TIMEOUT_S => 31536000; # One calendar year.
 
 #------------------------------------------------------------------------------

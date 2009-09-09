@@ -33,7 +33,6 @@ use File::Spec;
 use IPC::Cmd;
 use Time::HiRes;
 
-use lib qw(lib);
 use Xylem::Rsync::Stats;
 
 #------------------------------------------------------------------------------

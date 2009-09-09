@@ -26,8 +26,6 @@ use diagnostics;
 
 use Carp;
 
-use lib qw(lib);
-
 # A flag variable to store the current debug status (enabled/disabled).
 my $_DEBUG;
 

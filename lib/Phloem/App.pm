@@ -25,7 +25,6 @@ use diagnostics;
 
 use threads;
 
-use lib qw(lib);
 use Phloem::ConfigLoader;
 use Phloem::Logger;
 use Phloem::NodeAdvertiser;

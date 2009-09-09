@@ -42,7 +42,6 @@ use Class::Struct 'Phloem::Filter' => {'type'  => '$',
                                        'value' => '$',
                                        'rule'  => '$'};
 
-use lib qw(lib);
 use Phloem::Node;
 
 #------------------------------------------------------------------------------

@@ -32,7 +32,6 @@ use diagnostics;
 
 use Class::Struct 'Phloem::NodeAdvertiser' => {'node'  => 'Phloem::Node'};
 
-use lib qw(lib);
 use Phloem::Logger;
 use Phloem::RegistryClient;
 

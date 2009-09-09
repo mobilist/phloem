@@ -25,7 +25,6 @@ use diagnostics;
 
 use File::Spec;
 
-use lib qw(lib);
 use Phloem::Constants;
 use Phloem::Filter;
 use Phloem::Logger;

@@ -26,7 +26,6 @@ use Carp;
 use English;
 use Fcntl qw(:seek); # Import SEEK_* constants.
 
-use lib qw(lib);
 use Xylem::FileLocker;
 
 #------------------------------------------------------------------------------

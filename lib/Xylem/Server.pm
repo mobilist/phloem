@@ -35,7 +35,6 @@ use diagnostics;
 use Carp;
 use IO::Socket::INET;
 
-use lib qw(lib);
 use Xylem::Debug;
 use Xylem::Utils::Net;
 use Xylem::Utils::Process;

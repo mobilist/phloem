@@ -43,7 +43,6 @@ use Carp;
 use Fcntl qw(:flock); # Import LOCK_* constants.
 use FileHandle;
 
-use lib qw(lib);
 use Xylem::Debug;
 
 #------------------------------------------------------------------------------

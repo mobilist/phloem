@@ -27,8 +27,6 @@ use Carp;
 use File::Spec;
 use POSIX qw(setsid);
 
-use lib qw(lib);
-
 #------------------------------------------------------------------------------
 
 =item spawn_child

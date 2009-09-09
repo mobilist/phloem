@@ -23,8 +23,6 @@ use strict;
 use warnings;
 use diagnostics;
 
-use lib qw(lib);
-
 use base qw(Xylem::Dumper::Binary);
 
 1;

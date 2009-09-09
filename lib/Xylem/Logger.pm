@@ -30,7 +30,6 @@ use diagnostics;
 
 use Carp;
 
-use lib qw(lib);
 use Xylem::TimeStamp;
 use Xylem::Utils::File;
 
