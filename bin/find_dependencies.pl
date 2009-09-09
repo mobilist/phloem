@@ -65,10 +65,12 @@ use strict;
 use warnings;
 use diagnostics;
 
+use English;
 use Fcntl qw(:flock); # Import LOCK_* constants.
 use FileHandle;
 use File::Find;
 use Getopt::Long;
+use Module::CoreList;
 use Pod::Usage;
 
 #==============================================================================
@@ -118,12 +120,29 @@ xxx_END_GPL_HEADER
   };
   find({'wanted' => $wanted_sub, 'no_chdir' => 1}, '.');
 
+  # Get a hash table of the core modules in the current Perl version.
+  my $core_modules = $Module::CoreList::version{$PERL_VERSION->numify()}
+    or die "Failed to get list of core Perl modules.";
+  die "Expected a hash reference." unless (ref($core_modules) eq 'HASH');
+
+  my $noncore_marker = '*';
+  my $any_noncore;
   foreach my $key (sort(keys(%deps))) {
     if ($opt_f) {
       # Filter out Xylem/Phloem module dependencies from the output.
       next if ($key =~ /^(?:Xylem|Phloem)/o);
     }
-    print "$key\n";
+
+    # Is this a core module?
+    my $in_core = exists($core_modules->{$key});
+    $any_noncore ||= !$in_core;
+
+    print $key, ($in_core ? '' : $noncore_marker), "\n";
   }
+
+  print STDERR
+    "N.B. Modules marked '$noncore_marker' are not in the version " .
+    "$PERL_VERSION Perl core.\n"
+    if $any_noncore;
 }
 # End of main program.
