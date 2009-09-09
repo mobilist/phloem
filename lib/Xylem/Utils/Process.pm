@@ -50,8 +50,8 @@ sub spawn_child
   # Change the file mode mask.
   #
   # N.B. This can fail on some systems --- notably Win32/Cygwin --- so we
-  #      warn rather than croak/die.
-  umask(0000) or warn "Failed to set file mode mask: $!";
+  #      warn/carp rather than die/croak.
+  umask(0000) or carp "Failed to set file mode mask: $!";
 
   # Give the child a new process group and session.
   setsid() or croak "Failed to start a new session: $!";
