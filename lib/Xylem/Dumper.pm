@@ -31,6 +31,10 @@ use Carp;
 use Data::Dumper;
 use Safe;
 
+use constant BINARY_DUMPING => 0;
+
+use if BINARY_DUMPING, Storable => qw(nfreeze thaw);
+
 #------------------------------------------------------------------------------
 
 =item data_dump
@@ -43,6 +47,11 @@ sub data_dump
 {
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  if (BINARY_DUMPING) {
+    my $data = nfreeze($self) or croak "Failed to freeze data: $!";
+    return $data;
+  }
 
   my $dumper = Data::Dumper->new([$self], [qw(self)]);
 
@@ -68,6 +77,11 @@ sub data_load
   croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   my $data = shift or croak "No textual data specified.";
+
+  if (BINARY_DUMPING) {
+    my $self = thaw($data) or croak "Failed to thaw data.";
+    return bless($self, $class);
+  }
 
   # Check the textual data for safety.
   $class->_check_object_code($data);
