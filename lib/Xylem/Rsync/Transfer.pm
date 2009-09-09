@@ -89,7 +89,7 @@ sub _run_rsync_command
 # Run the specified rsync command.
 #
 # Returns transfer statistics on success; an error string otherwise.
-# 
+#
 # In array context, a second return value is given: a high-resolution transfer
 # duration, in seconds.
 {
