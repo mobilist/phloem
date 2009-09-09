@@ -259,38 +259,42 @@ higher than indicated below.
 
 =over 8
 
-=item Driver
+=item Driver (root node)
 
 =item Registry server
 
 This is run as a thread inside the driver process.
 
-=item Node advertiser
+=item Node advertiser (root node)
 
 This is run as a thread inside the driver process. In any event, this shuts
 down after the first successful node registration.
 
-=back
-
-Total: 1 process, 2 threads.
-
-=head3 Non-root node
-
-=over 8
-
-=item Driver
-
-=item Node advertiser
-
-This is run as a thread inside the driver process.
-
-=item Subscribers
+=item Subscribers (root node)
 
 Subscribers are run as threads inside the driver process.
 
 =back
 
-Total: 1 process, 3-- threads (depending on the number of subscriber roles).
+Total: 1 process, 2--4 threads.
+
+=head3 Non-root node
+
+=over 8
+
+=item Driver (non-root node)
+
+=item Node advertiser (non-root node)
+
+This is run as a thread inside the driver process.
+
+=item Subscribers (non-root node)
+
+Subscribers are run as threads inside the driver process.
+
+=back
+
+Total: 1 process, 2--4 threads (depending on the number of subscriber roles).
 
 =head3 Summary
 
