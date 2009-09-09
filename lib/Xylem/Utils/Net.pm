@@ -22,6 +22,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use IO::Socket::INET;
 use Net::Ping;
 
@@ -42,10 +43,10 @@ Returns 1 if the ping was successful; 0 otherwise.
 sub ping
 {
   # Get the input: an IP address to ping.
-  my $ip_address = shift or die "No IP address specified.";
+  my $ip_address = shift or croak "No IP address specified.";
 
   # Create a pinger.
-  my $sonar = Net::Ping->new() or die "Failed to create pinger: $!";
+  my $sonar = Net::Ping->new() or croak "Failed to create pinger: $!";
 
   # Can we see the host?
   return $sonar->ping($ip_address);
@@ -63,7 +64,7 @@ A host can optionally be specified, as the second argument.
 
 sub get_server_tcp_socket
 {
-  my $port = shift or die "No port specified.";
+  my $port = shift or croak "No port specified.";
   my $host = shift; # Optional second argument.
 
   my %sock_options = ('LocalPort' => $port,
@@ -74,7 +75,7 @@ sub get_server_tcp_socket
                       'Timeout'   => XYLEM_SOCK_TIMEOUT_S);
   $sock_options{'LocalAddr'} = $host if $host;
   my $sock = IO::Socket::INET->new(%sock_options)
-    or die "Failed to create server socket on port $port : $@";
+    or croak "Failed to create server socket on port $port : $@";
 
   return $sock;
 }
@@ -90,8 +91,8 @@ specified port.
 
 sub get_client_tcp_socket
 {
-  my $host = shift or die "No host specified.";
-  my $port = shift or die "No port specified.";
+  my $host = shift or croak "No host specified.";
+  my $port = shift or croak "No port specified.";
 
   my %sock_options = ('PeerAddr' => $host,
                       'PeerPort' => $port,
@@ -100,7 +101,7 @@ sub get_client_tcp_socket
                       'Reuse'     => 1,
                       'Timeout'  => XYLEM_SOCK_TIMEOUT_S);
   my $sock = IO::Socket::INET->new(%sock_options)
-    or die "Failed to create client socket for host $host on port $port: $@";
+    or croak "Failed to create client socket for host $host on port $port: $@";
 
   $sock->autoflush(1);
 

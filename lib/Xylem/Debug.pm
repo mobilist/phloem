@@ -24,6 +24,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
+
 use lib qw(lib);
 
 # A flag variable to store the current debug status (enabled/disabled).
@@ -42,9 +44,9 @@ N.B. This is a class method.
 
 sub enabled
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   my $value = shift;
   $_DEBUG = $value if defined($value);
@@ -67,9 +69,9 @@ N.B. This is a class method.
 
 sub message
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   return unless $class->enabled();
 

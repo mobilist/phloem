@@ -22,6 +22,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use Fcntl qw(:seek); # Import SEEK_* constants.
 
 use lib qw(lib);
@@ -38,10 +39,10 @@ Append the specified line to the specified file.
 sub append_line
 {
   # Get the input: a line to append.
-  my $line = shift or die "No line specified.";
+  my $line = shift or croak "No line specified.";
   chomp($line);
 
-  my $file = shift or die "No file specified.";
+  my $file = shift or croak "No file specified.";
 
   # Append to the file.
   {
@@ -64,7 +65,7 @@ Clear the specified file.
 
 sub clear
 {
-  my $file = shift or die "No file specified.";
+  my $file = shift or croak "No file specified.";
 
   # Nothing to do if the file does not exist.
   return unless (-f $file);
@@ -91,7 +92,7 @@ Read the specified file, slurping the entire contents into a scalar.
 
 sub read
 {
-  my $file = shift or die "No file specified.";
+  my $file = shift or croak "No file specified.";
 
   # Nothing to do if the file does not exist.
   return unless (-f $file);
@@ -120,8 +121,8 @@ To the specified file, write the specified data.
 
 sub write
 {
-  my $file = shift or die "No file specified.";
-  my $content = shift or die "No file content specified.";
+  my $file = shift or croak "No file specified.";
+  my $content = shift or croak "No file content specified.";
 
   {
     # Lock the file.

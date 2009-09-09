@@ -39,6 +39,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use Fcntl qw(:flock); # Import LOCK_* constants.
 use FileHandle;
 
@@ -60,31 +61,32 @@ The access mode can be 'r' for a read (i.e., shared) lock, 'w' for a write
 
 sub new
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  my $file = shift or die "A file path must be specified.";
-  die "Expected an ordinary scalar." if ref($file);
+  my $file = shift or croak "A file path must be specified.";
+  croak "Expected an ordinary scalar." if ref($file);
 
   my $mode = shift;
-  die "Expected an ordinary scalar." if ref($mode);
-  die "An access mode of 'r', 'w' or 'a' must be specified."
+  croak "Expected an ordinary scalar." if ref($mode);
+  croak "An access mode of 'r', 'w' or 'a' must be specified."
     unless ($mode && $mode =~ /^(?:r|w|a)$/o);
 
   Xylem::Debug->message("Acquiring lock on file $file.");
   # N.B. It's a shame that we have to open the file in order to get a lock.
   my $raw_mode = ($mode eq 'r') ? '<' : ( ($mode eq 'w') ? '>' : '>>');
   my $fh = FileHandle->new("$raw_mode " . $file)
-    or die "Failed to open $file: $!";
+    or croak "Failed to open $file: $!";
 
   # Acquire the lock.
   #
   # N.B. These are blocking calls; non-blocking calls won't do what we want.
   if ($mode eq 'r') {
-    flock($fh, LOCK_SH) or die "Failed to acquire shared lock on $file: $!";
+    flock($fh, LOCK_SH) or croak "Failed to acquire shared lock on $file: $!";
   } else {
-    flock($fh, LOCK_EX) or die "Failed to acquire exclusive lock on $file: $!";
+    flock($fh, LOCK_EX)
+      or croak "Failed to acquire exclusive lock on $file: $!";
   }
 
   # Set up the object data.
@@ -105,8 +107,8 @@ Get the locked filehandle.
 
 sub filehandle
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'_FILEHANDLE'};
 }
@@ -115,19 +117,19 @@ sub filehandle
 sub DESTROY
 # Destructor.
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   Xylem::Debug->message('Releasing file lock.');
   my $fh = $self->filehandle();
-  flock($fh, LOCK_UN) or die "Failed to unlock file: $!";
+  flock($fh, LOCK_UN) or croak "Failed to unlock file: $!";
 
   # N.B. Don't forget to close the file, which (irritatingly) we had to open.
   #
   #      Strictly speaking, we don't have to do this: the file will be closed
   #      automatically as soon as the cached file handle reference goes out of
   #      scope on leaving the destructor. However, this is just good practice.
-  $fh->close() or die "Failed to close file: $!";
+  $fh->close() or croak "Failed to close file: $!";
 }
 
 1;

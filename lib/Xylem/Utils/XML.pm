@@ -24,6 +24,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use XML::Simple qw(:strict);
 
 #------------------------------------------------------------------------------
@@ -38,7 +39,7 @@ Returns a hash reference of parsed XML data.
 
 sub parse
 {
-  my $xml_file = shift or die "No file specified.";
+  my $xml_file = shift or croak "No file specified.";
 
   # Parse the XML file.
   my %xml_options = ('ForceArray'     => 1,

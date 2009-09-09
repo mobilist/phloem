@@ -32,6 +32,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use IO::Socket::INET;
 
 use lib qw(lib);
@@ -59,13 +60,13 @@ N.B. This is a class method.
 
 sub run
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  my $port = shift or die "No port specified.";
+  my $port = shift or croak "No port specified.";
   my $args_hash = shift || {}; # Optional second argument.
-  die "Expected a hash reference." unless (ref($args_hash) eq 'HASH');
+  croak "Expected a hash reference." unless (ref($args_hash) eq 'HASH');
 
   # Did we get a host name/address?
   my $host;
@@ -85,14 +86,14 @@ sub run
 
   # Create the server socket.
   my $server_sock = Xylem::Utils::Net::get_server_tcp_socket($port, $host)
-    or die "Failed to create server socket on port $port.";
+    or croak "Failed to create server socket on port $port.";
 
   # Run the server.
   $class->_do_run($server_sock);
 
   Xylem::Debug->message('Server run ending.');
 
-  $server_sock->shutdown(2) or die "Failed to shut down server socket: $!";
+  $server_sock->shutdown(2) or croak "Failed to shut down server socket: $!";
 }
 
 #------------------------------------------------------------------------------
@@ -103,7 +104,7 @@ sub process_request
 #
 # N.B. This is a class method.
 {
-  die "PURE VIRTUAL BASE CLASS METHOD! MUST BE OVERRIDDEN!";
+  croak "PURE VIRTUAL BASE CLASS METHOD! MUST BE OVERRIDDEN!";
 }
 
 #------------------------------------------------------------------------------
@@ -115,17 +116,18 @@ sub _do_run
 #
 # N.B. This is a class method.
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  my $server_sock = shift or die "No server socket specified.";
-  die "Expected a TCP/IP socket." unless $server_sock->isa('IO::Socket::INET');
+  my $server_sock = shift or croak "No server socket specified.";
+  croak "Expected a TCP/IP socket."
+    unless $server_sock->isa('IO::Socket::INET');
 
   while (my $client_sock = $server_sock->accept()) {
     $client_sock->autoflush(1);
     $class->process_request($client_sock);
-    $client_sock->shutdown(2) or die "Failed to shut down client socket: $!";
+    $client_sock->shutdown(2) or croak "Failed to shut down client socket: $!";
   }
 }
 

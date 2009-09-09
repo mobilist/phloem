@@ -68,6 +68,8 @@ use Getopt::Long;
 use Pod::Checker;
 use Pod::Usage;
 
+use constant MAX_LINE_LENGTH => 80;
+
 #==============================================================================
 # Start of main program.
 {
@@ -188,6 +190,15 @@ sub _check_file
       if ($current_line =~ /^[ \t]+$/o) {
         print STDERR
           "$file:$line_no:only whitespace character(s) are present.\n";
+        $file_ok = 0;
+      }
+
+      # Look for lines that are longer than a fixed limit.
+      if (length($current_line) > MAX_LINE_LENGTH) {
+        print STDERR
+          "$file:$line_no:line is longer than ",
+          MAX_LINE_LENGTH,
+          " characters.\n";
         $file_ok = 0;
       }
     }

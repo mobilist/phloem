@@ -27,6 +27,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use Data::Dumper;
 use Safe;
 
@@ -40,8 +41,8 @@ Generate a textual dump of the object data.
 
 sub data_dump
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   my $dumper = Data::Dumper->new([$self], [qw(self)]);
 
@@ -62,11 +63,11 @@ N.B. This is a class method.
 
 sub data_load
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  my $data = shift or die "No textual data specified.";
+  my $data = shift or croak "No textual data specified.";
 
   # Check the textual data for safety.
   $class->_check_object_code($data);
@@ -86,7 +87,7 @@ sub data_load
   # However, re-blessing doesn't seem to quite do enough. (I submitted the
   # re-blessing code in revision 145, but have since reverted to the eval.)
   my $self = eval " $data ";
-  die "Failed to eval object data: $@" if $@;
+  croak "Failed to eval object data: $@" if $@;
 
   return $self;
 }
@@ -97,11 +98,11 @@ sub _check_object_code
 #
 # N.B. This is a class method.
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  my $data = shift or die "No textual data specified.";
+  my $data = shift or croak "No textual data specified.";
 
   # Evaluate the code in an opcode-safe compartment. Only the base-minimum of
   # opcodes are allowed. In particular, no system calls can be made. This is
@@ -114,8 +115,8 @@ sub _check_object_code
   $compartment->permit_only(qw(:base_core bless padany anonhash anonlist));
   my $STRICT = 1;
   my $self = $compartment->reval($data, $STRICT) or
-    die "Failed to reconstruct object: $@";
-  die "Failed to reconstruct object of class $class."
+    croak "Failed to reconstruct object: $@";
+  croak "Failed to reconstruct object of class $class."
     unless (ref($self) eq $class);
 }
 

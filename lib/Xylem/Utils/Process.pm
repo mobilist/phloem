@@ -23,8 +23,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use File::Spec;
-
 use POSIX qw(setsid);
 
 use lib qw(lib);
@@ -42,7 +42,7 @@ Returns a non-zero PID to the parent process; the child gets a zero return.
 sub spawn_child
 {
   # Fork a new child process.
-  defined(my $pid = fork) or die "Failed to fork: $!";
+  defined(my $pid = fork) or croak "Failed to fork: $!";
 
   # The parent process just returns now.
   return $pid if $pid;
@@ -50,21 +50,21 @@ sub spawn_child
   # Change the file mode mask.
   #
   # N.B. This can fail on some systems --- notably Win32/Cygwin --- so we
-  #      warn rather than die.
+  #      warn rather than croak/die.
   umask(0000) or warn "Failed to set file mode mask: $!";
 
   # Give the child a new process group and session.
-  setsid() or die "Failed to start a new session: $!";
+  setsid() or croak "Failed to start a new session: $!";
 
   # Change the working directory to the root.
   my $root_dir = File::Spec->rootdir();
-  chdir($root_dir) or die "Failed to move to $root_dir directory: $!";
+  chdir($root_dir) or croak "Failed to move to $root_dir directory: $!";
 
   # Redirect file descriptors to the null device.
   my $devnull = File::Spec->devnull();
-  open(STDIN, $devnull) or die "Failed to open $devnull for reading: $!";
-  open(STDOUT, ">$devnull") or die "Failed to open $devnull for writing: $!";
-  open(STDERR, '>&STDOUT') or die "Failed to duplicate STDOUT to STDERR: $!";
+  open(STDIN, $devnull) or croak "Failed to open $devnull for reading: $!";
+  open(STDOUT, ">$devnull") or croak "Failed to open $devnull for writing: $!";
+  open(STDERR, '>&STDOUT') or croak "Failed to duplicate STDOUT to STDERR: $!";
 
   return $pid;
 }

@@ -35,11 +35,12 @@ BEGIN { use_ok('Xylem::Server'); }
 
 package DummyServer;
 
+use Carp;
 use base qw(Xylem::Server);
 
 sub process_request {
-  my $class = shift or die "No class.";
-  my $sock = shift or die "No socket.";
+  my $class = shift or croak "No class.";
+  my $sock = shift or croak "No socket.";
   print $sock main::TEST_MESSAGE;
   # Exit the (child) process.
   exit(0);

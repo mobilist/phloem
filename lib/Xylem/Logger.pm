@@ -28,6 +28,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
+
 use lib qw(lib);
 use Xylem::TimeStamp;
 use Xylem::Utils::File;
@@ -50,11 +52,11 @@ N.B. This is a class method.
 
 sub initialise
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  die "The logging subsystem has already been initialised." if $_INITIALISED;
+  croak "The logging subsystem has already been initialised." if $_INITIALISED;
 
   # Perform the (subclass-specific) initialisation.
   $class->_do_initialise();
@@ -71,7 +73,7 @@ sub _do_initialise
 #
 # N.B. This is a class method.
 {
-  die "PURE VIRTUAL BASE CLASS METHOD! MUST BE OVERRIDDEN!";
+  croak "PURE VIRTUAL BASE CLASS METHOD! MUST BE OVERRIDDEN!";
 }
 
 #------------------------------------------------------------------------------
@@ -103,18 +105,18 @@ N.B. This is a class method.
 
 sub append
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   # Get the input: a message to log.
-  my $message = shift or die "No message specified.";
+  my $message = shift or croak "No message specified.";
   chomp($message);
 
-  die "The logging subsystem has not yet been initialised."
+  croak "The logging subsystem has not yet been initialised."
     unless $_INITIALISED;
 
-  my $log_file = path() or die "No log file path has been set.";
+  my $log_file = path() or croak "No log file path has been set.";
 
   # Generate a time-stamp.
   my $ts = Xylem::TimeStamp::create();
@@ -142,14 +144,14 @@ N.B. This is a class method.
 
 sub clear
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  die "The logging subsystem has not yet been initialised."
+  croak "The logging subsystem has not yet been initialised."
     unless $_INITIALISED;
 
-  my $log_file = path() or die "No log file path has been set.";
+  my $log_file = path() or croak "No log file path has been set.";
 
   Xylem::Utils::File::clear($log_file);
 }

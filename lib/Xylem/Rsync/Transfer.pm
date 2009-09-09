@@ -27,9 +27,10 @@ use strict;
 use warnings;
 use diagnostics;
 
-use IPC::Cmd;
+use Carp;
 use FileHandle;
 use File::Spec;
+use IPC::Cmd;
 use Time::HiRes;
 
 use lib qw(lib);
@@ -51,11 +52,11 @@ duration, in seconds.
 sub go
 {
   # Get the inputs.
-  my $remote_ip_address = shift or die "No remote IP address specified.";
-  my $remote_user = shift or die "No remote user specified.";
-  my $remote_path = shift or die "No remote path specified.";
-  my $local_path = shift or die "No local path specified.";
-  my $ssh_id_file = shift or die "No SSH identity file specified.";
+  my $remote_ip_address = shift or croak "No remote IP address specified.";
+  my $remote_user = shift or croak "No remote user specified.";
+  my $remote_path = shift or croak "No remote path specified.";
+  my $local_path = shift or croak "No local path specified.";
+  my $ssh_id_file = shift or croak "No SSH identity file specified.";
 
   # N.B. Make sure that there is a trailing forward slash on the source
   #      (remote) path.
@@ -93,11 +94,12 @@ sub _run_rsync_command
 # In array context, a second return value is given: a high-resolution transfer
 # duration, in seconds.
 {
-  my $rsync_command = shift or die "No rsync command specified.";
+  my $rsync_command = shift or croak "No rsync command specified.";
 
   # Check that we can run rsync and ssh.
-  IPC::Cmd::can_run('rsync') or die "It appears that rsync is not installed.";
-  IPC::Cmd::can_run('ssh')   or die "It appears that ssh is not installed.";
+  IPC::Cmd::can_run('rsync')
+    or croak "It appears that rsync is not installed.";
+  IPC::Cmd::can_run('ssh') or croak "It appears that ssh is not installed.";
 
   my $start_time = Time::HiRes::time();
 
@@ -110,12 +112,12 @@ sub _run_rsync_command
     local $SIG{'CHLD'} = 'DEFAULT';
     my $devnull = File::Spec->devnull();
     my $rsync_process_fh = FileHandle->new("$rsync_command 2>$devnull |")
-      or die "Failed to open pipe: $!";
+      or croak "Failed to open pipe: $!";
     while (my $current_line = $rsync_process_fh->getline()) {
       chomp($current_line);
       push(@caught_output, $current_line);
     }
-    $rsync_process_fh->close() or die "Failed to close pipe: $!";
+    $rsync_process_fh->close() or croak "Failed to close pipe: $!";
   };
 
   # Return error details, if necessary.
