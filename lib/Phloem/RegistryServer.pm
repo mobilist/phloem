@@ -103,7 +103,6 @@ sub process_request
         $is_get = 1;
         return; # (From the eval --- stop gathering input.)
       }
-      $current_line =~ s/\r?\n$//o;
       $input .= $current_line;
       Phloem::Debug->message($input);
       alarm($timeout);
@@ -125,10 +124,19 @@ sub process_request
   if ($is_get) {
     # The client wants details of the registry.
     Phloem::Debug->message('Client requested registry details.');
-    print $client_sock $registry->data_dump(), "\r\n";
+    print $client_sock
+      "xxx_BEGIN_DATA",
+      $registry->data_dump(),
+      "xxx_END_DATA",
+      "\r\n";
   } elsif ($input) {
     # The client is sending us details of a node.
     Phloem::Debug->message('Client sent node details.');
+
+    # Tidy up the input.
+    $input =~ s/^.*xxx_BEGIN_DATA//os;
+    $input =~ s/xxx_END_DATA.*$//os;
+
     eval {
       my $node = Phloem::Node->data_load($input)
         or die "Failed to recreate node object.";

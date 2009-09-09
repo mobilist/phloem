@@ -29,6 +29,7 @@ use lib qw(lib);
 
 use base qw(Xylem::Dumper);
 
+use Phloem::Debug;
 use Phloem::Node;
 use Xylem::TimeStamp;
 use Xylem::Utils::File;
@@ -133,6 +134,8 @@ sub load
   return $class->new() unless (-f $registry_file);
 
   # Read the registry file.
+  Phloem::Debug->message(
+    "Loading registry from $registry_file");
   my $object_data = Xylem::Utils::File::read($registry_file);
 
   # Create and return a new object if there is no saved registry data.
@@ -161,6 +164,8 @@ sub save
   my $registry_file = _registry_file();
 
   # Write to the registry file.
+  Phloem::Debug->message(
+    "Saving registry to $registry_file");
   Xylem::Utils::File::write($registry_file, $self->data_dump());
 }
 

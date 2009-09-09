@@ -56,7 +56,12 @@ sub register_node
   Phloem::Debug->message('Attempting to register a node.');
 
   # Dump the node data off to the registry server.
-  print $sock $node->data_dump(), "\r\n", "\r\n";
+  print $sock
+    "xxx_BEGIN_DATA",
+    $node->data_dump(),
+    "xxx_END_DATA",
+    "\r\n",
+    "\r\n";
 
   # Read the output from the registry server.
   my $input = _read_from_server_socket($sock);
@@ -115,9 +120,13 @@ sub get_all_nodes
     return;
   }
 
-  Phloem::Debug->message('About to use data returned from server.');
-
   # The server is sending us details of the registry.
+  Phloem::Debug->message('Server sent registry details.');
+
+  # Tidy up the input.
+  $input =~ s/^.*xxx_BEGIN_DATA//os;
+  $input =~ s/xxx_END_DATA.*$//os;
+
   my $registry = Phloem::Registry->data_load($input)
     or die "Failed to recreate registry object.";
 
@@ -168,13 +177,8 @@ sub _read_from_server_socket
   # Read from the socket.
   my $input = '';
   while (<$sock>) {
-    $_ =~ s/\r?\n$//o;
     $input .= $_;
   }
-
-  # Trim parenthetical whitespace.
-  $input =~ s/^\s*//o;
-  $input =~ s/\s*$//o;
 
   return $input;
 }

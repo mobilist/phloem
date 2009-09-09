@@ -23,6 +23,7 @@ use warnings;
 use diagnostics;
 
 use Carp;
+use English;
 use Fcntl qw(:seek); # Import SEEK_* constants.
 
 use lib qw(lib);
@@ -103,6 +104,8 @@ sub read
     # Lock the file.
     my $file_lock = Xylem::FileLocker->new($file, 'r');
 
+    # Enable localised slurp mode.
+    local $INPUT_RECORD_SEPARATOR; # Or $/, if you prefer.
     my $fh = $file_lock->filehandle();
 
     $content = <$fh>;
