@@ -139,8 +139,8 @@ sub load
   return $class->new() unless $object_data;
 
   # Attempt to reconstruct the object.
-  my $self = eval " $object_data ";
-  die "Failed to reconstruct object: $@" if $@;
+  my $self = $class->data_load($object_data)
+    or die "Failed to reconstruct object.";
 
   return $self;
 }

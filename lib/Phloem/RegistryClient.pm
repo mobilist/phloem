@@ -121,6 +121,8 @@ sub get_all_nodes
   my $registry = Phloem::Registry->data_load($input)
     or die "Failed to recreate registry object.";
 
+  Phloem::Debug->message('Server sent registry... ' . $registry->data_dump());
+
   # Get a hash table of the nodes.
   my %nodes_hash = $registry->nodes();
 
