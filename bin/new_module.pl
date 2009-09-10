@@ -69,6 +69,7 @@ use Fcntl qw(:flock); # Import LOCK_* constants.
 use FileHandle;
 use File::Basename qw(fileparse);
 use File::Path qw(make_path);
+use File::Spec;
 use Getopt::Long;
 use Pod::Usage;
 use POSIX qw(strftime);
@@ -111,7 +112,8 @@ xxx_END_GPL_HEADER
   # Get the module file path.
   my $module_file = $module_name;
   $module_file =~ s/::/\//og;
-  $module_file = 'lib/' . $module_file . '.pm';
+  $module_file .= '.pm';
+  $module_file = File::Spec->catfile('lib', $module_file);
 
   die "$module_file already exists." if (-e $module_file && !$opt_f);
 
@@ -186,6 +188,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
+
 use lib qw(lib);
 
 #------------------------------------------------------------------------------
@@ -198,7 +202,7 @@ Some method or another.
 
 sub some_method
 {
-  die "NOT YET WRITTEN!";
+  croak "NOT YET WRITTEN!";
 }
 
 1;
