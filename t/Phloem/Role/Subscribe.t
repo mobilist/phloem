@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 #
-#D Unit test script.
+# Unit test script for Phloem::Role::Subscribe.
 
 # Copyright (C) 2009 Simon Dawson
 #

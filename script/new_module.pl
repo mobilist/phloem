@@ -260,7 +260,7 @@ sub _write_module_test_file
   print $module_test_fh <<"xxx_END_TEST";
 #!/usr/bin/perl -w
 #
-#D Unit test script.
+# Unit test script for $module_name.
 
 # Copyright (C) $year Simon Dawson
 #

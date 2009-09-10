@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 #
-#D Unit test script.
+# Unit test script for Phloem::RegistryClient.
 
 # Copyright (C) 2009 Simon Dawson
 #
