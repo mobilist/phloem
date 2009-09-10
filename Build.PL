@@ -68,6 +68,9 @@ use Getopt::Long;
 use Module::Build;
 use Pod::Usage;
 
+use lib qw(lib);
+use Phloem::Version;
+
 #==============================================================================
 # Start of main program.
 {
@@ -113,14 +116,14 @@ xxx_END_MANIFEST_SKIP
 
   # N.B. We're a bit sneaky here: there is no version number in Phloem::Manual.
   #      (Indeed, the only version number anywhere in Phloem is the one
-  #      specified in here.)
+  #      specified in the Phloem::Version module.)
   #
   #      We [ab]use the 'dist_version_from' parameter to tell the build script
   #      where to get the information from for the README file.
   my $manual_file = File::Spec->catfile('lib', 'Phloem', 'Manual.pm');
   my $builder = Module::Build->new(
     'dist_name'     => 'Phloem',
-    'dist_version'  => '0.01',
+    'dist_version'  => $Phloem::Version::VERSION,
     'dist_abstract' => 'The Phloem Content Delivery Network (CDN) application',
     'dist_version_from' => $manual_file,
     'create_readme' => 1,
