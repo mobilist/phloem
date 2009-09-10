@@ -32,6 +32,10 @@ Print the license terms, and then exit.
 
 Filter out Xylem/Phloem module dependencies from the output.
 
+=item B<-n, --noncore>
+
+Filter out core Perl module dependencies from the output.
+
 =back
 
 =head1 COPYRIGHT
@@ -76,11 +80,12 @@ use Pod::Usage;
 #==============================================================================
 # Start of main program.
 {
-  my ($opt_h, $opt_m, $opt_l, $opt_f);
+  my ($opt_h, $opt_m, $opt_l, $opt_f, $opt_n);
   pod2usage(-verbose => 0) unless GetOptions('h|help'    => \$opt_h,
                                              'm|man'     => \$opt_m,
                                              'l|license' => \$opt_l,
-                                             'f|filter'  => \$opt_f);
+                                             'f|filter'  => \$opt_f,
+                                             'n|noncore' => \$opt_n);
   pod2usage(-verbose => 1) if $opt_h;
   pod2usage(-verbose => 2) if $opt_m;
   pod2usage(-verbose  => 99,
@@ -137,12 +142,18 @@ xxx_END_GPL_HEADER
     my $in_core = exists($core_modules->{$key});
     $any_noncore ||= !$in_core;
 
-    print $key, ($in_core ? '' : $noncore_marker), "\n";
+    if ($opt_n) {
+      # Filter out core Perl module dependencies from the output.
+      print "$key\n" unless $in_core;
+    } else {
+      # Append a marker to non-core module dependencies.
+      print $key, ($in_core ? '' : $noncore_marker), "\n";
+    }
   }
 
   print STDERR
     "N.B. Modules marked '$noncore_marker' are not in the version " .
     "$PERL_VERSION Perl core.\n"
-    if $any_noncore;
+    if ($any_noncore && !$opt_n);
 }
 # End of main program.
