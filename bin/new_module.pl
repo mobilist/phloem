@@ -190,7 +190,8 @@ use diagnostics;
 
 use Carp;
 
-use lib qw(lib);
+# Uncomment the following line if you plan to use $package_name modules.
+#use lib qw(lib);
 
 #------------------------------------------------------------------------------
 

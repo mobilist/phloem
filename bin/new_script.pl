@@ -211,7 +211,8 @@ use diagnostics;
 use Getopt::Long;
 use Pod::Usage;
 
-use lib qw(lib);
+# Uncomment the following line if you plan to use $package_name modules.
+#use lib qw(lib);
 
 #==============================================================================
 # Start of main program.
