@@ -103,7 +103,8 @@ xxx_END_GPL_HEADER
                         'XML::Simple' => 0,
                         'App::Prove'  => 0},
     'create_makefile_pl'   => 'passthrough',
-    'recursive_test_files' => 1);
+    'recursive_test_files' => 1,
+    'script_files'         => [qw(script/phloem.pl)]);
 
   $builder->create_build_script();
 }
