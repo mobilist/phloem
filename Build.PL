@@ -61,6 +61,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Fcntl qw(:flock); # Import LOCK_* constants.
+use FileHandle;
 use File::Spec;
 use Getopt::Long;
 use Module::Build;
@@ -85,6 +87,29 @@ use Pod::Usage;
     This is free software, and you are welcome to redistribute it
     under certain conditions; type Build.PL --license for details.
 xxx_END_GPL_HEADER
+
+  # Generate a MANIFEST.SKIP file.
+  {
+    my $manifest_skip_fh = FileHandle->new('> MANIFEST.SKIP')
+      or die "Failed to open file for writing: $!";
+    flock($manifest_skip_fh, LOCK_EX)
+      or die "Failed to acquire exclusive file lock: $!";
+
+    print $manifest_skip_fh <<'xxx_END_MANIFEST_SKIP';
+^_build
+^Build$
+^blib
+~$
+\.bak$
+\.log$
+^MANIFEST\.SKIP$
+CVS
+\.svn\W
+xxx_END_MANIFEST_SKIP
+
+    flock($manifest_skip_fh, LOCK_UN) or die "Failed to unlock file: $!";
+    $manifest_skip_fh->close() or die "Failed to close file: $!";
+  }
 
   # N.B. We're a bit sneaky here: there is no version number in Phloem::Manual.
   #      (Indeed, the only version number anywhere in Phloem is the one

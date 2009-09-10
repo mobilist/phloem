@@ -104,7 +104,7 @@ xxx_END_GPL_HEADER
   my $wanted_sub = sub {
     return unless (-f $File::Find::name);
 
-    return if ($File::Find::name =~ /\W\.svn\W/o); # Skip subversion stuff.
+    return if ($File::Find::name =~ /\.svn\W/o); # Skip subversion stuff.
 
     return if ($File::Find::name =~ /~$/o); # Skip backup files.
 
