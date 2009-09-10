@@ -106,7 +106,7 @@ xxx_END_GPL_HEADER
   my $package_name = 'Phloem';
 
   # Get the script file path.
-  my $script_dest_dir = 'bin';
+  my $script_dest_dir = 'script';
   my $script_file = File::Spec->catfile($script_dest_dir, $script_name);
 
   die "$script_file already exists." if (-e $script_file && !$opt_f);
