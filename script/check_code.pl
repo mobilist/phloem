@@ -105,7 +105,7 @@ xxx_END_GPL_HEADER
     return unless (-T $File::Find::name); # Skip non-text files.
 
     # Check the file, and return immediately if it is okay.
-    return if _check_file($File::Find::name);
+    return if _check_code_file($File::Find::name);
 
     # Update the overall error code, if we haven't seen an error yet.
     $err_code ||= 1;
@@ -117,7 +117,7 @@ xxx_END_GPL_HEADER
 # End of main program; subroutines follow.
 
 #------------------------------------------------------------------------------
-sub _check_file
+sub _check_code_file
 # Check the specified file.
 #
 # Returns true if the file is okay; false otherwise.
