@@ -61,6 +61,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use File::Spec;
 use Getopt::Long;
 use Module::Build;
 use Pod::Usage;
@@ -91,11 +92,12 @@ xxx_END_GPL_HEADER
   #
   #      We [ab]use the 'dist_version_from' parameter to tell the build script
   #      where to get the information from for the README file.
+  my $manual_file = File::Spec->catfile('lib', 'Phloem', 'Manual.pm');
   my $builder = Module::Build->new(
     'dist_name'     => 'Phloem',
     'dist_version'  => '0.01',
     'dist_abstract' => 'The Phloem Content Delivery Network (CDN) application',
-    'dist_version_from' => 'lib/Phloem/Manual.pm',
+    'dist_version_from' => $manual_file,
     'create_readme' => 1,
     'dist_author'   => 'Simon Dawson <spdawson@gmail.com>',
     'license'       => 'gpl',
