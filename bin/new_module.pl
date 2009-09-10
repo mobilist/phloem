@@ -136,18 +136,18 @@ xxx_END_GPL_HEADER
   my $year = strftime("%Y", localtime);
 
   # Write the module file.
-  write_module_file($module_name, $package_name, $module_file, $year);
+  _write_module_file($module_name, $package_name, $module_file, $year);
 
   # Write the module test file.
-  write_module_test_file($module_name, $package_name, $module_test_file,
-                         $year);
+  _write_module_test_file($module_name, $package_name, $module_test_file,
+                          $year);
 
   print "Done.\n";
 }
 # End of main program; subroutines follow.
 
 #------------------------------------------------------------------------------
-sub write_module_file
+sub _write_module_file
 # Write the module file.
 {
   my $module_name = shift or die "No module name specified.";
@@ -238,7 +238,7 @@ xxx_END_MODULE
 }
 
 #------------------------------------------------------------------------------
-sub write_module_test_file
+sub _write_module_test_file
 # Write the module test file.
 {
   my $module_name = shift or die "No module name specified.";
