@@ -30,6 +30,7 @@ use Phloem::Logger;
 use Phloem::NodeAdvertiser;
 use Phloem::RegistryServer;
 use Phloem::Subscriber;
+use Phloem::Version;
 
 #------------------------------------------------------------------------------
 
@@ -49,9 +50,10 @@ sub run
 
   # Initialise the logging subsystem, clear the log file, and write a
   # start-up message.
+  my $phloem_version = $Phloem::Version::VERSION;
   Phloem::Logger->initialise();
   Phloem::Logger->clear();
-  Phloem::Logger->append('Starting up.');
+  Phloem::Logger->append("Starting up, Phloem version $phloem_version.");
 
   # Load the configuration file.
   my $node = Phloem::ConfigLoader::load()

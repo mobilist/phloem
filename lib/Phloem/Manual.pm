@@ -315,7 +315,7 @@ separate process; it depends whether its workload justifies the overhead.
 
 =item *
 
-Continue to work on this manual...
+Continue to work on this manual.
 
 =item *
 
@@ -333,8 +333,8 @@ that they do not find their way into the distribution.
 =item *
 
 See if the ugly layering of the Debug and Logger modules between Xylem and
-Phloem layers can be sorted out. This adds to the complexity of the code, and
-it would be great if it could be done away with altogether.
+Phloem can be done away with. This adds unnecessarily to the complexity of
+the code.
 
 =item *
 
