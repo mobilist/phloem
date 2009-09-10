@@ -66,7 +66,11 @@ use File::Find;
 use Getopt::Long;
 use Pod::Usage;
 
-use constant ARCHIVE_FILE_NAME => 'phloem.tar.gz';
+use lib qw(lib);
+use Phloem::Version;
+
+# This file name contains a place-holder for the Phloem version number.
+use constant ARCHIVE_FILE_NAME => 'phloem-$VERSION.tar.gz';
 
 #==============================================================================
 # Start of main program.
@@ -88,7 +92,10 @@ use constant ARCHIVE_FILE_NAME => 'phloem.tar.gz';
     under certain conditions; type create_tarball.pl --license for details.
 xxx_END_GPL_HEADER
 
-  die "Archive file already exists." if (-f ARCHIVE_FILE_NAME);
+  # Put together the archive file name, using the Phloem version number.
+  my $archive_file_name = ARCHIVE_FILE_NAME;
+  $archive_file_name =~ s/\$VERSION/$Phloem::Version::VERSION/o;
+  die "Archive file already exists." if (-f $archive_file_name);
 
   my $tar = Archive::Tar->new()
     or die "Failed to create archive: " . $Archive::Tar::error;
@@ -112,9 +119,9 @@ xxx_END_GPL_HEADER
 
   $tar->add_files(@files) or die "Failed to add files: " . $tar->error();
 
-  $tar->write(ARCHIVE_FILE_NAME, COMPRESS_GZIP, 'phloem')
+  $tar->write($archive_file_name, COMPRESS_GZIP, 'phloem')
     or die "Failed to write archive: " . $tar->error();
 
-  print "Created archive ", ARCHIVE_FILE_NAME, "\n";
+  print "Created archive ", $archive_file_name, "\n";
 }
 # End of main program.
