@@ -26,6 +26,7 @@ use diagnostics;
 use threads;
 
 use Phloem::ConfigLoader;
+use Phloem::Debug;
 use Phloem::Logger;
 use Phloem::NodeAdvertiser;
 use Phloem::RegistryServer;
@@ -47,6 +48,12 @@ sub run
   my $class = shift or die "No class name specified.";
   die "Expected an ordinary scalar." if ref($class);
   die "Incorrect class name." unless $class->isa(__PACKAGE__);
+
+  # Any arguments are assumed to comprise a hash table of options.
+  my %options = @_;
+
+  # Enable/disable debug output, as appropriate.
+  Phloem::Debug->enabled($options{'DEBUG'} // 0);
 
   # Initialise the logging subsystem, clear the log file, and write a
   # start-up message.

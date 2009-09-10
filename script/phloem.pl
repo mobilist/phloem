@@ -70,7 +70,6 @@ use Pod::Usage;
 
 use lib qw(lib);
 use Phloem::App;
-use Phloem::Debug;
 
 #==============================================================================
 # Start of main program.
@@ -93,10 +92,7 @@ use Phloem::Debug;
     under certain conditions; type phloem.pl --license for details.
 xxx_END_GPL_HEADER
 
-  # Enable/disable debug output, as appropriate.
-  Phloem::Debug->enabled($opt_d);
-
   # Run the application.
-  Phloem::App->run();
+  Phloem::App->run('DEBUG' => $opt_d);
 }
 # End of main program.
