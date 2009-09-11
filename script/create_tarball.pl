@@ -62,12 +62,12 @@ use warnings;
 use diagnostics;
 
 use Archive::Tar;
-use File::Find;
 use Getopt::Long;
 use Pod::Usage;
 
 use lib qw(lib);
 use Phloem::Version;
+use Xylem::Utils::File;
 
 # This file name contains a place-holder for the Phloem version number.
 use constant ARCHIVE_FILE_NAME => 'phloem-$VERSION.tar.gz';
@@ -102,20 +102,12 @@ xxx_END_GPL_HEADER
 
   my @files;
 
-  my $wanted_sub = sub {
-    return unless (-f $File::Find::name);
+  my $user_sub = sub {
+    my $file = shift;
 
-    return if ($File::Find::name =~ /\.svn\W/o); # Skip subversion stuff.
-
-    return if ($File::Find::name =~ /~$/o); # Skip backup files.
-
-    return if ($File::Find::name =~ /\.log$/o); # Skip log files.
-
-    return unless (-T $File::Find::name); # Skip non-text files.
-
-    push(@files, $File::Find::name);
+    push(@files, $file);
   };
-  find({'wanted' => $wanted_sub, 'no_chdir' => 1}, '.');
+  Xylem::Utils::File::find($user_sub);
 
   $tar->add_files(@files) or die "Failed to add files: " . $tar->error();
 

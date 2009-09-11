@@ -25,6 +25,7 @@ use diagnostics;
 use Carp;
 use English;
 use Fcntl qw(:seek); # Import SEEK_* constants.
+use File::Find qw(); # Do not import anything.
 
 use Xylem::FileLocker;
 
@@ -135,6 +136,39 @@ sub write
     # Write to the file.
     print $fh $content;
   }
+}
+
+#------------------------------------------------------------------------------
+
+=item find
+
+Find relevant files under the current working directory.
+
+For each file found, call the specified subroutine reference with the full
+file path as the single argument.
+
+=cut
+
+sub find
+{
+  my $user_sub = shift or croak "No subroutine specified.";
+  croak "Expected a subroutine reference." unless (ref($user_sub) eq 'CODE');
+
+  my $wanted_sub = sub {
+    return unless (-f $File::Find::name);
+
+    return if ($File::Find::name =~ /\.svn\W/o); # Skip subversion stuff.
+
+    return if ($File::Find::name =~ /~$/o); # Skip backup files.
+
+    return if ($File::Find::name =~ /\.log$/o); # Skip log files.
+
+    return unless (-T $File::Find::name); # Skip non-text files.
+
+    # Call the user-specified subroutine.
+    return $user_sub->($File::Find::name);
+  };
+  File::Find::find({'wanted' => $wanted_sub, 'no_chdir' => 1}, '.');
 }
 
 1;

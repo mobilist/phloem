@@ -70,13 +70,13 @@ use warnings;
 use diagnostics;
 
 use English;
-use File::Find;
 use Getopt::Long;
 use Module::CoreList;
 use Pod::Usage;
 
 use lib qw(lib);
 use Xylem::Utils::Code;
+use Xylem::Utils::File;
 
 #==============================================================================
 # Start of main program.
@@ -102,21 +102,13 @@ xxx_END_GPL_HEADER
 
   my %deps;
 
-  my $wanted_sub = sub {
-    return unless (-f $File::Find::name);
+  my $user_sub = sub {
+    my $file = shift;
 
-    return if ($File::Find::name =~ /\.svn\W/o); # Skip subversion stuff.
-
-    return if ($File::Find::name =~ /~$/o); # Skip backup files.
-
-    return if ($File::Find::name =~ /\.log$/o); # Skip log files.
-
-    return unless (-T $File::Find::name); # Skip non-text files.
-
-    my %current_deps = Xylem::Utils::Code::get_dependencies($File::Find::name);
+    my %current_deps = Xylem::Utils::Code::get_dependencies($file);
     %deps = (%deps, %current_deps);
   };
-  find({'wanted' => $wanted_sub, 'no_chdir' => 1}, '.');
+  Xylem::Utils::File::find($user_sub);
 
   # Get a hash table of the core modules in the current Perl version.
   my $core_modules = $Module::CoreList::version{$PERL_VERSION->numify()}

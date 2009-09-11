@@ -61,12 +61,12 @@ use strict;
 use warnings;
 use diagnostics;
 
-use File::Find;
 use Getopt::Long;
 use Pod::Usage;
 
 use lib qw(lib);
 use Xylem::Utils::Code;
+use Xylem::Utils::File;
 
 #==============================================================================
 # Start of main program.
@@ -91,24 +91,16 @@ xxx_END_GPL_HEADER
   # Initialise a standard error code.
   my $err_code = 0;
 
-  my $wanted_sub = sub {
-    return unless (-f $File::Find::name);
-
-    return if ($File::Find::name =~ /\.svn\W/o); # Skip subversion stuff.
-
-    return if ($File::Find::name =~ /~$/o); # Skip backup files.
-
-    return if ($File::Find::name =~ /\.log$/o); # Skip log files.
-
-    return unless (-T $File::Find::name); # Skip non-text files.
+  my $user_sub = sub {
+    my $file = shift;
 
     # Check the file, and return immediately if it is okay.
-    return if Xylem::Utils::Code::check_code_file($File::Find::name);
+    return if Xylem::Utils::Code::check_code_file($file);
 
     # Update the overall error code, if we haven't seen an error yet.
     $err_code ||= 1;
   };
-  find({'wanted' => $wanted_sub, 'no_chdir' => 1}, '.');
+  Xylem::Utils::File::find($user_sub);
 
   exit($err_code);
 }
