@@ -39,7 +39,18 @@ use constant MAX_LINE_LENGTH => 80;
 
 =item process_command_line
 
-...
+Process the command line.
+
+This should be called in the same way as GetOptions from the Getopt::Long
+module. The only caveat is that the standard 'h|help', 'm|man' and
+'l|license' options are "already taken" and should not be used by the calling
+code.
+
+(Having said that, the calling code should still provide pod to document
+these standard options.)
+
+As well as handling the above-mentioned standard options, this method will
+also print a GPL copyright/license header to standard error.
 
 =cut
 
@@ -66,8 +77,6 @@ sub process_command_line
     This is free software, and you are welcome to redistribute it
     under certain conditions; type $script_name --license for details.
 xxx_END_GPL_HEADER
-
-  return %options_hash;
 }
 
 #------------------------------------------------------------------------------
