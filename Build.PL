@@ -61,42 +61,26 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Fcntl qw(:flock); # Import LOCK_* constants.
-use FileHandle;
 use File::Spec;
-use Getopt::Long;
 use Module::Build;
-use Pod::Usage;
 
 use lib qw(lib);
 use Phloem::Version;
+use Xylem::FileLocker;
+use Xylem::Utils::Code;
 
 #==============================================================================
 # Start of main program.
 {
-  my ($opt_h, $opt_m, $opt_l);
-  pod2usage(-verbose => 0) unless GetOptions('h|help'     => \$opt_h,
-                                             'm|man'      => \$opt_m,
-                                             'l|license'  => \$opt_l);
-  pod2usage(-verbose => 1) if $opt_h;
-  pod2usage(-verbose => 2) if $opt_m;
-  pod2usage(-verbose  => 99,
-            -sections => 'NAME|COPYRIGHT|LICENSE',
-            -exitval  => 0) if $opt_l;
-
-  print STDERR <<'xxx_END_GPL_HEADER';
-    Build.PL Copyright (C) 2009 Simon Dawson
-    This program comes with ABSOLUTELY NO WARRANTY.
-    This is free software, and you are welcome to redistribute it
-    under certain conditions; type Build.PL --license for details.
-xxx_END_GPL_HEADER
+  Xylem::Utils::Code::process_command_line();
 
   # Generate a MANIFEST.SKIP file.
   {
-    my $manifest_skip_fh = FileHandle->new('> MANIFEST.SKIP')
-      or die "Failed to open file for writing: $!";
-    flock($manifest_skip_fh, LOCK_EX)
-      or die "Failed to acquire exclusive file lock: $!";
+    # Acquire an exclusive lock on the file, while we write it.
+    my $locker = Xylem::FileLocker->new('MANIFEST.SKIP', 'w')
+      or die "Failed to lock file.";
+    my $manifest_skip_fh = $locker->filehandle()
+      or die "Failed to get filehandle.";
 
     print $manifest_skip_fh <<'xxx_END_MANIFEST_SKIP';
 ^_build
@@ -109,9 +93,6 @@ xxx_END_GPL_HEADER
 CVS
 \.svn\W
 xxx_END_MANIFEST_SKIP
-
-    flock($manifest_skip_fh, LOCK_UN) or die "Failed to unlock file: $!";
-    $manifest_skip_fh->close() or die "Failed to close file: $!";
   }
 
   # N.B. We're a bit sneaky here: there is no version number in Phloem::Manual.

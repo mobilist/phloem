@@ -23,14 +23,52 @@ use warnings;
 use diagnostics;
 
 use Carp;
+use English;
 use File::Basename qw(fileparse);
 use File::Path qw(make_path);
+use Getopt::Long;
 use Pod::Checker;
+use Pod::Usage;
 use POSIX qw(strftime);
 
 use Xylem::FileLocker;
 
 use constant MAX_LINE_LENGTH => 80;
+
+#------------------------------------------------------------------------------
+
+=item process_command_line
+
+...
+
+=cut
+
+sub process_command_line
+{
+  my %options_hash = @_;
+
+  my ($script_name, undef, undef) = fileparse($PROGRAM_NAME);
+
+  my ($opt_h, $opt_m, $opt_l);
+  pod2usage(-verbose => 0) unless GetOptions('h|help'    => \$opt_h,
+                                             'm|man'     => \$opt_m,
+                                             'l|license' => \$opt_l,
+                                             %options_hash);
+  pod2usage(-verbose => 1) if $opt_h;
+  pod2usage(-verbose => 2) if $opt_m;
+  pod2usage(-verbose  => 99,
+            -sections => 'NAME|COPYRIGHT|LICENSE',
+            -exitval  => 0) if $opt_l;
+
+  print STDERR <<"xxx_END_GPL_HEADER";
+    $script_name Copyright (C) 2009 Simon Dawson
+    This program comes with ABSOLUTELY NO WARRANTY.
+    This is free software, and you are welcome to redistribute it
+    under certain conditions; type $script_name --license for details.
+xxx_END_GPL_HEADER
+
+  return %options_hash;
+}
 
 #------------------------------------------------------------------------------
 
@@ -262,31 +300,14 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Getopt::Long;
-use Pod::Usage;
-
-# Uncomment the following line if you plan to use $package_name modules.
-#use lib qw(lib);
+use lib qw(lib);
+use Xylem::Utils::Code;
 
 #==============================================================================
 # Start of main program.
 {
-  my (\$opt_h, \$opt_m, \$opt_l, \$opt_d);
-  pod2usage(-verbose => 0) unless GetOptions('h|help'    => \\\$opt_h,
-                                             'm|man'     => \\\$opt_m,
-                                             'l|license' => \\\$opt_l);
-  pod2usage(-verbose => 1) if \$opt_h;
-  pod2usage(-verbose => 2) if \$opt_m;
-  pod2usage(-verbose  => 99,
-            -sections => 'NAME|COPYRIGHT|LICENSE',
-            -exitval  => 0) if \$opt_l;
-
-  print STDERR <<'xxx_END_GPL_HEADER';
-    $script_name Copyright (C) 2009 $author
-    This program comes with ABSOLUTELY NO WARRANTY.
-    This is free software, and you are welcome to redistribute it
-    under certain conditions; type $script_name --license for details.
-xxx_END_GPL_HEADER
+  my (\$opt_s);
+  Xylem::Utils::Code::process_command_line('s|something' => \\\$opt_s);
 
   die "NOT YET WRITTEN!";
 }

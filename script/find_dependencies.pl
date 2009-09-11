@@ -70,9 +70,7 @@ use warnings;
 use diagnostics;
 
 use English;
-use Getopt::Long;
 use Module::CoreList;
-use Pod::Usage;
 
 use lib qw(lib);
 use Xylem::Utils::Code;
@@ -81,24 +79,9 @@ use Xylem::Utils::File;
 #==============================================================================
 # Start of main program.
 {
-  my ($opt_h, $opt_m, $opt_l, $opt_f, $opt_n);
-  pod2usage(-verbose => 0) unless GetOptions('h|help'    => \$opt_h,
-                                             'm|man'     => \$opt_m,
-                                             'l|license' => \$opt_l,
-                                             'f|filter'  => \$opt_f,
-                                             'n|noncore' => \$opt_n);
-  pod2usage(-verbose => 1) if $opt_h;
-  pod2usage(-verbose => 2) if $opt_m;
-  pod2usage(-verbose  => 99,
-            -sections => 'NAME|COPYRIGHT|LICENSE',
-            -exitval  => 0) if $opt_l;
-
-  print STDERR <<'xxx_END_GPL_HEADER';
-    find_dependencies.pl Copyright (C) 2009 Simon Dawson
-    This program comes with ABSOLUTELY NO WARRANTY.
-    This is free software, and you are welcome to redistribute it
-    under certain conditions; type find_dependencies.pl --license for details.
-xxx_END_GPL_HEADER
+  my ($opt_f, $opt_n);
+  Xylem::Utils::Code::process_command_line('f|filter'  => \$opt_f,
+                                           'n|noncore' => \$opt_n);
 
   my %deps;
 

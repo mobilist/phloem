@@ -62,11 +62,10 @@ use warnings;
 use diagnostics;
 
 use Archive::Tar;
-use Getopt::Long;
-use Pod::Usage;
 
 use lib qw(lib);
 use Phloem::Version;
+use Xylem::Utils::Code;
 use Xylem::Utils::File;
 
 # This file name contains a place-holder for the Phloem version number.
@@ -75,22 +74,7 @@ use constant ARCHIVE_FILE_NAME => 'phloem-$VERSION.tar.gz';
 #==============================================================================
 # Start of main program.
 {
-  my ($opt_h, $opt_m, $opt_l);
-  pod2usage(-verbose => 0) unless GetOptions('h|help'    => \$opt_h,
-                                             'm|man'     => \$opt_m,
-                                             'l|license' => \$opt_l);
-  pod2usage(-verbose => 1) if $opt_h;
-  pod2usage(-verbose => 2) if $opt_m;
-  pod2usage(-verbose  => 99,
-            -sections => 'NAME|COPYRIGHT|LICENSE',
-            -exitval  => 0) if $opt_l;
-
-  print STDERR <<'xxx_END_GPL_HEADER';
-    create_tarball.pl Copyright (C) 2009 Simon Dawson
-    This program comes with ABSOLUTELY NO WARRANTY.
-    This is free software, and you are welcome to redistribute it
-    under certain conditions; type create_tarball.pl --license for details.
-xxx_END_GPL_HEADER
+  Xylem::Utils::Code::process_command_line();
 
   # Put together the archive file name, using the Phloem version number.
   my $archive_file_name = ARCHIVE_FILE_NAME;

@@ -65,32 +65,15 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Getopt::Long;
-use Pod::Usage;
-
 use lib qw(lib);
 use Phloem::App;
+use Xylem::Utils::Code;
 
 #==============================================================================
 # Start of main program.
 {
-  my ($opt_h, $opt_m, $opt_l, $opt_d);
-  pod2usage(-verbose => 0) unless GetOptions('h|help'    => \$opt_h,
-                                             'm|man'     => \$opt_m,
-                                             'l|license' => \$opt_l,
-                                             'd|debug'   => \$opt_d);
-  pod2usage(-verbose => 1) if $opt_h;
-  pod2usage(-verbose => 2) if $opt_m;
-  pod2usage(-verbose  => 99,
-            -sections => 'NAME|COPYRIGHT|LICENSE',
-            -exitval  => 0) if $opt_l;
-
-  print STDERR <<'xxx_END_GPL_HEADER';
-    phloem.pl Copyright (C) 2009 Simon Dawson
-    This program comes with ABSOLUTELY NO WARRANTY.
-    This is free software, and you are welcome to redistribute it
-    under certain conditions; type phloem.pl --license for details.
-xxx_END_GPL_HEADER
+  my ($opt_d);
+  Xylem::Utils::Code::process_command_line('d|debug' => \$opt_d);
 
   # Run the application.
   Phloem::App->run('DEBUG' => $opt_d);
