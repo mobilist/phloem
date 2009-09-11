@@ -111,9 +111,9 @@ xxx_END_GPL_HEADER
 
   # Get the module file path.
   my $module_file = $module_name;
-  $module_file =~ s/::/\//og;
+###  $module_file =~ s/::/\//og;
+  $module_file = File::Spec->catfile('lib', split('::', $module_file));
   $module_file .= '.pm';
-  $module_file = File::Spec->catfile('lib', $module_file);
 
   die "$module_file already exists." if (-e $module_file && !$opt_f);
 
@@ -135,14 +135,26 @@ xxx_END_GPL_HEADER
   make_path($module_dest_dir, $module_test_dest_dir)
     // die "Failed to create directory/directories: $!";
 
+  # More metadata.
   my $year = strftime("%Y", localtime);
+  my $author = 'Simon Dawson';
+  my $author_email = 'spdawson@gmail.com';
 
   # Write the module file.
-  _write_module_file($module_name, $package_name, $module_file, $year);
+  _write_module_file($module_name,
+                     $package_name,
+                     $module_file,
+                     $year,
+                     $author,
+                     $author_email);
 
   # Write the module test file.
-  _write_module_test_file($module_name, $package_name, $module_test_file,
-                          $year);
+  _write_module_test_file($module_name,
+                          $package_name,
+                          $module_test_file,
+                          $year,
+                          $author,
+                          $author_email);
 
   print "Done.\n";
 }
@@ -156,6 +168,8 @@ sub _write_module_file
   my $package_name = shift or die "No package name specified.";
   my $module_file = shift or die "No module file path specified.";
   my $year = shift or die "No year specified.";
+  my $author = shift or die "No author specified.";
+  my $author_email = shift or die "No author e-mail address specified.";
 
   print "Writing module file $module_file...\n";
   my $module_fh = FileHandle->new("> $module_file")
@@ -212,11 +226,11 @@ sub some_method
 
 \=head1 COPYRIGHT
 
-Copyright (C) $year Simon Dawson.
+Copyright (C) $year $author.
 
 \=head1 AUTHOR
 
-Simon Dawson E<lt>spdawson\@gmail.comE<gt>
+$author E<lt>${author_email}E<gt>
 
 \=head1 LICENSE
 
@@ -250,6 +264,8 @@ sub _write_module_test_file
   my $package_name = shift or die "No package name specified.";
   my $module_test_file = shift or die "No module test file path specified.";
   my $year = shift or die "No year specified.";
+  my $author = shift or die "No author specified.";
+  my $author_email = shift or die "No author e-mail address specified.";
 
   print "Writing module test file $module_test_file...\n";
   my $module_test_fh = FileHandle->new("> $module_test_file")
@@ -262,7 +278,7 @@ sub _write_module_test_file
 #
 # Unit test script for $module_name.
 
-# Copyright (C) $year Simon Dawson
+# Copyright (C) $year $author
 #
 # This file is part of $package_name.
 #

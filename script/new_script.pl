@@ -115,10 +115,18 @@ xxx_END_GPL_HEADER
   print "Creating directory...\n";
   make_path($script_dest_dir) // die "Failed to create directory: $!";
 
+  # More metadata.
   my $year = strftime("%Y", localtime);
+  my $author = 'Simon Dawson';
+  my $author_email = 'spdawson@gmail.com';
 
   # Write the script file.
-  _write_script_file($script_name, $package_name, $script_file, $year);
+  _write_script_file($script_name,
+                     $package_name,
+                     $script_file,
+                     $year,
+                     $author,
+                     $author_email);
 
   # Make the script executable.
   print "Making $script_file executable...\n";
@@ -137,6 +145,8 @@ sub _write_script_file
   my $package_name = shift or die "No package name specified.";
   my $script_file = shift or die "No script file path specified.";
   my $year = shift or die "No year specified.";
+  my $author = shift or die "No author specified.";
+  my $author_email = shift or die "No author e-mail address specified.";
 
   print "Writing script file $script_file...\n";
   my $script_fh = FileHandle->new("> $script_file")
@@ -179,11 +189,11 @@ Print the license terms, and then exit.
 
 \=head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009 $author.
 
 \=head1 AUTHOR
 
-Simon Dawson E<lt>spdawson\@gmail.comE<gt>
+$author E<lt>${author_email}E<gt>
 
 \=head1 LICENSE
 
@@ -228,7 +238,7 @@ use Pod::Usage;
             -exitval  => 0) if \$opt_l;
 
   print STDERR <<'xxx_END_GPL_HEADER';
-    $script_name Copyright (C) 2009 Simon Dawson
+    $script_name Copyright (C) 2009 $author
     This program comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it
     under certain conditions; type $script_name --license for details.
