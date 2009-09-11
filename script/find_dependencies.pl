@@ -70,12 +70,13 @@ use warnings;
 use diagnostics;
 
 use English;
-use Fcntl qw(:flock); # Import LOCK_* constants.
-use FileHandle;
 use File::Find;
 use Getopt::Long;
 use Module::CoreList;
 use Pod::Usage;
+
+use lib qw(lib);
+use Xylem::Utils::Code;
 
 #==============================================================================
 # Start of main program.
@@ -112,16 +113,8 @@ xxx_END_GPL_HEADER
 
     return unless (-T $File::Find::name); # Skip non-text files.
 
-    my $fh = FileHandle->new("< $File::Find::name")
-      or die "Failed to open file for reading: $!";
-    flock($fh, LOCK_SH) or die "Failed to acquire shared file lock: $!";
-
-    while (my $current_line = <$fh>) {
-      $deps{$1} = 1 if ($current_line =~ /^\s*(?:use|require) ([\w:]+)/o);
-    }
-
-    flock($fh, LOCK_UN) or die "Failed to unlock file: $!";
-    $fh->close() or die "Failed to close file: $!";
+    my %current_deps = Xylem::Utils::Code::get_dependencies($File::Find::name);
+    %deps = (%deps, %current_deps);
   };
   find({'wanted' => $wanted_sub, 'no_chdir' => 1}, '.');
 

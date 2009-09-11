@@ -25,9 +25,13 @@ use diagnostics;
 
 use English;
 
-use Test::More tests => 2; # qw(no_plan);
+use Test::More tests => 5; # qw(no_plan);
 
 BEGIN { use_ok('Xylem::Utils::Code'); }
 
 diag('Checking the code of the currently-running test.');
 ok(Xylem::Utils::Code::check_code_file($PROGRAM_NAME), 'Code should be okay.');
+ok(my %deps = Xylem::Utils::Code::get_dependencies($PROGRAM_NAME),
+   'Getting dependencies of the currently-running test.');
+ok(exists($deps{'Test::More'}), 'Should depend on Test::More.');
+ok(!exists($deps{'Egg::Farmer'}), 'Should not depend on Egg::Farmer.');

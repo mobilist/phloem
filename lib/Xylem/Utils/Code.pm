@@ -133,6 +133,35 @@ sub check_code_file
 
 #------------------------------------------------------------------------------
 
+=item get_dependencies
+
+Get the Perl module dependencies for the specified file.
+
+The dependency information is returned in the form of a hash table, where the
+keys are the module names.
+
+=cut
+
+sub get_dependencies
+{
+  my $file = shift or croak "No file specified.";
+
+  my %deps;
+
+  # Acquire a shared lock on the file, while we examine it.
+  my $locker = Xylem::FileLocker->new($file, 'r')
+    or croak "Failed to lock file.";
+  my $fh = $locker->filehandle() or croak "Failed to get filehandle.";
+
+  while (my $current_line = <$fh>) {
+    $deps{$1} = 1 if ($current_line =~ /^\s*(?:use|require)\s+([\w:]+)/o);
+  }
+
+  return %deps;
+}
+
+#------------------------------------------------------------------------------
+
 =item write_script_file
 
 Write a new skeleton script file, using the specified parameters.
