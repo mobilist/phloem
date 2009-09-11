@@ -31,7 +31,7 @@
 
   <root host="localhost" port="9999" />
 
-  <rsync user="simond" ssh_id_file="etc/.ssh/id_rsa" />
+  <rsync user="simond" ssh_id_file="/home/simond/.ssh/id_rsa" />
 
   <role type="publish" route="root2leaf">
     <directory path="/some/path" />
@@ -43,7 +43,8 @@
   <role type="publish" route="leaf2root" active="0">
     <directory path="/some/other/path" />
     <description>
-      Publish leaf2root content. Currently disabled.
+      Publish leaf2root content.
+      Currently disabled.
     </description>
   </role>
 

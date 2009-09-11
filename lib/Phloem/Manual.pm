@@ -30,15 +30,15 @@ Phloem currently depends on the following non-core Perl modules.
 
 =over 8
 
-=item XML::Simple
-
-This is used to parse the node definition file, which currently uses an XML
-format.
-
 =item App::Prove
 
 As of Perl 5.10.1, this is actually a core module. If you've got an older
 Perl, then you'll have to install it using cpan. Sorry about that.
+
+=item XML::Simple
+
+This is used to parse the node definition file, which currently uses an XML
+format.
 
 =back
 
@@ -348,7 +348,12 @@ separate process; it depends whether its workload justifies the overhead.
 
 =item *
 
-Continue to work on this manual.
+Continue to work on this manual. In particular, the information regarding
+configuration is very incomplete.
+
+=item *
+
+Improve the module documentation.
 
 =item *
 
@@ -360,18 +365,9 @@ Continue integration testing, and fix any bugs that are found.
 
 =item *
 
-Work out how to exclude *.log files from the Module::Build build process, so
-that they do not find their way into the distribution.
-
-=item *
-
 See if the ugly layering of the Debug and Logger modules between Xylem and
 Phloem can be done away with. This adds unnecessarily to the complexity of
 the code.
-
-=item *
-
-Write some more detailed module documentation.
 
 =back
 
@@ -425,6 +421,8 @@ also fixes up some of the other long-form arguments to gzip.
 In theory, GNU gzip can be installed using buildroot. The package can be found
 in the menuconfig section 'Package Selection for the target', in the
 'Compressors / decompressors' subsection.
+
+However, in practice, this appears not to work.
 
 =back
 

@@ -30,7 +30,7 @@
 
   <root host="10.127.10.4" port="9999" />
 
-  <rsync user="simond" />
+  <rsync user="simond" ssh_id_file="/home/simond/.ssh/id_rsa" />
 
   <role type="publish" route="root2leaf">
     <directory path="/home/simond/Projects/svn/phloem/testroot/root2leaf/" />
