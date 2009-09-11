@@ -98,6 +98,39 @@ With the network configuration complete, the main task is to configure Phloem
 on each host in the network. This is achieved by editing a single
 configuration file (in an XML format for each host.
 
+=head2 SSH key configuration
+
+This is fairly tedious, but is a necessary step in orde to get all the hosts
+communicating securely. The basic process is as follows.
+
+=over 8
+
+=item Generate keys
+
+Run ssh-keygen, for the correct user, on each host in the network. Avoid
+the use of pass-phrases: just leave the pass-phrase blank if you are asked to
+enter one during key generation.
+
+=item Distribute keys
+
+On each host in the network, and for the correct user, run ssh-copy-id to
+copy the public key to every other host in the network.
+
+=item Test the configuration
+
+Basically, when logged in to any host on the network as the correct user, you
+should now be able to ssh onto any other host in the network without being
+asked for a login password. You might be asked to verify the identity of the
+host, however...
+
+=item Extra security
+
+Once this is all done, for extra security you might like to completely
+disable password logins in the C<sshd(8)> server configuration for each host.
+This is optional, but is recommended for the highest possible security.
+
+=back
+
 =head2 Root node configuration
 
 NOT YET WRITTEN!
@@ -425,6 +458,15 @@ I was using Perl version 5.8.8, culled from the Angstrom distribution. It was
 necessary to install the following modules using cpan.
 
 =over 8
+
+=item App::Prove
+
+This had to be installed, along with its prerequisities.
+
+=item File::Path
+
+It was necessary to upgrade this to a later version that exports the make_path
+function. (This process, in turn, required that make be installed.)
 
 =item Module::CoreList
 

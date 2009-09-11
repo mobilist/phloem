@@ -93,6 +93,13 @@ sub check_code_file
 {
   my $file = shift or croak "No file specified.";
 
+  # Any further arguments are assumed to comprise a hash table of options.
+  my %options = @_;
+
+  # Are we treating warnings as errors?
+  my $warnings_as_errors =
+    exists($options{'WARNINGS_AS_ERRORS'}) && $options{'WARNINGS_AS_ERRORS'};
+
   # Initialise the return value: the file is innocent until proven guilty.
   my $file_ok = 1;
 
@@ -113,7 +120,7 @@ sub check_code_file
     }
     if ($num_warnings > 0) {
       print STDERR "${file}::$num_warnings pod syntax warnings raised.\n";
-      $file_ok = 0;
+      $file_ok = 0 if $warnings_as_errors;
     }
   }
 
