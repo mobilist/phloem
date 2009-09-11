@@ -81,13 +81,18 @@ use constant BASE_URL => 'https://phloem.svn.sourceforge.net/svnroot/phloem';
   # Get the current Phloem version number.
   my $phloem_version = $Phloem::Version::VERSION;
 
-  # Check that a release with this version number does not already exist.
+  # Assemble some URLs.
   my $tags_url = BASE_URL . '/tags';
+  my $release_tag = 'release-' . $phloem_version;
+  my $from = BASE_URL . '/trunk';
+  my $to = $tags_url . '/' . $release_tag;
+
+  # Check that a release with this version number does not already exist.
   {
     print "Getting the list of Phloem releases...\n";
     my @releases = `svn ls $tags_url`
-      or die "Failed to get the list of Phloem releases: $!";
-    if (grep(/^release-$phloem_version\//, @releases)) {
+      // die "Failed to get the list of Phloem releases: $!";
+    if (grep(/^$release_tag\//, @releases)) {
       print STDERR
         "WARNING: A release with version number $phloem_version exists.\n",
         "It looks like you forgot to bump the Phloem version number.\n";
@@ -98,11 +103,11 @@ use constant BASE_URL => 'https://phloem.svn.sourceforge.net/svnroot/phloem';
         exit(1);
       }
       print STDERR "Ploughing on under --force duress...\n";
+      (system("svn rm --force $to") == 0)
+        or die "Failed to remove existing Phloem release tag: $!";
     }
   }
 
-  my $from = BASE_URL . '/trunk';
-  my $to = $tags_url . '/release-' . $phloem_version;
   my $message = "Tagging the $phloem_version release of the Phloem project.";
   print $message, "..\n";
   (system("svn copy $from $to -m \"$message\"") == 0)
