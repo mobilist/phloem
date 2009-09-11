@@ -65,14 +65,12 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Fcntl qw(:flock); # Import LOCK_* constants.
-use FileHandle;
-use File::Basename qw(fileparse);
-use File::Path qw(make_path);
 use File::Spec;
 use Getopt::Long;
 use Pod::Usage;
-use POSIX qw(strftime);
+
+use lib qw(lib);
+use Xylem::Utils::Code;
 
 #==============================================================================
 # Start of main program.
@@ -111,201 +109,34 @@ xxx_END_GPL_HEADER
 
   # Get the module file path.
   my $module_file = $module_name;
-###  $module_file =~ s/::/\//og;
   $module_file = File::Spec->catfile('lib', split('::', $module_file));
   $module_file .= '.pm';
-
-  die "$module_file already exists." if (-e $module_file && !$opt_f);
-
-  # Get the destination directory for the module file.
-  my (undef, $module_dest_dir, undef) = fileparse($module_file);
 
   # Get the path of the corresponding module test file.
   my $module_test_file = $module_file;
   $module_test_file =~ s/\.pm$/\.t/o;
   $module_test_file =~ s/^lib/t/o;
 
-  die "$module_test_file already exists." if (-e $module_test_file && !$opt_f);
-
-  # Get the destination directory for the module test file.
-  my (undef, $module_test_dest_dir, undef) = fileparse($module_test_file);
-
-  # Create destination directories.
-  print "Creating directories...\n";
-  make_path($module_dest_dir, $module_test_dest_dir)
-    // die "Failed to create directory/directories: $!";
-
   # More metadata.
-  my $year = strftime("%Y", localtime);
   my $author = 'Simon Dawson';
   my $author_email = 'spdawson@gmail.com';
 
   # Write the module file.
-  _write_module_file($module_name,
-                     $package_name,
-                     $module_file,
-                     $year,
-                     $author,
-                     $author_email);
+  Xylem::Utils::Code::write_module_file($module_name,
+                                        $package_name,
+                                        $module_file,
+                                        $author,
+                                        $author_email,
+                                        $opt_f);
 
   # Write the module test file.
-  _write_module_test_file($module_name,
-                          $package_name,
-                          $module_test_file,
-                          $year,
-                          $author,
-                          $author_email);
+  Xylem::Utils::Code::write_module_test_file($module_name,
+                                             $package_name,
+                                             $module_test_file,
+                                             $author,
+                                             $author_email,
+                                             $opt_f);
 
   print "Done.\n";
 }
-# End of main program; subroutines follow.
-
-#------------------------------------------------------------------------------
-sub _write_module_file
-# Write the module file.
-{
-  my $module_name = shift or die "No module name specified.";
-  my $package_name = shift or die "No package name specified.";
-  my $module_file = shift or die "No module file path specified.";
-  my $year = shift or die "No year specified.";
-  my $author = shift or die "No author specified.";
-  my $author_email = shift or die "No author e-mail address specified.";
-
-  print "Writing module file $module_file...\n";
-  my $module_fh = FileHandle->new("> $module_file")
-    or die "Failed to open file for writing: $!";
-  flock($module_fh, LOCK_EX)
-    or die "Failed to acquire exclusive file lock: $!";
-
-  print $module_fh <<"xxx_END_MODULE";
-\=head1 NAME
-
-$module_name
-
-\=head1 DESCRIPTION
-
-A module.
-
-\=head1 SYNOPSIS
-
-  use $module_name;
-
-\=head1 METHODS
-
-\=over 8
-
-\=cut
-
-package $module_name;
-
-use strict;
-use warnings;
-use diagnostics;
-
-use Carp;
-
-# Uncomment the following line if you plan to use $package_name modules.
-#use lib qw(lib);
-
-#------------------------------------------------------------------------------
-
-\=item some_method
-
-Some method or another.
-
-\=cut
-
-sub some_method
-{
-  croak "NOT YET WRITTEN!";
-}
-
-1;
-
-\=back
-
-\=head1 COPYRIGHT
-
-Copyright (C) $year $author.
-
-\=head1 AUTHOR
-
-$author E<lt>${author_email}E<gt>
-
-\=head1 LICENSE
-
-This file is part of $package_name.
-
-   $package_name is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-
-   $package_name is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with $package_name.  If not, see <http://www.gnu.org/licenses/>.
-
-\=cut
-xxx_END_MODULE
-
-  flock($module_fh, LOCK_UN) or die "Failed to unlock file: $!";
-  $module_fh->close() or die "Failed to close file: $!";
-}
-
-#------------------------------------------------------------------------------
-sub _write_module_test_file
-# Write the module test file.
-{
-  my $module_name = shift or die "No module name specified.";
-  my $package_name = shift or die "No package name specified.";
-  my $module_test_file = shift or die "No module test file path specified.";
-  my $year = shift or die "No year specified.";
-  my $author = shift or die "No author specified.";
-  my $author_email = shift or die "No author e-mail address specified.";
-
-  print "Writing module test file $module_test_file...\n";
-  my $module_test_fh = FileHandle->new("> $module_test_file")
-    or die "Failed to open file for writing: $!";
-  flock($module_test_fh, LOCK_EX)
-    or die "Failed to acquire exclusive file lock: $!";
-
-  print $module_test_fh <<"xxx_END_TEST";
-#!/usr/bin/perl -w
-#
-# Unit test script for $module_name.
-
-# Copyright (C) $year $author
-#
-# This file is part of $package_name.
-#
-#    $package_name is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    $package_name is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with $package_name.  If not, see <http://www.gnu.org/licenses/>.
-
-use strict;
-use warnings;
-use diagnostics;
-
-use Test::More tests => 1; # qw(no_plan);
-
-BEGIN { use_ok('$module_name'); }
-
-diag("NOT YET WRITTEN!");
-xxx_END_TEST
-
-  flock($module_test_fh, LOCK_UN) or die "Failed to unlock file: $!";
-  $module_test_fh->close() or die "Failed to close file: $!";
-}
+# End of main program.

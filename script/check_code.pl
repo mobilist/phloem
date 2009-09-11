@@ -61,14 +61,12 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Fcntl qw(:flock); # Import LOCK_* constants.
-use FileHandle;
 use File::Find;
 use Getopt::Long;
-use Pod::Checker;
 use Pod::Usage;
 
-use constant MAX_LINE_LENGTH => 80;
+use lib qw(lib);
+use Xylem::Utils::Code;
 
 #==============================================================================
 # Start of main program.
@@ -105,7 +103,7 @@ xxx_END_GPL_HEADER
     return unless (-T $File::Find::name); # Skip non-text files.
 
     # Check the file, and return immediately if it is okay.
-    return if _check_code_file($File::Find::name);
+    return if Xylem::Utils::Code::check_code_file($File::Find::name);
 
     # Update the overall error code, if we haven't seen an error yet.
     $err_code ||= 1;
@@ -114,99 +112,4 @@ xxx_END_GPL_HEADER
 
   exit($err_code);
 }
-# End of main program; subroutines follow.
-
-#------------------------------------------------------------------------------
-sub _check_code_file
-# Check the specified file.
-#
-# Returns true if the file is okay; false otherwise.
-{
-  my $file = shift or die "No file specified.";
-
-  # Initialise the return value: the file is innocent until proven guilty.
-  my $file_ok = 1;
-
-  # Check pod, if this is a Perl file.
-  if ($file =~ /\.p(m|l)$/io) {
-
-    my $pod_checker = Pod::Checker->new('-warnings' => 2);
-    $pod_checker->parse_from_file($file, \*STDERR);
-    my $num_errors = $pod_checker->num_errors();
-    my $num_warnings = $pod_checker->num_warnings();
-    if ($num_errors == -1) {
-      # Treat this as an error: Perl files should contain some documentation.
-      print STDERR "${file}::no pod present.\n";
-      $file_ok = 0;
-    } elsif ($num_errors) {
-      print STDERR "${file}::$num_errors pod syntax errors raised.\n";
-      $file_ok = 0;
-    }
-    if ($num_warnings > 0) {
-      print STDERR "${file}::$num_warnings pod syntax warnings raised.\n";
-      $file_ok = 0;
-    }
-  }
-
-  # Is this a makefile?
-  my $is_makefile = ($file =~ /(?:M|m)akefile$/o);
-
-  my $fh = FileHandle->new("< $file")
-    or die "Failed to open file $file for reading: $!";
-  flock($fh, LOCK_SH) or die "Failed to acquire shared file lock: $!";
-
-  while (my $current_line = <$fh>) {
-
-    # Get the current input line number from the filehandle.
-    my $line_no = $fh->input_line_number();
-
-    # Check code.
-    {
-      # Check for tab characters.
-      if ($current_line =~ /\t/o) {
-        if ($is_makefile) {
-          # In a makefile, tab characters should only appear at the start of
-          # nontrivial lines.
-          unless ($current_line =~ /^\t\S/o) {
-            print STDERR
-              "$file:$line_no:tab not at start of nontrivial line.\n";
-            $file_ok = 0;
-          }
-        } else {
-          # Tab characters are expressly forbidden outside of makefiles.
-          print STDERR "$file:$line_no:tab character(s) present.\n";
-          $file_ok = 0;
-        }
-      }
-
-      # Look for non-blank lines with trailing whitespace.
-      if ($current_line =~ /\S[ \t]+$/o) {
-        print STDERR
-          "$file:$line_no:trailing whitespace character(s) present.\n";
-        $file_ok = 0;
-      }
-
-      # Look for non-trivial whitespace-only lines.
-      if ($current_line =~ /^[ \t]+$/o) {
-        print STDERR
-          "$file:$line_no:only whitespace character(s) are present.\n";
-        $file_ok = 0;
-      }
-
-      # Look for lines that are longer than a fixed limit.
-      if (length($current_line) > MAX_LINE_LENGTH) {
-        print STDERR
-          "$file:$line_no:line is longer than ",
-          MAX_LINE_LENGTH,
-          " characters.\n";
-        $file_ok = 0;
-      }
-    }
-
-  }
-
-  flock($fh, LOCK_UN) or die "Failed to unlock file: $!";
-  $fh->close() or die "Failed to close file: $!";
-
-  return $file_ok;
-}
+# End of main program.
