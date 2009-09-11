@@ -33,6 +33,10 @@ Print the license terms, and then exit.
 Force the release, overwriting any existing release with the same version
 number.
 
+=item B<-s, --simulate>
+
+Don't actually do anything; just simulate what would be done.
+
 =back
 
 =head1 COPYRIGHT
@@ -69,14 +73,16 @@ use diagnostics;
 use lib qw(lib);
 use Phloem::Version;
 use Xylem::Utils::Code;
+use Xylem::Utils::File;
 
 use constant BASE_URL => 'https://phloem.svn.sourceforge.net/svnroot/phloem';
 
 #==============================================================================
 # Start of main program.
 {
-  my ($opt_f);
-  Xylem::Utils::Code::process_command_line('f|force' => \$opt_f);
+  my ($opt_f, $opt_s);
+  Xylem::Utils::Code::process_command_line('f|force'    => \$opt_f,
+                                           's|simulate' => \$opt_s);
 
   # Get the current Phloem version number.
   my $phloem_version = $Phloem::Version::VERSION;
@@ -86,6 +92,19 @@ use constant BASE_URL => 'https://phloem.svn.sourceforge.net/svnroot/phloem';
   my $release_tag = 'release-' . $phloem_version;
   my $from = BASE_URL . '/trunk';
   my $to = $tags_url . '/' . $release_tag;
+
+  # Check that the change log file contains an entry for the release.
+  {
+    print "Checking the change log...\n";
+    my $change_log = Xylem::Utils::File::read('Changes');
+    my $version_number = $phloem_version;
+    $version_number=~ s/^v//o; # Remove leading 'v'.
+    unless ($change_log =~ /\b$version_number\b/o) {
+      print STDERR
+        "ERROR: It looks like you forgot to update the change log.\n";
+      exit(1);
+    }
+  }
 
   # Check that a release with this version number does not already exist.
   {
@@ -103,15 +122,23 @@ use constant BASE_URL => 'https://phloem.svn.sourceforge.net/svnroot/phloem';
         exit(1);
       }
       print STDERR "Ploughing on under --force duress...\n";
-      (system("svn rm --force $to") == 0)
-        or die "Failed to remove existing Phloem release tag: $!";
+      if ($opt_s) {
+        print "Simulate mode: svn rm --force $to\n";
+      } else {
+        (system("svn rm --force $to") == 0)
+          or die "Failed to remove existing Phloem release tag: $!";
+      }
     }
   }
 
   my $message = "Tagging the $phloem_version release of the Phloem project.";
   print $message, "..\n";
-  (system("svn copy $from $to -m \"$message\"") == 0)
-    or die "Failed to release a new version of Phloem: $!";
+  if ($opt_s) {
+    print "Simulate mode: svn copy $from $to -m \"$message\"\n";
+  } else {
+    (system("svn copy $from $to -m \"$message\"") == 0)
+      or die "Failed to release a new version of Phloem: $!";
+  }
 
   print "Done.\n";
 }
