@@ -355,6 +355,9 @@ configuration is very incomplete.
 
 Improve the module documentation.
 
+This especially needs doing for the modules under the Xylem::Utils:: namespace,
+and a large number of those under the Phloem:: namespace.
+
 =item *
 
 Expand unit test coverage.

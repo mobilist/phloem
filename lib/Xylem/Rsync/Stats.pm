@@ -9,6 +9,12 @@ Statistics for an rsync data transfer.
 =head1 SYNOPSIS
 
   use Xylem::Rsync::Stats;
+  my $transfer_stats =
+    Xylem::Rsync::Stats->new('num_files'             => 3,
+                             'num_files_transferred' => 2,
+                             'total_bytes_sent'      => 48);
+  $transfer_stats->transfer_rate(1.234);
+  print $transfer_stats->total_bytes_received(), "\n";
 
 =head1 METHODS
 
