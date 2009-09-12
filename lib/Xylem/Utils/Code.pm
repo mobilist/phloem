@@ -21,23 +21,24 @@ Utilities for generating and working with Perl code.
   die "Should not depend on the Egg::Farmer."
     if exists($deps{'Egg::Farmer'});
 
-  Xylem::Utils::Code::write_script_file('script.pl',
-                                        'Xylem',
-                                        'some/script.pl',
-                                        'Lemuel Gulliver',
-                                        'lemuelg@gmail.com');
+  Xylem::Utils::Code::write_script_file('script_name'  => 'script.pl',
+                                        'package_name' => 'Xylem',
+                                        'script_file'  => 'some/script.pl',
+                                        'author'       => 'Lemuel Gulliver',
+                                        'author_email' => 'lemuelg@gmail.com');
 
-  Xylem::Utils::Code::write_module_file('Xylem::Horse',
-                                        'Xylem',
-                                        'lib/Xylem/Horse.pm'
-                                        'Lemuel Gulliver',
-                                        'lemuelg@gmail.com');
+  Xylem::Utils::Code::write_module_file('module_name'  => 'Xylem::Horse',
+                                        'package_name' => 'Xylem',
+                                        'module_file'  => 'lib/Xylem/Horse.pm'
+                                        'author'       => 'Lemuel Gulliver',
+                                        'author_email' => 'lemuelg@gmail.com');
 
-  Xylem::Utils::Code::write_module_test_file('Xylem::Horse',
-                                        'Xylem',
-                                        't/Xylem/Horse.t'
-                                        'Lemuel Gulliver',
-                                        'lemuelg@gmail.com');
+  Xylem::Utils::Code::write_module_test_file(
+    'module_name'      => 'Xylem::Horse',
+    'package_name'     => 'Xylem',
+    'module_test_file' => 't/Xylem/Horse.t'
+    'author'           => 'Lemuel Gulliver',
+    'author_email'     => 'lemuelg@gmail.com');
 
 =head1 METHODS
 
@@ -253,12 +254,16 @@ Write a new skeleton script file, using the specified parameters.
 
 sub write_script_file
 {
-  my $script_name = shift or croak "No script name specified.";
-  my $package_name = shift or croak "No package name specified.";
-  my $script_file = shift or croak "No script file path specified.";
-  my $author = shift or croak "No author specified.";
-  my $author_email = shift or croak "No author e-mail address specified.";
-  my $force_flag = shift; # Optional argument.
+  my %args = @_;
+  my $script_name = $args{'script_name'} or croak "No script name specified.";
+  my $package_name = $args{'package_name'}
+    or croak "No package name specified.";
+  my $script_file = $args{'script_file'}
+    or croak "No script file path specified.";
+  my $author = $args{'author'} or croak "No author specified.";
+  my $author_email = $args{'author_email'}
+    or croak "No author e-mail address specified.";
+  my $force_flag = $args{'force'}; # Optional argument.
 
   croak "$script_file already exists." if (-e $script_file && !$force_flag);
 
@@ -384,12 +389,16 @@ Write a new skeleton module file, using the specified parameters.
 
 sub write_module_file
 {
-  my $module_name = shift or croak "No module name specified.";
-  my $package_name = shift or croak "No package name specified.";
-  my $module_file = shift or croak "No module file path specified.";
-  my $author = shift or croak "No author specified.";
-  my $author_email = shift or croak "No author e-mail address specified.";
-  my $force_flag = shift; # Optional argument.
+  my %args = @_;
+  my $module_name = $args{'module_name'} or croak "No module name specified.";
+  my $package_name = $args{'package_name'}
+    or croak "No package name specified.";
+  my $module_file = $args{'module_file'}
+    or croak "No module file path specified.";
+  my $author = $args{'author'} or croak "No author specified.";
+  my $author_email = $args{'author_email'}
+    or croak "No author e-mail address specified.";
+  my $force_flag = $args{'force'}; # Optional argument.
 
   croak "$module_file already exists." if (-e $module_file && !$force_flag);
 
@@ -496,12 +505,16 @@ Write a new skeleton module test file, using the specified parameters.
 
 sub write_module_test_file
 {
-  my $module_name = shift or croak "No module name specified.";
-  my $package_name = shift or croak "No package name specified.";
-  my $module_test_file = shift or croak "No module test file path specified.";
-  my $author = shift or croak "No author specified.";
-  my $author_email = shift or croak "No author e-mail address specified.";
-  my $force_flag = shift; # Optional argument.
+  my %args = @_;
+  my $module_name = $args{'module_name'} or croak "No module name specified.";
+  my $package_name = $args{'package_name'}
+    or croak "No package name specified.";
+  my $module_test_file = $args{'module_test_file'}
+    or croak "No module test file path specified.";
+  my $author = $args{'author'} or croak "No author specified.";
+  my $author_email = $args{'author_email'}
+    or croak "No author e-mail address specified.";
+  my $force_flag = $args{'force'}; # Optional argument.
 
   croak "$module_test_file already exists."
     if (-e $module_test_file && !$force_flag);

@@ -94,11 +94,11 @@ use constant SCRIPT_DEST_DIR => 'script';
   my $author_email = 'spdawson@gmail.com';
 
   # Write the script file.
-  Xylem::Utils::Code::write_script_file($script_name,
-                                        $package_name,
-                                        $script_file,
-                                        $author,
-                                        $author_email,
-                                        $opt_f);
+  Xylem::Utils::Code::write_script_file('script_name'  => $script_name,
+                                        'package_name' => $package_name,
+                                        'script_file'  => $script_file,
+                                        'author'       => $author,
+                                        'author_email' => $author_email,
+                                        'force'        => $opt_f);
 }
 # End of main program.

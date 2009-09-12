@@ -105,20 +105,21 @@ use Xylem::Utils::Code;
   my $author_email = 'spdawson@gmail.com';
 
   # Write the module file.
-  Xylem::Utils::Code::write_module_file($module_name,
-                                        $package_name,
-                                        $module_file,
-                                        $author,
-                                        $author_email,
-                                        $opt_f);
+  Xylem::Utils::Code::write_module_file('module_name'  => $module_name,
+                                        'package_name' => $package_name,
+                                        'module_file'  => $module_file,
+                                        'author'       => $author,
+                                        'author_email' => $author_email,
+                                        'force'        => $opt_f);
 
   # Write the module test file.
-  Xylem::Utils::Code::write_module_test_file($module_name,
-                                             $package_name,
-                                             $module_test_file,
-                                             $author,
-                                             $author_email,
-                                             $opt_f);
+  Xylem::Utils::Code::write_module_test_file(
+    'module_name'      => $module_name,
+    'package_name'     => $package_name,
+    'module_test_file' => $module_test_file,
+    'author'           => $author,
+    'author_email'     => $author_email,
+    'force'            => $opt_f);
 
   print "Done.\n";
 }
