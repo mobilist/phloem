@@ -208,6 +208,16 @@ sub check_code_file
           " characters.\n";
         $file_ok = 0;
       }
+
+      # Look for commas that are not immediately followed by a space.
+      #
+      # N.B. We have to use the "extended" regular expression syntax, otherwise
+      #      we'd detect the test regex.
+      if ($current_line =~ /, \S/ox) {
+        print STDERR
+          "$file:$line_no:comma not immediately followed by a space.";
+        $file_ok = 0;
+      }
     }
 
   }
