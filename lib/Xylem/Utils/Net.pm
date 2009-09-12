@@ -10,6 +10,14 @@ Network utilities for Xylem.
 
   use Xylem::Utils::Net;
 
+  print "We can do searching.\n" if Xylem::Utils::Net::ping('google.com');
+
+  my $server_sock = Xylem::Utils::Net::get_server_tcp_socket(9999, '1.2.3.4');
+
+  my $client_sock = Xylem::Utils::Net::get_client_tcp_socket('1.2.3.4', 9999);
+
+  my $data = Xylem::Utils::Net::read_from_socket($client_sock);
+
 =head1 METHODS
 
 =over 8
@@ -104,6 +112,28 @@ sub get_client_tcp_socket
   $sock->autoflush(1);
 
   return $sock;
+}
+
+#------------------------------------------------------------------------------
+
+=item read_from_socket
+
+Read data from the specified socket, returning a scalar.
+
+=cut
+
+sub read_from_socket
+{
+  my $sock = shift or die "No socket specified.";
+  die "Expected a TCP/IP socket." unless $sock->isa('IO::Socket::INET');
+
+  # Read from the socket.
+  my $input = '';
+  while (<$sock>) {
+    $input .= $_;
+  }
+
+  return $input;
 }
 
 1;

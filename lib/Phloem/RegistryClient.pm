@@ -63,7 +63,7 @@ sub register_node
     "\r\n";
 
   # Read the output from the registry server.
-  my $input = _read_from_server_socket($sock);
+  my $input = Xylem::Utils::Net::read_from_socket($sock);
 
   $sock->shutdown(2) or die "Failed to shut down client socket: $!";
 
@@ -105,7 +105,7 @@ sub get_all_nodes
   print $sock "GET\r\n", "\r\n";
 
   # Read the output from the registry server.
-  my $input = _read_from_server_socket($sock);
+  my $input = Xylem::Utils::Net::read_from_socket($sock);
 
   $sock->shutdown(2) or die "Failed to shut down client socket: $!";
 
@@ -164,22 +164,6 @@ sub _get_socket
   }
 
   return $sock;
-}
-
-#------------------------------------------------------------------------------
-sub _read_from_server_socket
-# Read data from the specified server socket.
-{
-  my $sock = shift or die "No socket specified.";
-  die "Expected a TCP/IP socket." unless $sock->isa('IO::Socket::INET');
-
-  # Read from the socket.
-  my $input = '';
-  while (<$sock>) {
-    $input .= $_;
-  }
-
-  return $input;
 }
 
 1;

@@ -355,8 +355,20 @@ configuration is very incomplete.
 
 Improve the module documentation.
 
-This especially needs doing for the modules under the Xylem::Utils:: namespace,
-and a large number of those under the Phloem:: namespace.
+Specifically, for the following modules.
+
+Phloem::Filter
+Phloem::Node
+Phloem::NodeAdvertiser
+Phloem::Registry
+Phloem::RegistryClient
+Phloem::RegistryServer
+Phloem::Role
+Phloem::Role::Subscribe
+Phloem::Role::Publish
+Phloem::Root
+Phloem::Rsync
+Phloem::Subscriber
 
 =item *
 

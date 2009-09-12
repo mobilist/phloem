@@ -10,6 +10,35 @@ Utilities for generating and working with Perl code.
 
   use Xylem::Utils::Code;
 
+  my ($opt_f, $opt_s);
+  Xylem::Utils::Code::process_command_line('f|file=s'   => \$opt_f,
+                                           's|simulate' => \$opt_s);
+
+  die "Problems found when checking code."
+    unless Xylem::Utils::Code::check_code_file('some/script.pl');
+
+  my %deps = Xylem::Utils::Code::get_dependencies('some/script.pl');
+  die "Should not depend on the Egg::Farmer."
+    if exists($deps{'Egg::Farmer'});
+
+  Xylem::Utils::Code::write_script_file('script.pl',
+                                        'Xylem',
+                                        'some/script.pl',
+                                        'Lemuel Gulliver',
+                                        'lemuelg@gmail.com');
+
+  Xylem::Utils::Code::write_module_file('Xylem::Horse',
+                                        'Xylem',
+                                        'lib/Xylem/Horse.pm'
+                                        'Lemuel Gulliver',
+                                        'lemuelg@gmail.com');
+
+  Xylem::Utils::Code::write_module_test_file('Xylem::Horse',
+                                        'Xylem',
+                                        't/Xylem/Horse.t'
+                                        'Lemuel Gulliver',
+                                        'lemuelg@gmail.com');
+
 =head1 METHODS
 
 =over 8

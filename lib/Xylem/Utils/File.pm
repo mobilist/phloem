@@ -10,6 +10,12 @@ File utilities for Xylem.
 
   use Xylem::Utils::File;
 
+  Xylem::Utils::File::append_line('Hello teh World!', 'some/file.txt');
+  Xylem::Utils::File::clear('some/file.txt');
+  my $content = Xylem::Utils::File::read('some/file.txt');
+  Xylem::Utils::File::write('some/other/file.txt', $content);
+  Xylem::Utils::File::find( sub { my $file = shift; print "Saw $file\n"; } );
+
 =head1 METHODS
 
 =over 8
