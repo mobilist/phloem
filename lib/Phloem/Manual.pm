@@ -35,6 +35,11 @@ Phloem currently depends on the following non-core Perl modules.
 As of Perl 5.10.1, this is actually a core module. If you've got an older
 Perl, then you'll have to install it using cpan. Sorry about that.
 
+=item Mail::Sendmail
+
+As you might expect, this is needed so that Phloem is able to send out e-mails
+in the case of warnings and/or errors.
+
 =item XML::Simple
 
 This is used to parse the node definition file, which currently uses an XML

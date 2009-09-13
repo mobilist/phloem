@@ -110,9 +110,10 @@ xxx_END_MANIFEST_SKIP
     'create_readme' => 1,
     'dist_author'   => 'Simon Dawson <spdawson@gmail.com>',
     'license'       => 'gpl',
-    'requires'      => {'perl'        => '5.10.0',
-                        'XML::Simple' => 0,
-                        'App::Prove'  => 0},
+    'requires'      => {'perl'           => '5.10.0',
+                        'App::Prove'     => 0,
+                        'Mail::Sendmail' => 0.75,
+                        'XML::Simple'    => 0},
     'create_makefile_pl'   => 'passthrough',
     'recursive_test_files' => 1,
     'script_files'         => [qw(script/phloem.pl)]);
