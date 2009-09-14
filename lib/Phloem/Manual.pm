@@ -157,7 +157,7 @@ To avoid confusion, therefore, it is best to specify absolute paths.
 
 A basic conceptual overview of Phloem follows.
 
-=head2 PURPOSE
+=head2 Purpose
 
 Phloem can serve many purposes. It should be suitable for almost any
 application in which content is to be delivered automatically around a
@@ -171,7 +171,7 @@ Another application would be to allow a pair of hosts to share content
 automatically between nominated directories --- a "drop box" style file
 transfer system.
 
-=head2 NETWORK
+=head2 Network
 
 =over 8
 
@@ -186,6 +186,12 @@ The network topology is tree-like, having no closed loops: a directed
 acyclic graph, in other words.
 
 =item *
+
+Each node is manually assigned a unique identifier on the network.
+
+=back
+
+=head2 Routes
 
 There are two "routes" through the network:
 
@@ -203,22 +209,16 @@ node.
 
 =back
 
+=head2 Roles
+
+=over 8
+
 =item *
 
 Each node has a set of "roles", which is a subset of the following set.
 
   {publisher(root2leaf), publisher(leaf2root),
    subscriber(root2leaf), subscriber(leaf2root)}
-
-=item *
-
-Each node is manually assigned a unique identifier on the network.
-
-=back
-
-=head2 ROLES
-
-=over 8
 
 =item *
 
@@ -240,6 +240,12 @@ N.B. A given node may have 0, 1 or 2 such "incoming" directories, depending
 
 For a given node having both publish and subscribe roles for a given route,
 the "incoming" and "outgoing" base directories may be the same.
+
+=back
+
+=head2 Publish/subscribe
+
+=over 8
 
 =item *
 
@@ -278,13 +284,13 @@ from which to retreive its content on the relevant route.
 
 =back
 
-=head2 TRANSPORT
+=head2 Transport
 
 Phloem relies on C<rsync(1)> for its content transport duties. This greatly
 alleviates the burdon on the system, delegating all concerns of
 synchronisation, compression, authentication, etc.
 
-=head2 LIGHTWEIGHT?
+=head2 Lightweight?
 
 Is the system really lightweight, as intended? Let's examine the proces counts
 for a running (single node) system.
@@ -483,16 +489,18 @@ necessary to install the following modules using cpan.
 
 =over 8
 
-=item App::Prove
+=item *
 
-This had to be installed, along with its prerequisities.
+App::Prove had to be installed, along with its prerequisities.
 
-=item File::Path
+=item *
 
-It was necessary to upgrade this to a later version that exports the make_path
+File::Path had to be upgraded to a later version that exports the make_path
 function. (This process, in turn, required that make be installed.)
 
-=item Module::CoreList
+=item *
+
+Module::CoreList
 
 =back
 
