@@ -117,6 +117,10 @@ Check the code in the specified file for common problems.
 
 Returns true if the file is okay; false otherwise.
 
+A hash table of options can be supplied, although this is not mandatory. The
+single supported option is currently 'warnings_as_errors', which treats
+warnings and errors with the same degree of severity.
+
 =cut
 
 sub check_code_file
