@@ -124,11 +124,11 @@ sub check_code_file
   my $file = shift or croak "No file specified.";
 
   # Any further arguments are assumed to comprise a hash table of options.
-  my %options = @_;
+  my %args = @_;
 
   # Are we treating warnings as errors?
   my $warnings_as_errors =
-    exists($options{'WARNINGS_AS_ERRORS'}) && $options{'WARNINGS_AS_ERRORS'};
+    exists($args{'warnings_as_errors'}) && $args{'warnings_as_errors'};
 
   # Initialise the return value: the file is innocent until proven guilty.
   my $file_ok = 1;

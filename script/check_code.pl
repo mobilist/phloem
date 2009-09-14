@@ -78,7 +78,7 @@ use Xylem::Utils::File;
 
     # Check the file, and return immediately if it is okay.
     return if Xylem::Utils::Code::check_code_file($file,
-                                                  'WARNINGS_AS_ERRORS' => 1);
+                                                  'warnings_as_errors' => 1);
 
     # Update the overall error code, if we haven't seen an error yet.
     $err_code ||= 1;
