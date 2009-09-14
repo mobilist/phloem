@@ -66,7 +66,7 @@ use Phloem::Version;
 use Xylem::Utils::Code;
 use Xylem::Utils::File;
 
-use constant ARCHIVE_PREFIX => 'phloem';
+use constant PREFIX => 'phloem';
 
 #==============================================================================
 # Start of main program.
@@ -74,14 +74,14 @@ use constant ARCHIVE_PREFIX => 'phloem';
   Xylem::Utils::Code::process_command_line();
 
   # Put together the archive file name, using the Phloem version number.
-  my $archive_file_name = ARCHIVE_PREFIX . '-' . $Phloem::Version::VERSION;
+  my $archive_file_name = PREFIX . '-' . $Phloem::Version::VERSION . '.tar.gz';
+
+  die "File $archive_file_name already exists." if (-f $archive_file_name);
 
   my @files;
   Xylem::Utils::File::find( sub { push(@files, shift) } );
 
-  Xylem::Utils::File::create_archive($archive_file_name,
-                                     ARCHIVE_PREFIX,
-                                     \@files);
+  Xylem::Utils::File::create_archive($archive_file_name, \@files, PREFIX);
 
   print "Created archive ", $archive_file_name, "\n";
 }

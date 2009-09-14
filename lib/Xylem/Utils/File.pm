@@ -208,24 +208,23 @@ sub strip_cr
 
 Create the specified compressed archive file, adding the specified files to it.
 
-The first argument is the archive file path to create. The second is a "prefix"
-string which will be used as an ersatz top-level directory in the archive. The
-third argument is an array reference of the file paths to add the the archive.
+The first argument is the archive file path to create. The second argument is
+an array reference of the file paths to add the the archive.
+
+The third argument is an optional "prefix" string which will be used as an
+ersatz top-level directory in the archive.
 
 =cut
 
 sub create_archive
 {
   my $archive_file_name = shift or croak "No archive file name specified.";
-  my $archive_prefix = shift or croak "No archive prefix specified.";
   my $files_arrayref = shift or croak "No files to archive.";
-  die "Expected an array reference." unless (ref($files_arrayref) eq 'ARRAY');
+  my $archive_prefix = shift || undef; # Undef if we get an empty string or 0.
 
-  # Sort out the archive file name, and sanity check it.
-  $archive_file_name =~ s/\.tar\.gz$//o;
-  $archive_file_name .= '.tar.gz';
-  croak "Archive file $archive_file_name already exists."
-    if (-f $archive_file_name);
+  # Sanity checking.
+  croak "Expected an array reference."
+    unless (ref($files_arrayref) eq 'ARRAY');
 
   my $tar = Archive::Tar->new()
     or croak "Failed to create archive: " . $Archive::Tar::error;
