@@ -28,6 +28,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Archive::Tar;
 use Carp;
 use English;
 use Fcntl qw(:seek); # Import SEEK_* constants.
@@ -175,6 +176,65 @@ sub find
     return $user_sub->($File::Find::name);
   };
   File::Find::find({'wanted' => $wanted_sub, 'no_chdir' => 1}, '.');
+}
+
+#------------------------------------------------------------------------------
+
+=item strip_cr
+
+Strip carriage returns out of the specified file, replacing \r\n with \n
+globally.
+
+N.B. This will modify the specified file in place.
+
+=cut
+
+sub strip_cr
+{
+  my $file = shift or croak "No file specified.";
+
+  # N.B. Disambiguate from CORE::read().
+  my $content = Xylem::Utils::File::read($file);
+
+  $content =~ s/\r\n/\n/og;
+
+  # N.B. Disambiguate from CORE::write().
+  Xylem::Utils::File::write($file, $content);
+}
+
+#------------------------------------------------------------------------------
+
+=item create_archive
+
+Create the specified compressed archive file, adding the specified files to it.
+
+The first argument is the archive file path to create. The second is a "prefix"
+string which will be used as an ersatz top-level directory in the archive. The
+third argument is an array reference of the file paths to add the the archive.
+
+=cut
+
+sub create_archive
+{
+  my $archive_file_name = shift or croak "No archive file name specified.";
+  my $archive_prefix = shift or croak "No archive prefix specified.";
+  my $files_arrayref = shift or croak "No files to archive.";
+  die "Expected an array reference." unless (ref($files_arrayref) eq 'ARRAY');
+
+  # Sort out the archive file name, and sanity check it.
+  $archive_file_name =~ s/\.tar\.gz$//o;
+  $archive_file_name .= '.tar.gz';
+  croak "Archive file $archive_file_name already exists."
+    if (-f $archive_file_name);
+
+  my $tar = Archive::Tar->new()
+    or croak "Failed to create archive: " . $Archive::Tar::error;
+
+  $tar->add_files(@$files_arrayref)
+    or croak "Failed to add files: " . $tar->error();
+
+  $tar->write($archive_file_name, COMPRESS_GZIP, $archive_prefix)
+    or croak "Failed to write archive: " . $tar->error();
 }
 
 1;

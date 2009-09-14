@@ -61,15 +61,12 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Archive::Tar;
-
 use lib qw(lib);
 use Phloem::Version;
 use Xylem::Utils::Code;
 use Xylem::Utils::File;
 
-# This file name contains a place-holder for the Phloem version number.
-use constant ARCHIVE_FILE_NAME => 'phloem-$VERSION.tar.gz';
+use constant ARCHIVE_PREFIX => 'phloem';
 
 #==============================================================================
 # Start of main program.
@@ -77,26 +74,14 @@ use constant ARCHIVE_FILE_NAME => 'phloem-$VERSION.tar.gz';
   Xylem::Utils::Code::process_command_line();
 
   # Put together the archive file name, using the Phloem version number.
-  my $archive_file_name = ARCHIVE_FILE_NAME;
-  $archive_file_name =~ s/\$VERSION/$Phloem::Version::VERSION/o;
-  die "Archive file already exists." if (-f $archive_file_name);
-
-  my $tar = Archive::Tar->new()
-    or die "Failed to create archive: " . $Archive::Tar::error;
+  my $archive_file_name = ARCHIVE_PREFIX . '-' . $Phloem::Version::VERSION;
 
   my @files;
+  Xylem::Utils::File::find( sub { push(@files, shift) } );
 
-  my $user_sub = sub {
-    my $file = shift;
-
-    push(@files, $file);
-  };
-  Xylem::Utils::File::find($user_sub);
-
-  $tar->add_files(@files) or die "Failed to add files: " . $tar->error();
-
-  $tar->write($archive_file_name, COMPRESS_GZIP, 'phloem')
-    or die "Failed to write archive: " . $tar->error();
+  Xylem::Utils::File::create_archive($archive_file_name,
+                                     ARCHIVE_PREFIX,
+                                     \@files);
 
   print "Created archive ", $archive_file_name, "\n";
 }
