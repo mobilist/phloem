@@ -353,11 +353,9 @@ separate process; it depends whether its workload justifies the overhead.
 
 =item *
 
-Add a mailer module to Xylem. Yes, this will add yet another non-core
-dependency, but it is justifiable in this case.
-
-Hook up the new mailer module to the logger. Maybe introduce the concept of
-"log levels", so that only warnings/errors will generate e-mails...
+Hook up the Xylem::Mailer module to the logger. We'll probably need to add
+warning/error methods to the logger --- we won't want e-mails sent out for
+all logging.
 
 =item *
 
