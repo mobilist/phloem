@@ -70,12 +70,15 @@ use strict;
 use warnings;
 use diagnostics;
 
+use File::Spec;
+
 use lib qw(lib);
 use Phloem::Version;
 use Xylem::Utils::Code;
 use Xylem::Utils::File;
 
-use constant BASE_URL => 'https://phloem.svn.sourceforge.net/svnroot/phloem';
+use constant BASE_URL  => 'https://phloem.svn.sourceforge.net/svnroot/phloem';
+use constant DEVELOPER => 'sconedog';
 
 #==============================================================================
 # Start of main program.
@@ -131,15 +134,74 @@ use constant BASE_URL => 'https://phloem.svn.sourceforge.net/svnroot/phloem';
     }
   }
 
-  my $message = "Tagging the $phloem_version release of the Phloem project.";
-  print $message, "..\n";
-  if ($opt_s) {
-    print "Simulate mode: svn copy $from $to -m \"$message\"\n";
-  } else {
-    (system("svn copy $from $to -m \"$message\"") == 0)
-      or die "Failed to release a new version of Phloem: $!";
+  # Create the subversion tag for the release.
+  {
+    my $message = "Tagging the $phloem_version release of the Phloem project.";
+    print $message, "..\n";
+    if ($opt_s) {
+      print "Simulate mode: svn copy $from $to -m \"$message\"\n";
+    } else {
+      (system("svn copy $from $to -m \"$message\"") == 0)
+        or die "Failed to release a new version of Phloem: $!";
+    }
   }
+
+  # Create a tarball of the release, and upload it to SourceForge.
+  _upload_release_tarball($opt_f, $opt_s);
 
   print "Done.\n";
 }
-# End of main program.
+# End of main program; subroutines follow.
+
+#------------------------------------------------------------------------------
+sub _upload_release_tarball
+# Create a tarball of the release, and upload it to SourceForge.
+{
+  # Get the inputs: "force" and "simulate" flags.
+  my ($opt_f, $opt_s) = @_;
+
+  # Create the tarball.
+  my $archive_file_name;
+  {
+    print "Creating release tarball...\n";
+    my $create_command = './script/create_tarball.pl';
+    $create_command .= ' --force' if $opt_f; # Force, if appropriate.
+    $create_command .= ' 2>' . File::Spec->devnull(); # Discard standard error.
+    my @caught_output;
+    if ($opt_s) {
+      print "Simulate mode: $create_command\n";
+      $archive_file_name = 'dummy.tar.gz'; # N.B. For simulation purposes only.
+    } else {
+      @caught_output = `$create_command` or die "Failed to create tarball.";
+    }
+
+    # Attempt to get the archive file name.
+    foreach my $current_line (@caught_output) {
+      if ($current_line =~ /^Created archive (.*)$/o) {
+        $archive_file_name = $1;
+        last;
+      }
+    }
+  }
+  die "Failed to get archive file name." unless $archive_file_name;
+
+  # Attempt to upload the release tarball to SourceForge.
+  print "Uploading $archive_file_name to SourceForge...\n";
+  my $upload_command =
+    "scp $archive_file_name " . DEVELOPER . '@frs.sourceforge.net:' .
+    '/home/frs/project/p/ph/phloem/releases';
+  if ($opt_s) {
+    print "Simulate mode: $upload_command\n";
+  } else {
+    (system($upload_command) == 0)
+      or die "Failed to upload tarball to SourceForge: $!";
+  }
+
+  # Clean up after ourself.
+  if ($opt_s) {
+    print "Simulate mode: unlink($archive_file_name)\n";
+  } else {
+    unlink($archive_file_name)
+      or die "Failed to delete file $archive_file_name: $!";
+  }
+}
