@@ -23,9 +23,12 @@ use strict;
 use warnings;
 use diagnostics;
 
+require overload;
+
 use Carp;
 use Data::Dumper;
 use Safe;
+use Scalar::Util qw(blessed reftype refaddr);
 
 use base qw(Xylem::Dumper);
 
@@ -55,41 +58,6 @@ sub _do_data_load
 
   my $data = shift or croak "No object data specified.";
 
-  # Check the object data for safety.
-  $class->_check_object_code($data);
-
-  # Okay, now we know that the code is safe. Let's eval it "for real".
-  #
-  # N.B. I have no idea why this is necessary --- it is likely to be a
-  #      namespace problem. The first reval should be sufficient...
-  #
-  #      At http://www.perlmonks.org/?node_id=151604, I found the following
-  #      note.
-  #
-  #        "Safe's restricted environment causes blessed objects to lose their
-  #        'magic' when passed back out. Here we simply re-bless the object to
-  #        correct that."
-  #
-  # However, re-blessing doesn't seem to quite do enough. (I submitted the
-  # re-blessing code in revision 145, but have since reverted to the eval.)
-  my $self = eval " $data ";
-  croak "Failed to eval object data: $@" if $@;
-
-  return $self;
-}
-
-#------------------------------------------------------------------------------
-sub _check_object_code
-# Check the specified textual data --- ostensibly, object code --- for safety.
-#
-# N.B. This is a class method.
-{
-  my $class = shift or croak "No class name specified.";
-  croak "Expected an ordinary scalar." if ref($class);
-  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
-
-  my $data = shift or croak "No textual data specified.";
-
   # Evaluate the code in an opcode-safe compartment. Only the base-minimum of
   # opcodes are allowed. In particular, no system calls can be made. This is
   # necessary because the data could have come from anywhere, and cannot
@@ -104,6 +72,60 @@ sub _check_object_code
     croak "Failed to reconstruct object: $@";
   croak "Failed to reconstruct object of class $class."
     unless (ref($self) eq $class);
+
+  # Fix up any blessed references.
+  _walk($self);
+
+  return $self;
+}
+
+#------------------------------------------------------------------------------
+sub _walk
+# Walk the specified data structure, fixing up any blessed references.
+#
+# We need to do this because the values we get back from the Safe compartment
+# will have packages defined from the compartment's *main instead of our own.
+#
+# N.B. This is heavily based on code from CGI::Session::Serialize::default,
+#      but with the overload-handling code removed. (We don't care about
+#      overloading: none of our code uses it.)
+{
+  my @filter = _scan(shift);
+
+  # N.B. We allow the value assigned to a key to be undef; hence the defined()
+  # test is not in the while().
+  my %seen;
+  while (@filter) {
+    defined(my $x = shift(@filter)) or next;
+    $seen{refaddr($x) || ''}++ and next;
+
+    my $reftype = reftype($x) or next;
+    if ($reftype eq 'HASH') {
+      # We use this form to make certain we have aliases to the values in
+      # %$x and not copies.
+      push(@filter, _scan(@{$x}{keys(%$x)}));
+    } elsif ($reftype eq 'ARRAY') {
+      push(@filter, _scan(@$x));
+    } elsif ($reftype eq 'SCALAR' || $reftype eq 'REF') {
+      push(@filter, _scan($$x));
+    } else {
+      croak "Reference type $reftype is not supported.";
+    }
+  }
+}
+
+#------------------------------------------------------------------------------
+sub _scan
+# Scan the specified data structure, re-blessing as necessary.
+{
+  # N.B. $_ gets aliased to each value from @_ which are aliases of the
+  #      values in the current data structure.
+  for (@_) {
+    next unless blessed($_);
+    croak "Overloading is not supported." if overload::Overloaded($_);
+    bless($_, ref($_));
+  }
+  return @_;
 }
 
 1;
