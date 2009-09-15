@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 7; # qw(no_plan);
+use Test::More tests => 8; # qw(no_plan);
 
 BEGIN { use_ok('Xylem::Dumper'); }
 
@@ -44,6 +44,7 @@ diag($data);
 ok(my $dummy2 = Dummy->data_load($data),
    'Recreating object from dumped data.');
 is_deeply($dummy2, $dummy, 'Objects should be identical.');
+is(ref($dummy2), ref($dummy), 'Objects should have same class.');
 ok(my $data2 = $dummy2->data_dump(), 'Dumping data again.');
 diag($data2);
 is($data2, $data, 'Dumped data should be identical.');
