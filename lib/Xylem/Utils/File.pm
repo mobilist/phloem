@@ -28,13 +28,16 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Archive::Tar;
+use Archive::Tar qw(); # Do not import anything.
 use Carp;
 use English;
 use Fcntl qw(:seek); # Import SEEK_* constants.
 use File::Find qw(); # Do not import anything.
 
 use Xylem::FileLocker;
+
+# Define a constant for compatibility with old versions of Archive::Tar.
+use constant COMPRESS_GZIP => 9;
 
 #------------------------------------------------------------------------------
 
@@ -232,7 +235,7 @@ sub create_archive
   $tar->add_files(@$files_arrayref)
     or croak "Failed to add files: " . $tar->error();
 
-  $tar->write($archive_file_name, 9, $archive_prefix)
+  $tar->write($archive_file_name, COMPRESS_GZIP, $archive_prefix)
     or croak "Failed to write archive: " . $tar->error();
 }
 
