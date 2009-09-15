@@ -2,6 +2,12 @@ REVISION HISTORY
 
  See http://sourceforge.net/projects/phloem for the full revision history.
 
+ 0.0.2 Tue Sep 15 08:26:00 BST 2009
+    - Tagging the 0.0.2 release of the Phloem project.
+
+    - Some minor concessions to portability. Specifically, support older
+      versions of the Archive::Tar and File::Path modules.
+
  0.0.1 Fri Sep 11 14:09:18 2009 UTC
     - Tagging the 0.0.1 release of the Phloem project.
 
