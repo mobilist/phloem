@@ -55,7 +55,7 @@ use diagnostics;
 use Carp;
 use English;
 use File::Basename qw(fileparse);
-use File::Path qw(make_path);
+use File::Path qw(); # Do not import anything.
 use Getopt::Long;
 use Pod::Checker;
 use Pod::Usage;
@@ -288,7 +288,8 @@ sub write_script_file
 
   # Create the destination directory.
   print "Creating directory $script_dest_dir...\n";
-  make_path($script_dest_dir) // croak "Failed to create directory: $!";
+  File::Path::mkpath($script_dest_dir)
+    or croak "Failed to create directory: $!";
 
   # More metadata.
   my $year = strftime("%Y", localtime);
@@ -421,7 +422,8 @@ sub write_module_file
 
   # Create the destination directory.
   print "Creating directory $module_dest_dir...\n";
-  make_path($module_dest_dir) // croak "Failed to create directory: $!";
+  File::Path::mkpath($module_dest_dir)
+    or croak "Failed to create directory: $!";
 
   # More metadata.
   my $year = strftime("%Y", localtime);
@@ -538,7 +540,8 @@ sub write_module_test_file
 
   # Create the destination directory.
   print "Creating directory $module_test_dest_dir...\n";
-  make_path($module_test_dest_dir) // croak "Failed to create directory: $!";
+  File::Path::mkpath($module_test_dest_dir)
+    or croak "Failed to create directory: $!";
 
   # More metadata.
   my $year = strftime("%Y", localtime);

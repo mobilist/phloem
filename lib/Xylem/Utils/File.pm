@@ -232,7 +232,7 @@ sub create_archive
   $tar->add_files(@$files_arrayref)
     or croak "Failed to add files: " . $tar->error();
 
-  $tar->write($archive_file_name, COMPRESS_GZIP, $archive_prefix)
+  $tar->write($archive_file_name, 9, $archive_prefix)
     or croak "Failed to write archive: " . $tar->error();
 }
 

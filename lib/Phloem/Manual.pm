@@ -495,12 +495,7 @@ App::Prove had to be installed, along with its prerequisities.
 
 =item *
 
-File::Path had to be upgraded to a later version that exports the make_path
-function. (This process, in turn, required that make be installed.)
-
-=item *
-
-Module::CoreList
+Module::CoreList had to be installed.
 
 =back
 

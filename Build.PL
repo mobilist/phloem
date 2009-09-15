@@ -112,7 +112,6 @@ xxx_END_MANIFEST_SKIP
     'license'       => 'gpl',
     'requires'      => {'perl'           => '5.10.0',
                         'App::Prove'     => 0,
-                        'Archive::Tar'   => 1.54,
                         'Mail::Sendmail' => 0.75,
                         'XML::Simple'    => 0},
     'create_makefile_pl'   => 'passthrough',
