@@ -28,6 +28,10 @@ Print this manual page, and then exit.
 
 Print the license terms, and then exit.
 
+=item B<-f, --force>
+
+Force the creation, overwriting any existing file.
+
 =back
 
 =head1 COPYRIGHT
@@ -71,12 +75,14 @@ use constant PREFIX => 'phloem';
 #==============================================================================
 # Start of main program.
 {
-  Xylem::Utils::Code::process_command_line();
+  my ($opt_f);
+  Xylem::Utils::Code::process_command_line('f|force' => \$opt_f);
 
   # Put together the archive file name, using the Phloem version number.
   my $archive_file_name = PREFIX . '-' . $Phloem::Version::VERSION . '.tar.gz';
 
-  die "File $archive_file_name already exists." if (-f $archive_file_name);
+  die "File $archive_file_name already exists."
+    if (!$opt_f && -f $archive_file_name);
 
   my @files;
   Xylem::Utils::File::find( sub { push(@files, shift) } );
