@@ -25,6 +25,8 @@ use diagnostics;
 
 use threads;
 
+use Carp;
+
 use Phloem::ConfigLoader;
 use Phloem::Debug;
 use Phloem::Logger;
@@ -45,9 +47,9 @@ N.B. This is a class method.
 
 sub run
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   # Any arguments are assumed to comprise a hash table of options.
   my %options = @_;
@@ -64,24 +66,24 @@ sub run
 
   # Load the configuration file.
   my $node = Phloem::ConfigLoader::load()
-    or die "Failed to load configuration file.";
+    or croak "Failed to load configuration file.";
 
   # Run a registry server for the node, if appropriate.
   if ($node->is_root()) {
     threads->create(\&_run_registry_server, $node)
-      or die "Failed to create registry server thread: $!";
+      or croak "Failed to create registry server thread: $!";
   }
 
   # Start up a node advertiser for the node.
   threads->create(\&_run_node_advertiser, $node)
-      or die "Failed to create node advertiser thread: $!";
+      or croak "Failed to create node advertiser thread: $!";
 
   # For each subscribe role, start a subscriber running.
   {
     my @subscribe_roles = $node->subscribe_roles();
     foreach my $subscribe_role (@subscribe_roles) {
       threads->create(\&_run_subscriber, $node, $subscribe_role)
-        or die "Failed to create subscriber thread: $!";
+        or croak "Failed to create subscriber thread: $!";
     }
   }
 
@@ -99,8 +101,8 @@ sub run
 sub _run_registry_server
 # Run a registry server for the specified node.
 {
-  my $node = shift or die "No node specified.";
-  die "Expected a node object." unless $node->isa('Phloem::Node');
+  my $node = shift or croak "No node specified.";
+  croak "Expected a node object." unless $node->isa('Phloem::Node');
 
   Phloem::Logger->append('Starting registry server.');
 
@@ -114,11 +116,11 @@ sub _run_registry_server
 sub _run_node_advertiser
 # Run a node advertiser for the specified node.
 {
-  my $node = shift or die "No node specified.";
-  die "Expected a node object." unless $node->isa('Phloem::Node');
+  my $node = shift or croak "No node specified.";
+  croak "Expected a node object." unless $node->isa('Phloem::Node');
 
   my $node_advertiser = Phloem::NodeAdvertiser->new('node' => $node)
-    or die "Failed to create node advertiser.";
+    or croak "Failed to create node advertiser.";
 
   Phloem::Logger->append('Starting node advertiser.');
 
@@ -129,15 +131,15 @@ sub _run_node_advertiser
 sub _run_subscriber
 # Run a subscriber for the specified node and role.
 {
-  my $node = shift or die "No node specified.";
-  die "Expected a node object." unless $node->isa('Phloem::Node');
+  my $node = shift or croak "No node specified.";
+  croak "Expected a node object." unless $node->isa('Phloem::Node');
 
-  my $role = shift or die "No role specified.";
-  die "Expected a subscribe role object."
+  my $role = shift or croak "No role specified.";
+  croak "Expected a subscribe role object."
     unless $role->isa('Phloem::Role::Subscribe');
 
   my $subscriber = Phloem::Subscriber->new('node' => $node, 'role' => $role)
-    or die "Failed to create subscriber.";
+    or croak "Failed to create subscriber.";
 
   Phloem::Logger->append('Starting role subscriber.');
 

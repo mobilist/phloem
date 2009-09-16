@@ -9,6 +9,9 @@ Rsync parameters and settings for Phloem.
 =head1 SYNOPSIS
 
   use Phloem::Rsync;
+  my $rsync = Phloem::Rsync->new('user'        => 'lemuelg',
+                                 'ssh_id_file' => 'etc/.ssh/id_rsa')
+    or die "Failed to create rsync object.";
 
 =head1 METHODS
 
@@ -57,6 +60,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use Class::Struct 'Phloem::Rsync' => {'user'        => '$',
                                       'ssh_id_file' => '$'};
 

@@ -22,6 +22,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use IO::Socket::INET;
 
 use Phloem::Debug;
@@ -41,8 +42,8 @@ Returns a true value on success; false otherwise.
 
 sub register_node
 {
-  my $node = shift or die "No node specified.";
-  die "Expected a node object." unless $node->isa('Phloem::Node');
+  my $node = shift or croak "No node specified.";
+  croak "Expected a node object." unless $node->isa('Phloem::Node');
 
   # Get a socket for communicating with the registry server.
   my $sock = _get_socket($node->root());
@@ -65,7 +66,7 @@ sub register_node
   # Read the output from the registry server.
   my $input = Xylem::Utils::Net::read_from_socket($sock);
 
-  $sock->shutdown(2) or die "Failed to shut down client socket: $!";
+  $sock->shutdown(2) or croak "Failed to shut down client socket: $!";
 
   unless ($input =~ /^OK\s*$/o) {
     Phloem::Logger->append("Registry server error: $input");
@@ -88,8 +89,8 @@ The root node must be specified.
 
 sub get_all_nodes
 {
-  my $root = shift or die "No root specified.";
-  die "Expected a root object." unless $root->isa('Phloem::Root');
+  my $root = shift or croak "No root specified.";
+  croak "Expected a root object." unless $root->isa('Phloem::Root');
 
   # Get a socket for communicating with the registry server.
   my $sock = _get_socket($root);
@@ -107,7 +108,7 @@ sub get_all_nodes
   # Read the output from the registry server.
   my $input = Xylem::Utils::Net::read_from_socket($sock);
 
-  $sock->shutdown(2) or die "Failed to shut down client socket: $!";
+  $sock->shutdown(2) or croak "Failed to shut down client socket: $!";
 
   if ($input =~ /^ERROR: (.*)$/o) {
     Phloem::Logger->append("Registry server error: $1");
@@ -127,7 +128,7 @@ sub get_all_nodes
   $input =~ s/xxx_END_DATA.*$//os;
 
   my $registry = Phloem::Registry->data_load($input)
-    or die "Failed to recreate registry object.";
+    or croak "Failed to recreate registry object.";
 
   Phloem::Debug->message('Server sent registry... ' . $registry->data_dump());
 
@@ -144,8 +145,8 @@ sub _get_socket
 #
 # The root node must be specified.
 {
-  my $root = shift or die "No root specified.";
-  die "Expected a root object." unless $root->isa('Phloem::Root');
+  my $root = shift or croak "No root specified.";
+  croak "Expected a root object." unless $root->isa('Phloem::Root');
 
   my $host = $root->host();
   my $port = $root->port();
@@ -156,7 +157,7 @@ sub _get_socket
   my $sock;
   eval {
     $sock = Xylem::Utils::Net::get_client_tcp_socket($host, $port)
-      or die "Failed to create client socket.";
+      or croak "Failed to create client socket.";
   };
   if ($@) {
     Phloem::Logger->append($@);

@@ -374,17 +374,12 @@ Improve the module documentation.
 
 Specifically, for the following modules.
 
-Phloem::Filter
 Phloem::Node
-Phloem::NodeAdvertiser
-Phloem::Registry
 Phloem::RegistryClient
 Phloem::RegistryServer
 Phloem::Role
 Phloem::Role::Subscribe
 Phloem::Role::Publish
-Phloem::Root
-Phloem::Rsync
 Phloem::Subscriber
 
 =item *

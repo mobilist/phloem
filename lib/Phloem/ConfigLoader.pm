@@ -23,6 +23,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use File::Spec;
 
 use Phloem::Constants;
@@ -58,8 +59,8 @@ sub load
 sub _node_from_xml_data
 # Process the specified parsed XML data, returning a node object.
 {
-  my $xml_data = shift or die "No XML data specified.";
-  die "Expected a hash reference." unless (ref($xml_data) eq 'HASH');
+  my $xml_data = shift or croak "No XML data specified.";
+  croak "Expected a hash reference." unless (ref($xml_data) eq 'HASH');
 
   # Get the root for the node.
   my $root_object = _root_from_xml_data($xml_data);
@@ -68,7 +69,7 @@ sub _node_from_xml_data
   my $rsync_object = _rsync_from_xml_data($xml_data);
 
   # Create a node object.
-  my $node_id = $xml_data->{'id'} or die "No node ID.";
+  my $node_id = $xml_data->{'id'} or croak "No node ID.";
   my $node_group = $xml_data->{'group'} // '';
   my $node_description = $xml_data->{'description'}->[0] // '';
   my $node_is_root = $xml_data->{'is_root'} // 0;
@@ -85,18 +86,18 @@ sub _node_from_xml_data
                       'host'                 => $node_host,
                       'root'                 => $root_object,
                       'rsync'                => $rsync_object)
-    or die "Failed to create node object.";
+    or croak "Failed to create node object.";
 
   # Add roles to the node.
   my $roles = $xml_data->{'role'};
  ROLE:
   foreach my $current_role (@$roles) {
-    my $role_type = $current_role->{'type'} or die "No role type.";
-    my $role_route = $current_role->{'route'} or die "No role route.";
+    my $role_type = $current_role->{'type'} or croak "No role type.";
+    my $role_route = $current_role->{'route'} or croak "No role route.";
     my $role_active = $current_role->{'active'} // 1;
-    my $role_directory = $current_role->{'directory'} or die "No directory.";
+    my $role_directory = $current_role->{'directory'} or croak "No directory.";
     my $role_directory_path =
-      $role_directory->[0]->{'path'} or die "No directory path.";
+      $role_directory->[0]->{'path'} or croak "No directory path.";
     my $role_description = $current_role->{'description'}->[0] // '';
 
     # Convert the directory path to an absolute path.
@@ -119,14 +120,14 @@ sub _node_from_xml_data
       my $role_filter = $current_role->{'filter'};
       if ($role_filter) {
         my $role_filter_type = $role_filter->[0]->{'type'}
-          or die "No filter type.";
+          or croak "No filter type.";
         my $role_filter_value = $role_filter->[0]->{'value'}
-          or die "No filter value.";
+          or croak "No filter value.";
         my $role_filter_rule = $role_filter->[0]->{'rule'} // 'exact';
         my $filter = Phloem::Filter->new('type'  => $role_filter_type,
                                          'value' => $role_filter_value,
                                          'rule'  => $role_filter_rule)
-          or die "Failed to create filter object.";
+          or croak "Failed to create filter object.";
         $role_options{'filter'} = $filter;
       }
 
@@ -139,7 +140,7 @@ sub _node_from_xml_data
 
       $role_object = Phloem::Role::Subscribe->new(%role_options);
     }
-    die "Failed to create role object." unless $role_object;
+    croak "Failed to create role object." unless $role_object;
 
     # Add the role to the node.
     $node_object->add_role($role_object);
@@ -152,18 +153,18 @@ sub _node_from_xml_data
 sub _root_from_xml_data
 # Process the specified parsed XML data, returning a root object.
 {
-  my $xml_data = shift or die "No XML data specified.";
-  die "Expected a hash reference." unless (ref($xml_data) eq 'HASH');
+  my $xml_data = shift or croak "No XML data specified.";
+  croak "Expected a hash reference." unless (ref($xml_data) eq 'HASH');
 
   my $root_object;
   {
-    my $node_root = $xml_data->{'root'} or die "No root.";
+    my $node_root = $xml_data->{'root'} or croak "No root.";
     {
-      my $node_root_host = $node_root->[0]->{'host'} or die "No root host.";
-      my $node_root_port = $node_root->[0]->{'port'} or die "No root port.";
+      my $node_root_host = $node_root->[0]->{'host'} or croak "No root host.";
+      my $node_root_port = $node_root->[0]->{'port'} or croak "No root port.";
       $root_object = Phloem::Root->new('host' => $node_root_host,
                                        'port' => $node_root_port)
-        or die "Failed to create root object.";
+        or croak "Failed to create root object.";
     }
   }
 
@@ -174,16 +175,17 @@ sub _root_from_xml_data
 sub _rsync_from_xml_data
 # Process the specified parsed XML data, returning a rsync object.
 {
-  my $xml_data = shift or die "No XML data specified.";
-  die "Expected a hash reference." unless (ref($xml_data) eq 'HASH');
+  my $xml_data = shift or croak "No XML data specified.";
+  croak "Expected a hash reference." unless (ref($xml_data) eq 'HASH');
 
   my $rsync_object;
   {
-    my $node_rsync = $xml_data->{'rsync'} or die "No rsync.";
+    my $node_rsync = $xml_data->{'rsync'} or croak "No rsync.";
     {
-      my $node_rsync_user = $node_rsync->[0]->{'user'} or die "No rsync user.";
+      my $node_rsync_user = $node_rsync->[0]->{'user'}
+        or croak "No rsync user.";
       my $node_rsync_ssh_id_file =
-        $node_rsync->[0]->{'ssh_id_file'} or die "No SSH identity file.";
+        $node_rsync->[0]->{'ssh_id_file'} or croak "No SSH identity file.";
 
       # Convert the SSH identity file path to an absolute path.
       my $node_rsync_ssh_id_file_abs =
@@ -192,7 +194,7 @@ sub _rsync_from_xml_data
       $rsync_object =
         Phloem::Rsync->new('user'        => $node_rsync_user,
                            'ssh_id_file' => $node_rsync_ssh_id_file_abs)
-        or die "Failed to create rsync object.";
+        or croak "Failed to create rsync object.";
     }
   }
 

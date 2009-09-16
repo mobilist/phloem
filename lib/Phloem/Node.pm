@@ -22,6 +22,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
+
 use base qw(Phloem::Dumper);
 
 use Phloem::Role;
@@ -37,9 +39,9 @@ Constructor.
 
 sub new
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   my $self = {'id'                   => undef,
               'group'                => undef,
@@ -64,8 +66,8 @@ Get the id.
 
 sub id
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'id'};
 }
@@ -80,8 +82,8 @@ Get the group.
 
 sub group
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'group'};
 }
@@ -96,8 +98,8 @@ Get the value of the "is root" flag.
 
 sub is_root
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'is_root'};
 }
@@ -112,8 +114,8 @@ Get the host.
 
 sub host
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'host'};
 }
@@ -128,8 +130,8 @@ Get the register frequency, in seconds.
 
 sub register_frequency_s
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'register_frequency_s'};
 }
@@ -144,8 +146,8 @@ Get the description.
 
 sub description
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'description'};
 }
@@ -160,8 +162,8 @@ Get the root.
 
 sub root
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'root'};
 }
@@ -176,8 +178,8 @@ Get the rsync parameters and settings.
 
 sub rsync
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'rsync'};
 }
@@ -192,8 +194,8 @@ Get an array of the roles.
 
 sub roles
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return @{$self->{'roles'}};
 }
@@ -208,11 +210,11 @@ Add the specified role.
 
 sub add_role
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  my $role = shift or die "No role specified.";
-  die "Expected a role object." unless $role->isa('Phloem::Role');
+  my $role = shift or croak "No role specified.";
+  croak "Expected a role object." unless $role->isa('Phloem::Role');
 
   # Add the role.
   push(@{$self->{'roles'}}, $role);
@@ -228,8 +230,8 @@ Get an array of the subscriber roles.
 
 sub subscribe_roles
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   my @subscribe_roles;
   {
@@ -253,8 +255,8 @@ Does the node fulfil any publisher roles?
 
 sub is_publisher
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   my @roles = $self->roles();
   foreach my $current_role (@roles) {
@@ -275,13 +277,13 @@ Is the node acting as a "portal" for the specified route?
 
 sub is_portal
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  my $route = shift or die "No route specified.";
-  die "Expected an ordinary scalar." if ref($route);
+  my $route = shift or croak "No route specified.";
+  croak "Expected an ordinary scalar." if ref($route);
 
-  die "Unexpected route specified."
+  croak "Unexpected route specified."
     unless ($route =~ /^(?:root2leaf|leaf2root)$/o);
 
   # Iterate over the roles.
@@ -314,13 +316,13 @@ is returned.
 
 sub publishes_on_route
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  my $route = shift or die "No route specified.";
-  die "Expected an ordinary scalar." if ref($route);
+  my $route = shift or croak "No route specified.";
+  croak "Expected an ordinary scalar." if ref($route);
 
-  die "Unexpected route specified."
+  croak "Unexpected route specified."
     unless ($route =~ /^(?:root2leaf|leaf2root)$/o);
 
   my @roles = $self->roles();

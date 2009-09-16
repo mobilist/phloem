@@ -9,6 +9,8 @@ Root node information for Phloem.
 =head1 SYNOPSIS
 
   use Phloem::Root;
+  my $root = Phloem::Root->new('host' => 'localhost',
+                               'port' => 9999) or die "Failed to create root.";
 
 =head1 METHODS
 
@@ -61,6 +63,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use Class::Struct 'Phloem::Root' => {'host' => '$',
                                      'port' => '$'};
 

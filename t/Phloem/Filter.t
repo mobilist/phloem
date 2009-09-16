@@ -23,7 +23,9 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 5; # qw(no_plan);
+use Test::More tests => 9; # qw(no_plan);
+
+use Phloem::Node;
 
 BEGIN { use_ok('Phloem::Filter'); }
 
@@ -36,3 +38,8 @@ ok(my $filter = Phloem::Filter->new(%object_data), 'Creating filter object.');
 ok($filter->type() eq $object_data{'type'}, 'Accessor for type.');
 ok($filter->value() eq $object_data{'value'}, 'Accessor for value.');
 ok($filter->rule() eq $object_data{'rule'}, 'Accessor for rule.');
+ok(my $node = Phloem::Node->new('id'    => 'egg',
+                                'group' => 'ova1'), 'Creating node object.');
+ok($filter->apply($node), 'Filter should match node.');
+ok($filter->type('node'), 'Modifying filter.');
+ok(!$filter->apply($node), 'Filter should not match node.');

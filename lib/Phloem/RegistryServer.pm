@@ -22,6 +22,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
+
 use base qw(Xylem::Server);
 
 use Phloem::Constants;
@@ -50,15 +52,15 @@ N.B. This is a class method.
 
 sub run
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  my $root = shift or die "No root specified.";
-  die "Expected a root object." unless $root->isa('Phloem::Root');
+  my $root = shift or croak "No root specified.";
+  croak "Expected a root object." unless $root->isa('Phloem::Root');
 
   my $args_hash = shift || {}; # Optional second argument.
-  die "Expected a hash reference." unless (ref($args_hash) eq 'HASH');
+  croak "Expected a hash reference." unless (ref($args_hash) eq 'HASH');
 
   my $port = $root->port();
 
@@ -73,12 +75,13 @@ sub process_request
 #
 # N.B. This is a class method.
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  my $client_sock = shift or die "No client socket specified.";
-  die "Expected a TCP/IP socket." unless $client_sock->isa('IO::Socket::INET');
+  my $client_sock = shift or croak "No client socket specified.";
+  croak "Expected a TCP/IP socket."
+    unless $client_sock->isa('IO::Socket::INET');
 
   Phloem::Debug->message('Client connected to server.');
 
@@ -137,7 +140,7 @@ sub process_request
 
     eval {
       my $node = Phloem::Node->data_load($input)
-        or die "Failed to recreate node object.";
+        or croak "Failed to recreate node object.";
 
       Phloem::Debug->message('Client sent node... ' . $node->data_dump());
 

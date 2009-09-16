@@ -47,6 +47,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
+
 use base qw(Phloem::Role);
 
 1;

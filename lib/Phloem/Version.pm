@@ -20,6 +20,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
+
 use version; our $VERSION = qv('0.0.3');
 
 1;

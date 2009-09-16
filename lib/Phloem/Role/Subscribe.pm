@@ -22,6 +22,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
+
 use Phloem::Filter;
 
 use base qw(Phloem::Role);
@@ -36,9 +38,9 @@ Constructor.
 
 sub new
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   # Construct the base class part.
   my $self = $class->SUPER::new('filter'             => undef,
@@ -59,8 +61,8 @@ Get the filter.
 
 sub filter
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'filter'};
 }
@@ -75,8 +77,8 @@ Get the update frequency, in seconds.
 
 sub update_frequency_s
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'update_frequency_s'};
 }

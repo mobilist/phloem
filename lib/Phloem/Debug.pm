@@ -24,6 +24,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
+
 use Phloem::Logger;
 
 use base qw(Xylem::Debug);
@@ -44,9 +46,9 @@ N.B. This is a class method.
 
 sub message
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   # Call the base class version first.
   #

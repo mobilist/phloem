@@ -8,7 +8,14 @@ An object to handle the registration of a node with the "root" node.
 
 =head1 SYNOPSIS
 
+  use Phloem::Node;
   use Phloem::NodeAdvertiser;
+
+  my $node = Phloem::Node->new('id' => 'egg', 'group' => 'ova1');
+  my $node_advertiser = Phloem::NodeAdvertiser->new('node' => $node)
+    or die "Failed to create node advertiser.";
+
+  $node_advertiser->run();
 
 =head1 METHODS
 
@@ -30,6 +37,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use Class::Struct 'Phloem::NodeAdvertiser' => {'node'  => 'Phloem::Node'};
 
 use Phloem::Logger;
@@ -45,8 +53,8 @@ Run the advertiser.
 
 sub run
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   # If the node is not a publisher, then we may as well shut down right now.
   unless ($self->node()->is_publisher()) {
@@ -79,8 +87,8 @@ sub run
 sub _register_node
 # Register out node with the "root" node.
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return Phloem::RegistryClient::register_node($self->node());
 }

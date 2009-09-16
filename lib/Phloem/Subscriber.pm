@@ -34,6 +34,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use Class::Struct
   'Phloem::Subscriber' => {'node' => 'Phloem::Node',
                            'role' => 'Phloem::Role::Subscribe'};
@@ -59,8 +60,8 @@ Run the subscriber.
 
 sub run
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   # Get the update frequency (in seconds) for the role.
   my $role_update_frequency_s = $self->role()->update_frequency_s();
@@ -85,8 +86,8 @@ sub _choose_best_publisher
 #
 # Returns undefined if no publisher node was available.
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   # Find suitable publisher nodes.
   my @publisher_nodes = $self->_find_publishers() or return;
@@ -100,7 +101,7 @@ sub _choose_best_publisher
     my $node_i = $publisher_nodes[0]->[$i];
     my $role_i = $publisher_nodes[1]->[$i];
     my $host_i = $node_i->host()
-      or die "Unknown host name for node " . $node_i->id() . ".";
+      or croak "Unknown host name for node " . $node_i->id() . ".";
     Phloem::Debug->message("Pinging $host_i.");
     if (Xylem::Utils::Net::ping($host_i)) {
       return ($node_i, $role_i);
@@ -118,11 +119,11 @@ sub _find_publishers
 # Returnds an array containing a pair of array references. The first contains
 # the nodes, which the second contains the relevant publish roles.
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  my $node = $self->node() or die "No node.";
-  my $role = $self->role() or die "No role.";
+  my $node = $self->node() or croak "No node.";
+  my $role = $self->role() or croak "No role.";
 
   # Retrieve a list of all nodes from the "root" node.
   my $root = $node->root();
@@ -162,14 +163,14 @@ sub _find_publishers
 sub _update_from_publisher
 # Update our content from the specified publisher node and role.
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  my $node = shift or die "No node specified.";
-  die "Expected a node object." unless $node->isa('Phloem::Node');
+  my $node = shift or croak "No node specified.";
+  croak "Expected a node object." unless $node->isa('Phloem::Node');
 
-  my $role = shift or die "No role specified.";
-  die "Expected a publish role object."
+  my $role = shift or croak "No role specified.";
+  croak "Expected a publish role object."
     unless $role->isa('Phloem::Role::Publish');
 
   Phloem::Debug->message('About to update from publisher node.');

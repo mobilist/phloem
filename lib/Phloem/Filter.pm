@@ -9,6 +9,11 @@ A node filter for Phloem.
 =head1 SYNOPSIS
 
   use Phloem::Filter;
+  my $filter = Phloem::Filter->new('type'  => 'group',
+                                   'value' => '^ova\d+',
+                                   'rule'  => 'match');
+  my $node = Phloem::Node->new('id' => 'egg', 'group' => 'ova1');
+  $filter->apply($node) or die "Filter should match node.";
 
 =head1 METHODS
 
@@ -56,43 +61,43 @@ Returns true if the node "matches", or false otherwise.
 
 sub apply
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  my $node = shift or die "No node specified.";
-  die "Expected a node object." unless $node->isa('Phloem::Node');
+  my $node = shift or croak "No node specified.";
+  croak "Expected a node object." unless $node->isa('Phloem::Node');
 
   # Get the data to be tested. (This depend upon what type of filter this is.)
   my $data_to_test;
   {
-    my $filter_type = $self->type() or die "No filter type set.";
+    my $filter_type = $self->type() or croak "No filter type set.";
     if ($filter_type eq 'node') {
       $data_to_test = $node->id();
     } elsif ($filter_type eq 'group') {
       $data_to_test = $node->group();
     } else {
-      die "Unsupported filter type.";
+      croak "Unsupported filter type.";
     }
   }
-  die "No data to test." unless $data_to_test;
+  croak "No data to test." unless $data_to_test;
 
   # Do the filtering.
-  my $filter_value = $self->value() or die "No filter value set.";
-  my $filter_rule = $self->rule() or die "No filter rule set.";
+  my $filter_value = $self->value() or croak "No filter value set.";
+  my $filter_rule = $self->rule() or croak "No filter rule set.";
   if ($filter_rule eq 'match') {
     # Sanity-check the regular expression.
     eval {
       '' =~ /$filter_value/;
     };
-    die "Invalid filter regular expression: $@" if $@;
+    croak "Invalid filter regular expression: $@" if $@;
     return ($data_to_test =~ /$filter_value/) ? 1 : 0;
   } elsif ($filter_rule eq 'exact') {
     return ($data_to_test eq $filter_value) ? 1 : 0;
   } else {
-    die "Unsupported filter rule.";
+    croak "Unsupported filter rule.";
   }
 
-  die "Hmm. Should have returned by now.";
+  croak "Hmm. Should have returned by now.";
 }
 
 1;

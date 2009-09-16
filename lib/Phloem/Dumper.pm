@@ -23,6 +23,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
+
 use base qw(Xylem::Dumper::Binary);
 
 1;

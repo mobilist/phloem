@@ -9,7 +9,22 @@ A registry of the nodes in a Phloem network.
 =head1 SYNOPSIS
 
   use Phloem::Registry;
+
+  # Load the registry from file.
   my $registry = Phloem::Registry->load();
+  my $old_timestamp = $registry->timestamp();
+  print "Registry time-stamp $old_timestamp\n";
+
+  die "The registry is empty." unless $registry->nodes();
+
+  # Add a node to the registry.
+  my $node = Phloem::Node->new('id' => 'egg', 'group' => 'ova1');
+  $registry->add_node($node);
+  my $new_timestamp = $registry->timestamp();
+  print "Registry time-stamp $new_timestamp\n";
+
+  # Save the registry to file.
+  $registry->save();
 
 =head1 METHODS
 
@@ -23,6 +38,7 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
 use File::Temp;
 
 use base qw(Phloem::Dumper);
@@ -42,9 +58,9 @@ Constructor.
 
 sub new
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   my $self = {'timestamp' => Xylem::TimeStamp::create(),
               'nodes'     => {},
@@ -62,8 +78,8 @@ Get the time-stamp.
 
 sub timestamp
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'timestamp'};
 }
@@ -78,8 +94,8 @@ Get a hash table of the nodes.
 
 sub nodes
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return %{$self->{'nodes'}};
 }
@@ -94,11 +110,11 @@ Add or update the specified node.
 
 sub add_node
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  my $node = shift or die "No node specified.";
-  die "Expected a node object." unless $node->isa('Phloem::Node');
+  my $node = shift or croak "No node specified.";
+  croak "Expected a node object." unless $node->isa('Phloem::Node');
 
   # Add the node.
   my $node_id = $node->id();
@@ -122,9 +138,9 @@ N.B. This is a class method.
 
 sub load
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   my $registry_file = _registry_file();
 
@@ -141,7 +157,7 @@ sub load
 
   # Attempt to reconstruct the object.
   my $self = $class->data_load($object_data)
-    or die "Failed to reconstruct object.";
+    or croak "Failed to reconstruct object.";
 
   return $self;
 }
@@ -156,8 +172,8 @@ Save the registry data to disk.
 
 sub save
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   my $registry_file = _registry_file();
 

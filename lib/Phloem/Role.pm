@@ -22,6 +22,8 @@ use strict;
 use warnings;
 use diagnostics;
 
+use Carp;
+
 #------------------------------------------------------------------------------
 
 =item new
@@ -32,9 +34,9 @@ Constructor.
 
 sub new
 {
-  my $class = shift or die "No class name specified.";
-  die "Expected an ordinary scalar." if ref($class);
-  die "Incorrect class name." unless $class->isa(__PACKAGE__);
+  my $class = shift or croak "No class name specified.";
+  croak "Expected an ordinary scalar." if ref($class);
+  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   my $self = {'route'       => undef,
               'directory'   => undef,
@@ -53,8 +55,8 @@ Get the route.
 
 sub route
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'route'};
 }
@@ -69,8 +71,8 @@ Get the directory.
 
 sub directory
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'directory'};
 }
@@ -85,8 +87,8 @@ Get the description.
 
 sub description
 {
-  my $self = shift or die "No object reference.";
-  die "Unexpected object class." unless $self->isa(__PACKAGE__);
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   return $self->{'description'};
 }

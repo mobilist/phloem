@@ -124,8 +124,8 @@ Read data from the specified socket, returning a scalar.
 
 sub read_from_socket
 {
-  my $sock = shift or die "No socket specified.";
-  die "Expected a TCP/IP socket." unless $sock->isa('IO::Socket::INET');
+  my $sock = shift or croak "No socket specified.";
+  croak "Expected a TCP/IP socket." unless $sock->isa('IO::Socket::INET');
 
   # Read from the socket.
   my $input = '';
