@@ -219,7 +219,22 @@ sub check_code_file
       #      we'd detect the test regex.
       if ($current_line =~ /, \S/ox) {
         print STDERR
-          "$file:$line_no:comma not immediately followed by a space.";
+          "$file:$line_no:comma not immediately followed by a space.\n";
+        $file_ok = 0;
+      }
+
+      # Look for space before a semi-colon.
+      if ($current_line =~ /\s+;/o) {
+        print STDERR "$file:$line_no:space before semi-colon.\n";
+        $file_ok = 0;
+      }
+
+      # Look for "uncuddled" else clauses.
+      #
+      # N.B. According to Larry Wall, Perl's else clauses should be uncuddled.
+      #      But I think that looks terrible.
+      if ($current_line =~ /^\s*else\s*$/o) {
+        print STDERR "$file:$line_no:uncuddled else clause.\n";
         $file_ok = 0;
       }
     }
