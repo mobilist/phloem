@@ -101,8 +101,11 @@ sub process_command_line
             -sections => 'NAME|COPYRIGHT|LICENSE',
             -exitval  => 0) if $opt_l;
 
+  # More metadata.
+  my $year = strftime("%Y", localtime);
+
   print STDERR <<"xxx_END_GPL_HEADER";
-    $script_name Copyright (C) 2009 Simon Dawson
+    $script_name Copyright (C) $year Simon Dawson
     This program comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it
     under certain conditions; type $script_name --license for details.
@@ -384,7 +387,7 @@ Print the license terms, and then exit.
 
 \=head1 COPYRIGHT
 
-Copyright (C) 2009 $author.
+Copyright (C) $year $author.
 
 \=head1 AUTHOR
 
