@@ -49,7 +49,8 @@ sub process_request {
 package main;
 
 ok(my $child_pid = DummyServer->run(TEST_PORT), 'Running server.');
-
+diag('Waiting for the server process to initialise...');
+sleep(2);
 ok(my $sock = IO::Socket::INET->new('PeerAddr' => 'localhost',
                                     'PeerPort' => TEST_PORT,
                                     'Proto'    => 'tcp',
