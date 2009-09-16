@@ -390,12 +390,6 @@ configuration is very incomplete.
 
 =item *
 
-Write documentation for the following modules.
-
-Phloem::Node
-
-=item *
-
 Introduce constants to replace the "roo2leaf" and "leaf2root" strings.
 
 =item *

@@ -10,6 +10,31 @@ A node in a Phloem network.
 
   use Phloem::Node;
 
+  my $node = Phloem::Node->new('id' => 'horse53', 'is_root' => 1);
+
+  my $node_id = $node->id();
+  $node->group('test');
+  die "Expected a root node." unless $node->is_root();
+  print "Host: ", $node->host(), "\n";
+  $node->register_frequency_s(30);
+  print "Description: ", $node->description(), "\n";
+  my $root = $node->root();
+  my $rsync = $node->rsync();
+  my @roles = $node->roles();
+
+  my $role = Phloem::Role::Publish->new('route'     => 'root2leaf',
+                                        'directory' => 'some/dir/path');
+  $node->add_role($role);
+
+  die "Expected node to publish." unless $node->is_publisher();
+  die "Expected node to publish on the 'root2leaf' route."
+    unless $node->publishes_on_route('root2leaf');
+
+  my @subscribe_roles = $node->subscribe_roles();
+  die "Did not expect the node to subscribe." if @subscribe_roles;
+  die "Expected a non-portal node on the 'root2leaf' route."
+    if $node->is_portal('root2leaf');
+
 =head1 METHODS
 
 =over 8
