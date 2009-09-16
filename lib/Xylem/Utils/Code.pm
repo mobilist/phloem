@@ -493,7 +493,7 @@ $module_name
 
 \=head1 DESCRIPTION
 
-A module.
+NOT YET WRITTEN!
 
 \=head1 SYNOPSIS
 
