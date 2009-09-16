@@ -2,7 +2,7 @@ REVISION HISTORY
 
  See http://sourceforge.net/projects/phloem for the full revision history.
 
- 0.0.3 Wed Sep 16 11:08:37 2009 UTC
+ 0.0.3 Wed Sep 16 11:12:18 2009 UTC
     - Tagging the 0.0.3 release of the Phloem project.
 
     - To hell with portability; I'd rather the code was clean. We now
