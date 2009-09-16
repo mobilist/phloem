@@ -55,7 +55,7 @@ use diagnostics;
 use Carp;
 use English;
 use File::Basename qw(fileparse);
-use File::Path qw(); # Do not import anything.
+use File::Path 2.06_05 qw(); # For make_path(). (Do not import anything.)
 use Getopt::Long;
 use Pod::Checker;
 use Pod::Usage;
@@ -288,7 +288,7 @@ sub write_script_file
 
   # Create the destination directory.
   print "Creating directory $script_dest_dir...\n";
-  File::Path::mkpath($script_dest_dir)
+  File::Path::make_path($script_dest_dir)
     or croak "Failed to create directory: $!";
 
   # More metadata.
@@ -422,7 +422,7 @@ sub write_module_file
 
   # Create the destination directory.
   print "Creating directory $module_dest_dir...\n";
-  File::Path::mkpath($module_dest_dir)
+  File::Path::make_path($module_dest_dir)
     or croak "Failed to create directory: $!";
 
   # More metadata.
@@ -540,7 +540,7 @@ sub write_module_test_file
 
   # Create the destination directory.
   print "Creating directory $module_test_dest_dir...\n";
-  File::Path::mkpath($module_test_dest_dir)
+  File::Path::make_path($module_test_dest_dir)
     or croak "Failed to create directory: $!";
 
   # More metadata.

@@ -70,7 +70,7 @@ use warnings;
 use diagnostics;
 
 use English;
-use Module::CoreList;
+use Module::CoreList 2.17; # To work properly with $].
 
 use lib qw(lib);
 use Xylem::Utils::Code;
@@ -93,7 +93,7 @@ use Xylem::Utils::File;
   };
   Xylem::Utils::File::find($user_sub);
 
-  # Get a hash table of the core modules in the current Perl version.
+  # Get a hash table of the core modules in the current Perl version ($]).
   my $core_modules = $Module::CoreList::version{$PERL_VERSION->numify()}
     or die "Failed to get list of core Perl modules.";
   die "Expected a hash reference." unless (ref($core_modules) eq 'HASH');

@@ -28,16 +28,13 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Archive::Tar qw(); # Do not import anything.
+use Archive::Tar 1.46; # For COMPRESS_GZIP.
 use Carp;
 use English;
 use Fcntl qw(:seek); # Import SEEK_* constants.
 use File::Find qw(); # Do not import anything.
 
 use Xylem::FileLocker;
-
-# Define a constant for compatibility with old versions of Archive::Tar.
-use constant COMPRESS_GZIP => 9;
 
 #------------------------------------------------------------------------------
 
