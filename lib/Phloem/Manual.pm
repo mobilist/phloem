@@ -390,7 +390,7 @@ configuration is very incomplete.
 
 =item *
 
-Introduce constants to replace the "roo2leaf" and "leaf2root" strings.
+Introduce constants to replace the "root2leaf" and "leaf2root" strings.
 
 =item *
 
