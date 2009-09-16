@@ -106,7 +106,7 @@ sub _run_registry_server
 
   Phloem::Logger->append('Starting registry server.');
 
-  Phloem::RegistryServer->run($node->root(), {'DAEMON' => 0});
+  Phloem::RegistryServer->run($node->root(), {'daemon' => 0});
 
   # The registry server thread detaches itself now.
   threads->detach();

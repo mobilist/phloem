@@ -63,7 +63,7 @@ ok(1, 'Still running, after the server has shut down.');
 ok($sock->shutdown(2), 'Shutting down client socket.');
 diag('Attempting to run an in-process (threaded) server.');
 ok(my $thr = threads->create(
-     sub { DummyServer->run(TEST_PORT, {'DAEMON' => 0}); threads->detach(); }),
+     sub { DummyServer->run(TEST_PORT, {'daemon' => 0}); threads->detach(); }),
    'Creating server thread.');
 diag('Waiting for a while before killing the server thread...');
 sleep(2);

@@ -10,6 +10,13 @@ Registry server for Phloem.
 
   use Phloem::RegistryServer;
 
+  my $root = Phloem::Root->new('host' => '10.0.0.2',
+                               'port' => 9999);
+  my $node = Phloem::Node->new('id'    => 'egg',
+                               'group' => 'ova1',
+                               'root'  => $root);
+  Phloem::RegistryServer->run($node->root(), {'daemon' => 0});
+
 =head1 METHODS
 
 =over 8
@@ -39,11 +46,11 @@ use Phloem::Root;
 Run the server on the specified root.
 
 A hash reference of options can optionally be specified, as the second
-argument. This can include the 'HOST' (server host name/address) and 'DAEMON'
+argument. This can include the 'host' (server host name/address) and 'daemon'
 (flag --- seee below) entries.
 
 By default, the server runs as a daemon: this method spawns a child process
-and returns the PID. However, if the 'DAEMON' flag is explicitly set down,
+and returns the PID. However, if the 'daemon' flag is explicitly set down,
 then the server will be run in-process.
 
 N.B. This is a class method.
@@ -64,7 +71,7 @@ sub run
 
   my $port = $root->port();
 
-  $args_hash->{'HOST'} = $root->host();
+  $args_hash->{'host'} = $root->host();
 
   return $class->SUPER::run($port, $args_hash);
 }

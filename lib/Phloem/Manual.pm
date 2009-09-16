@@ -390,17 +390,14 @@ configuration is very incomplete.
 
 =item *
 
-Improve the module documentation.
-
-Specifically, for the following modules.
+Write documentation for the following modules.
 
 Phloem::Node
-Phloem::RegistryClient
-Phloem::RegistryServer
-Phloem::Role
 Phloem::Role::Subscribe
-Phloem::Role::Publish
-Phloem::Subscriber
+
+=item *
+
+Introduce constants to replace the "roo2leaf" and "leaf2root" strings.
 
 =item *
 

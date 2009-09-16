@@ -46,11 +46,11 @@ use Xylem::Utils::Process;
 Run the server on the specified port.
 
 A hash reference of options can optionally be specified, as the second
-argument. This can include the 'HOST' (server host name/address) and 'DAEMON'
+argument. This can include the 'host' (server host name/address) and 'daemon'
 (flag --- seee below) entries.
 
 By default, the server runs as a daemon: this method spawns a child process
-and returns the PID. However, if the 'DAEMON' flag is explicitly set down,
+and returns the PID. However, if the 'daemon' flag is explicitly set down,
 then the server will be run in-process.
 
 N.B. This is a class method.
@@ -69,11 +69,11 @@ sub run
 
   # Did we get a host name/address?
   my $host;
-  $host = $args_hash->{'HOST'} if exists($args_hash->{'HOST'});
+  $host = $args_hash->{'host'} if exists($args_hash->{'host'});
 
   # Is the daemon flag up? (The flag is up by default.)
   my $daemon = 1;
-  $daemon = $args_hash->{'DAEMON'} if exists($args_hash->{'DAEMON'});
+  $daemon = $args_hash->{'daemon'} if exists($args_hash->{'daemon'});
 
   # Spawn a new child process to run the server, if running as a daemon.
   if ($daemon) {

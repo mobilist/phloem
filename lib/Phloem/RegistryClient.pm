@@ -10,6 +10,14 @@ Registry client for Phloem.
 
   use Phloem::RegistryClient;
 
+  my $root = Phloem::Root->new('host' => '10.0.0.2',
+                               'port' => 9999);
+  my $node = Phloem::Node->new('id'    => 'egg',
+                               'group' => 'ova1',
+                               'root'  => $root);
+  Phloem::RegistryClient::register_node($node);
+  my @nodes = Phloem::RegistryClient::get_all_nodes($node->root());
+
 =head1 METHODS
 
 =over 8

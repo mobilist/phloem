@@ -8,7 +8,18 @@ A subscriber for Phloem.
 
 =head1 SYNOPSIS
 
+  use Phloem::Node;
+  use Phloem::Role::Publish;
   use Phloem::Subscriber;
+
+  my $node = Phloem::Node->new('id' => 'egg', 'group' => 'ova1');
+  my $role = Phloem::Role::Publish->new('route'     => 'leaf2root',
+                                        'directory' => 'some/dir/path');
+  $node->add_role($role);
+  my $subscriber = Phloem::Subscriber->new('node' => $node, 'role' => $role)
+    or die "Failed to create subscriber.";
+
+  $subscriber->run();
 
 =head1 METHODS
 

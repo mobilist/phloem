@@ -9,6 +9,14 @@ A publish role for a node in a Phloem network.
 =head1 SYNOPSIS
 
   use Phloem::Role::Publish;
+  my $role = Phloem::Role::Publish->new('route'       => 'leaf2root',
+                                        'directory'   => 'some/dir/path',
+                                        'description' => 'A publisher.');
+
+  # Change the description.
+  $role->description('An upstream publisher role.');
+
+  die "Role directory does not exist." unless (-d $role->directory());
 
 =head1 SEE ALSO
 
