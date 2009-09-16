@@ -246,6 +246,9 @@ sub get_dependencies
 
   my %deps;
 
+  # We only care about Perl code.
+  return %deps unless ($file =~ /\.p(?:m|l)$/o);
+
   # Acquire a shared lock on the file, while we examine it.
   my $locker = Xylem::FileLocker->new($file, 'r')
     or croak "Failed to lock file.";
