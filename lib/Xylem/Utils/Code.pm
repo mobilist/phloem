@@ -340,7 +340,7 @@ sub write_script_file
   # Create the destination directory.
   print "Creating directory $script_dest_dir...\n";
   File::Path::make_path($script_dest_dir)
-    or croak "Failed to create directory: $!";
+    // croak "Failed to create directory: $!";
 
   # More metadata.
   my $year = strftime("%Y", localtime);
@@ -474,7 +474,7 @@ sub write_module_file
   # Create the destination directory.
   print "Creating directory $module_dest_dir...\n";
   File::Path::make_path($module_dest_dir)
-    or croak "Failed to create directory: $!";
+    // croak "Failed to create directory: $!";
 
   # More metadata.
   my $year = strftime("%Y", localtime);
@@ -592,7 +592,7 @@ sub write_module_test_file
   # Create the destination directory.
   print "Creating directory $module_test_dest_dir...\n";
   File::Path::make_path($module_test_dest_dir)
-    or croak "Failed to create directory: $!";
+    // croak "Failed to create directory: $!";
 
   # More metadata.
   my $year = strftime("%Y", localtime);
