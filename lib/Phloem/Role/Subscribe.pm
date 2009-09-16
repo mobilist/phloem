@@ -9,6 +9,17 @@ A subscribe role for a node in a Phloem network.
 =head1 SYNOPSIS
 
   use Phloem::Role::Subscribe;
+  my $filter = Phloem::Filter->new('type'  => 'group',
+                                   'value' => '^ova\d+',
+                                   'rule'  => 'match');
+  my $role =
+    Phloem::Role::Subscribe->new('route'       => 'leaf2root',
+                                 'directory'   => 'some/dir/path',
+                                 'description' => 'Some sort of role.',
+                                 'filter'      => $filter);
+
+  # Set the update frequency, in seconds.
+  $role->update_frequency_s(60);
 
 =head1 METHODS
 

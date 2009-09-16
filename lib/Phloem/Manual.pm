@@ -393,7 +393,6 @@ configuration is very incomplete.
 Write documentation for the following modules.
 
 Phloem::Node
-Phloem::Role::Subscribe
 
 =item *
 
