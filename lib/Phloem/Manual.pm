@@ -160,7 +160,7 @@ This is optional, but is recommended for the highest possible security.
 
 NOT YET WRITTEN!
 
-=head2 Leaf node configuration
+=head2 Non-root node configuration
 
 NOT YET WRITTEN!
 

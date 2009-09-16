@@ -6,7 +6,7 @@ release_phloem.pl
 
 =head1 DESCRIPTION
 
-NOT YET WRITTEN!
+Make a new release of Phloem, using the current code-base.
 
 =head1 SYNOPSIS
 
