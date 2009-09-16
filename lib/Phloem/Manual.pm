@@ -49,6 +49,26 @@ format.
 
 These modules are available from CPAN.
 
+In addition, you'll need to have fairly recent versions of the following core
+Perl modules installed.
+
+=over 8
+
+=item Archive::Tar
+
+Versions prior to 1.46 do not define the COMPRESS_GZIP constant.
+
+=item File::Path
+
+Versions prior to 2.06_05 do not define the make_path() function.
+
+=item Module::CoreList
+
+Versions prior to 2.17 do not correctly work with the $] (a.k.a.,
+$PERL_VERSION) variable.
+
+=back
+
 Phloem also requires that C<rsync(1)> and C<ssh(1)> (client and server) be
 installed.
 
@@ -395,102 +415,6 @@ Continue integration testing, and fix any bugs that are found.
 See if the ugly layering of the Debug and Logger modules between Xylem and
 Phloem can be done away with. This adds unnecessarily to the complexity of
 the code.
-
-=back
-
-=head1 PORTING
-
-This section contains some notes made during the process of porting Phloem to
-run on the Atmel ngw100.
-
-=head2 Problem with BusyBox gzip
-
-The BusyBox implementation of gzip does not support the --decompress option
-that cpan uses; only the short -d form is supported.
-
-There are two solutions:
-
-=over 8
-
-=item Wrapper
-
-A simple shell script wrapper can be written, which converts the --decompress
-option to -d, before exec-ing gzip. The cpan configuration must then be changed
-to use the wrapper instead of directly using the gzip program.
-
-Here is an example of such a wrapper script, written in Perl. This example
-also fixes up some of the other long-form arguments to gzip.
-
-  #!/usr/bin/perl -w
-  #
-  # A wrapper around the crappy BusyBox gzip implementation,
-  # which doesn't support long-form options.
-
-  use strict;
-  use warnings;
-  use diagnostics;
-
-  # Fix up the arguments.
-  my @args;
-  foreach my $current_arg (@ARGV) {
-    $current_arg = '-d' if ($current_arg eq '--decompress');
-    $current_arg = '-c' if ($current_arg eq '--stdout' ||
-                            $current_arg eq '--to-stdout');
-    $current_arg = '-f' if ($current_arg eq '--force');
-    push(@args, $current_arg);
-  }
-
-  # Run the real gzip with the fixed up arguments.
-  exec('/bin/gzip', @args);
-
-=item Use GNU gzip
-
-In theory, GNU gzip can be installed using buildroot. The package can be found
-in the menuconfig section 'Package Selection for the target', in the
-'Compressors / decompressors' subsection.
-
-However, in practice, this appears not to work.
-
-=back
-
-=head2 Getting cpan to work
-
-Warnings are issued during cpan configuration, if the following are missing.
-
-=over 8
-
-=item make
-
-The solution here is to install make using buildroot.
-
-=item lynx
-
-The lynx program does not appear to be available.
-
-=item ftp
-
-Annoyingly, a simple FTP client does not appear to be available.
-
-=item gpg
-
-The GNU privacy guard does not appear to be available.
-
-=back
-
-=head2 Installing Perl modules
-
-I was using Perl version 5.8.8, culled from the Angstrom distribution. It was
-necessary to install the following modules using cpan.
-
-=over 8
-
-=item *
-
-App::Prove had to be installed, along with its prerequisities.
-
-=item *
-
-Module::CoreList had to be installed.
 
 =back
 

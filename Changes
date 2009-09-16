@@ -2,6 +2,15 @@ REVISION HISTORY
 
  See http://sourceforge.net/projects/phloem for the full revision history.
 
+ 0.0.3 Wed Sep 16 11:08:37 2009 UTC
+    - Tagging the 0.0.3 release of the Phloem project.
+
+    - To hell with portability; I'd rather the code was clean. We now
+      require recent versions of Archive::Tar, File::Path and Module::CoreList.
+
+    - The Phloem library code now uses Carp throughout, to croak() where
+      previously it would die(). This is just good Perl library etiquette.
+
  0.0.2 Tue Sep 15 07:29:32 2009 UTC
     - Tagging the 0.0.2 release of the Phloem project.
 
