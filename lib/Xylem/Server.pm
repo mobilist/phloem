@@ -64,7 +64,7 @@ sub run
   croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
   my $port = shift or croak "No port specified.";
-  my $args_hash = shift || {}; # Optional second argument.
+  my $args_hash = shift || {}; # Optional argument.
   croak "Expected a hash reference." unless (ref($args_hash) eq 'HASH');
 
   # Did we get a host name/address?
