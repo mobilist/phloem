@@ -229,6 +229,34 @@ sub check_code_file
         $file_ok = 0;
       }
 
+      # We're about to do some hard-core code checking now. We can exclude
+      # comment lines from this.
+      next if ($current_line =~ /^\s*\#/o);
+
+      # Look for some common poorly-formed clauses.
+      if ($current_line =~ /(?: \) { | \) \s\s+ { )/ox) {
+        print STDERR
+          "$file:$line_no:bad spacing between closing ) and opening {.\n";
+        $file_ok = 0;
+      }
+      if ($current_line =~
+          /(?: } else | else { | }\s\s+else | else\s\s+{ )/ox) {
+        print STDERR "$file:$line_no:badly-spaced else clause.\n";
+        $file_ok = 0;
+      }
+      if ($current_line =~
+          /(?: } elsif | elsif \( | }\s\s+elsif | elsif\s\s+\( )/ox) {
+        print STDERR "$file:$line_no:badly-spaced elsif clause.\n";
+        $file_ok = 0;
+      }
+      if ($current_line =~
+          /\s (?: (?:for (each)?|while|until|if) \( |
+                     (?: for (each)?|while|until|if) \s\s+\( )/ox) {
+        print STDERR
+          "$file:$line_no:badly-spaced for/foreach/while/until/if clause.\n";
+        $file_ok = 0;
+      }
+
       # Look for "uncuddled" else clauses.
       #
       # N.B. According to Larry Wall, Perl's else clauses should be uncuddled.
@@ -239,6 +267,8 @@ sub check_code_file
       }
     }
 
+    # Stop checking when we hit the end of the code.
+    last if ($current_line =~ /\s*__(?:END|DATA)__\s*$/o);
   }
 
   return $file_ok;
@@ -262,7 +292,7 @@ sub get_dependencies
   my %deps;
 
   # We only care about Perl code.
-  return %deps unless ($file =~ /\.p(?:m|l)$/o);
+  return %deps unless ($file =~ /\.(?:pm|pl|t|PL)$/o);
 
   # Acquire a shared lock on the file, while we examine it.
   my $locker = Xylem::FileLocker->new($file, 'r')

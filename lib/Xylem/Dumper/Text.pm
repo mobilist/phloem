@@ -93,7 +93,7 @@ sub _walk
   my @filter = _scan(shift);
 
   # N.B. We allow the value assigned to a key to be undef; hence the defined()
-  # test is not in the while().
+  #      test is not in the while().
   my %seen;
   while (@filter) {
     defined(my $x = shift(@filter)) or next;
