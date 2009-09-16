@@ -76,6 +76,6 @@ use Xylem::Utils::Code;
   Xylem::Utils::Code::process_command_line('d|debug' => \$opt_d);
 
   # Run the application.
-  Phloem::App->run('DEBUG' => $opt_d);
+  Phloem::App->run('debug' => $opt_d);
 }
 # End of main program.

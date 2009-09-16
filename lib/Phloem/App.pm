@@ -55,7 +55,7 @@ sub run
   my %options = @_;
 
   # Enable/disable debug output, as appropriate.
-  Phloem::Debug->enabled($options{'DEBUG'} // 0);
+  Phloem::Debug->enabled($options{'debug'} // 0);
 
   # Initialise the logging subsystem, clear the log file, and write a
   # start-up message.
