@@ -34,7 +34,7 @@ use Cwd qw();
 use English;
 use File::Basename qw();
 use File::Temp;
-use Mail::Sendmail qw();
+use Mail::Sendmail 0.75 qw(); # To send attachments.
 use MIME::QuotedPrint qw();
 use MIME::Base64 qw();
 

@@ -32,7 +32,7 @@ use Archive::Tar 1.46; # For COMPRESS_GZIP.
 use Carp;
 use English;
 use Fcntl qw(:seek); # Import SEEK_* constants.
-use File::Find qw(); # Do not import anything.
+use File::Find qw();
 
 use Xylem::FileLocker;
 

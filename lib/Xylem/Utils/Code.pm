@@ -55,7 +55,7 @@ use diagnostics;
 use Carp;
 use English;
 use File::Basename qw(fileparse);
-use File::Path 2.06_05 qw(); # For make_path(). (Do not import anything.)
+use File::Path 2.06_05 qw(); # For make_path().
 use Getopt::Long;
 use Pod::Checker;
 use Pod::Usage;
