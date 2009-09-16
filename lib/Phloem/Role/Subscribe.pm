@@ -66,7 +66,7 @@ sub new
 
 =item filter
 
-Get the filter.
+Get/set the filter.
 
 =cut
 
@@ -75,6 +75,10 @@ sub filter
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
+  my $value = shift;
+
+  $self->{'filter'} = $value if defined($value);
+
   return $self->{'filter'};
 }
 
@@ -82,7 +86,7 @@ sub filter
 
 =item update_frequency_s
 
-Get the update frequency, in seconds.
+Get/set the update frequency, in seconds.
 
 =cut
 
@@ -90,6 +94,10 @@ sub update_frequency_s
 {
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  my $value = shift;
+
+  $self->{'update_frequency_s'} = $value if defined($value);
 
   return $self->{'update_frequency_s'};
 }

@@ -85,7 +85,7 @@ sub new
 
 =item id
 
-Get the id.
+Get/set the id.
 
 =cut
 
@@ -94,6 +94,10 @@ sub id
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
+  my $value = shift;
+
+  $self->{'id'} = $value if defined($value);
+
   return $self->{'id'};
 }
 
@@ -101,7 +105,7 @@ sub id
 
 =item group
 
-Get the group.
+Get/set the group.
 
 =cut
 
@@ -110,6 +114,10 @@ sub group
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
+  my $value = shift;
+
+  $self->{'group'} = $value if defined($value);
+
   return $self->{'group'};
 }
 
@@ -117,7 +125,7 @@ sub group
 
 =item is_root
 
-Get the value of the "is root" flag.
+Get/set the value of the "is root" flag.
 
 =cut
 
@@ -126,6 +134,10 @@ sub is_root
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
+  my $value = shift;
+
+  $self->{'is_root'} = $value if defined($value);
+
   return $self->{'is_root'};
 }
 
@@ -133,7 +145,7 @@ sub is_root
 
 =item host
 
-Get the host.
+Get/set the host.
 
 =cut
 
@@ -142,6 +154,10 @@ sub host
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
+  my $value = shift;
+
+  $self->{'host'} = $value if defined($value);
+
   return $self->{'host'};
 }
 
@@ -149,7 +165,7 @@ sub host
 
 =item register_frequency_s
 
-Get the register frequency, in seconds.
+Get/set the register frequency, in seconds.
 
 =cut
 
@@ -158,6 +174,10 @@ sub register_frequency_s
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
+  my $value = shift;
+
+  $self->{'register_frequency_s'} = $value if defined($value);
+
   return $self->{'register_frequency_s'};
 }
 
@@ -165,7 +185,7 @@ sub register_frequency_s
 
 =item description
 
-Get the description.
+Get/set the description.
 
 =cut
 
@@ -174,6 +194,10 @@ sub description
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
+  my $value = shift;
+
+  $self->{'description'} = $value if defined($value);
+
   return $self->{'description'};
 }
 
@@ -181,7 +205,7 @@ sub description
 
 =item root
 
-Get the root.
+Get/set the root.
 
 =cut
 
@@ -190,6 +214,10 @@ sub root
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
+  my $value = shift;
+
+  $self->{'root'} = $value if defined($value);
+
   return $self->{'root'};
 }
 
@@ -197,7 +225,7 @@ sub root
 
 =item rsync
 
-Get the rsync parameters and settings.
+Get/set the rsync parameters and settings.
 
 =cut
 
@@ -205,6 +233,10 @@ sub rsync
 {
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  my $value = shift;
+
+  $self->{'rsync'} = $value if defined($value);
 
   return $self->{'rsync'};
 }

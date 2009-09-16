@@ -85,9 +85,9 @@ Get/set the log file path.
 
 sub path
 {
-  my $path = shift;
+  my $value = shift;
 
-  $_LOG_FILE = $path if defined($path);
+  $_LOG_FILE = $value if defined($value);
 
   return $_LOG_FILE;
 }

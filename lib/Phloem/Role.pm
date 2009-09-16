@@ -57,7 +57,7 @@ sub new
 
 =item route
 
-Get the route.
+Get/set the route.
 
 =cut
 
@@ -66,6 +66,10 @@ sub route
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
+  my $value = shift;
+
+  $self->{'route'} = $value if defined($value);
+
   return $self->{'route'};
 }
 
@@ -73,7 +77,7 @@ sub route
 
 =item directory
 
-Get the directory.
+Get/set the directory.
 
 =cut
 
@@ -82,6 +86,10 @@ sub directory
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
+  my $value = shift;
+
+  $self->{'directory'} = $value if defined($value);
+
   return $self->{'directory'};
 }
 
@@ -89,7 +97,7 @@ sub directory
 
 =item description
 
-Get the description.
+Get/set the description.
 
 =cut
 
@@ -97,6 +105,10 @@ sub description
 {
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  my $value = shift;
+
+  $self->{'description'} = $value if defined($value);
 
   return $self->{'description'};
 }
