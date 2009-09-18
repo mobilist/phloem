@@ -125,7 +125,7 @@ configuration file (in an XML format for each host.
 
 =head2 SSH key configuration
 
-This is fairly tedious, but is a necessary step in orde to get all the hosts
+This is fairly tedious, but is a necessary step in order to get all the hosts
 communicating securely. The basic process is as follows.
 
 =over 8
@@ -250,7 +250,7 @@ N.B. A given node may have 0, 1 or 2 such "outgoing" directories, depending
 
 =item *
 
-Each subscriber role nominates a base directry into which content will be
+Each subscriber role nominates a base directory into which content will be
 retrieved.
 
 N.B. A given node may have 0, 1 or 2 such "incoming" directories, depending
@@ -300,19 +300,24 @@ by the "root" node.
 =item *
 
 Each subscriber may define a "filter" to define "preferred" publisher node(s)
-from which to retreive its content on the relevant route.
+from which to retrieve its content on the relevant route.
 
 =back
 
 =head2 Transport
 
 Phloem relies on C<rsync(1)> for its content transport duties. This greatly
-alleviates the burdon on the system, delegating all concerns of
+alleviates the burden on the system, delegating all concerns of
 synchronisation, compression, authentication, etc.
+
+Incidentally, in order to avoid dependencies on non-core Perl modules, Phloem
+does not use the L<File::Rsync> module. Instead, Phloem uses a piece of code
+that is similar in outline to, although rather simpler than, the aforementioned
+module.
 
 =head2 Lightweight?
 
-Is the system really lightweight, as intended? Let's examine the proces counts
+Is the system really lightweight, as intended? Let's examine the process counts
 for a running (single node) system.
 
 Note that each subscriber will run an C<rsync(1)> sub-process from time to

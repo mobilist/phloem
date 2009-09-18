@@ -47,7 +47,7 @@ Run the server on the specified port.
 
 A hash reference of options can optionally be specified, as the second
 argument. This can include the 'host' (server host name/address) and 'daemon'
-(flag --- seee below) entries.
+(flag --- see below) entries.
 
 By default, the server runs as a daemon: this method spawns a child process
 and returns the PID. However, if the 'daemon' flag is explicitly set down,

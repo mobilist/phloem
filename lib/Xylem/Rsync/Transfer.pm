@@ -4,7 +4,7 @@ Xylem::Rsync::Transfer
 
 =head1 DESCRIPTION
 
-A utility module for transfering data using rsync.
+A utility module for transferring data using rsync.
 
 =head1 SYNOPSIS
 
