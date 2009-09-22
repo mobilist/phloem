@@ -81,45 +81,38 @@ sub import
   # Get the name of the calling class.
   my $caller = caller();
 
-  # Add this class as a base of the calling class.
-  #
-  # N.B. We do this before we add any explicitly-named base classes, because
-  #      this is the lowest-level base class.
-  {
-    # N.B. We're going to be using symbolic references for a while.
-    no strict 'refs';
-
-    push(@{$caller . '::ISA'}, __PACKAGE__);
-  }
-
   # Our input takes the form of a hash table.
   my %args = @_;
 
   # Did we get base class information?
+  my @bases;
   if (exists($args{'_base'})) {
-    my @bases;
-    {
-      my $_base = $args{'_base'};
-      croak "No base class(es) specified." unless $_base;
-      if (ref($_base)) {
-        # We must have been given an array reference.
-        croak "Expected an array reference." unless (ref($_base) eq 'ARRAY');
-        @bases = @$_base;
-      } else {
-        # Just assume that we got a class name.
-        push(@bases, $_base);
-      }
-      delete($args{'_base'});
+    my $_base = $args{'_base'} or croak "No base class(es) specified.";
+    if (ref($_base)) {
+      # We must have been given an array reference.
+      croak "Expected an array reference." unless (ref($_base) eq 'ARRAY');
+      @bases = @$_base;
+    } else {
+      # Just assume that we got a class name.
+      push(@bases, $_base);
     }
+    delete($args{'_base'});
+  }
+
+  # Sort out the base class information.
+  {
+    # N.B. We're going to be using symbolic references for a while.
+    no strict 'refs';
+
+    # Add this class as a base of the calling class.
+    #
+    # N.B. We do this before we add any explicitly-named base classes, because
+    #      this is the lowest-level base class.
+    push(@{$caller . '::ISA'}, __PACKAGE__);
 
     # Add the specified base classes as bases of the calling class.
-    {
-      # N.B. We're going to be using symbolic references for a while.
-      no strict 'refs';
-
-      foreach my $base (@bases) {
-        push(@{$caller . '::ISA'}, $base);
-      }
+    foreach my $base (@bases) {
+      push(@{$caller . '::ISA'}, $base);
     }
   }
 
@@ -194,7 +187,13 @@ sub AUTOLOAD
   croak "Element '$element' not recognised." unless exists($self->{$element});
 
   # Get element type information.
-  my %element_types = ref($self)->_get_element_types();
+  my $element_type;
+  {
+    my %element_types = ref($self)->_get_element_types()
+      or croak "Failed to get element type information.";
+    $element_type = $element_types{$element}
+    or croak "Failed to get type information for element '$element'.";
+  }
 
   {
     # N.B. We're going to be using symbolic references for a while.
