@@ -208,7 +208,8 @@ sub AUTOLOAD
       # N.B. Really, the subroutine should behave differently, depending on
       #      the element type.
       carp "NOT YET WRITTEN!";
-      *{$AUTOLOAD} = sub {
+      my $accessor_mutator_sub;
+      $accessor_mutator_sub = sub {
         my $self = shift or croak "No object reference.";
         croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
@@ -216,12 +217,52 @@ sub AUTOLOAD
 
         return $self->{$element};
       };
+      *{$AUTOLOAD} = $accessor_mutator_sub;
     }
 
     # Restart the new routine.
     unshift(@_, $self);
     goto &$AUTOLOAD;
   }
+}
+
+#------------------------------------------------------------------------------
+sub _generic_accessor_mutator
+# Generic accessor/mutator method.
+{
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
+
+  my $element = shift or croak "No element specified.";
+  croak "Expected an ordinary scalar." if ref($element);
+
+  my $element_type = shift or croak "No element type specified.";
+  croak "Expected an ordinary scalar." if ref($element_type);
+
+  # Look for the element in the object hash.
+  croak "Element '$element' not recognised." unless exists($self->{$element});
+
+  croak "NOT YET WRITTEN!";
+
+  if ($element_type =~ /^\*/o) {
+    if ($element_type eq '*$') {
+    } elsif ($element_type eq '*@') {
+    } elsif ($element_type eq '*%') {
+    } else {
+    }
+    croak "NOT YET WRITTEN!";
+  } else {
+    if ($element_type eq '$') {
+    } elsif ($element_type eq '@') {
+    } elsif ($element_type eq '%') {
+    } else {
+    }
+    croak "NOT YET WRITTEN!";
+  }
+
+  $self->{$element} = shift if @_;
+
+  return $self->{$element};
 }
 
 1;

@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 51; # qw(no_plan);
+use Test::More tests => 53; # qw(no_plan);
 
 BEGIN { use_ok('Xylem::Class'); }
 
@@ -106,6 +106,9 @@ ok($thing2->isa('Monkey'), 'Should be a subclass of Monkey.');
 ok($thing2->isa('Donkey'), 'Should be a subclass of Donkey too.');
 is($thing2->scalar(), 101, 'Value for scalar element');
 is_deeply($thing2->array(), [qw(hat shoe cheese)], 'Value for array element.');
+ok($thing2->array()->[0] = 'hats', 'Use array element as lvalue.');
+is_deeply($thing2->array(), [qw(hats shoe cheese)],
+          'Check that array element has changed.');
 ok(my $cat4 = $thing2->cat(), 'Accessor for cat.');
 is_deeply($cat4, $felix, 'Cats should be identical.');
 
