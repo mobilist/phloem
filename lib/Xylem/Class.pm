@@ -162,8 +162,23 @@ sub import
       croak "Expected an ordinary scalar." if ref($class);
       croak "Incorrect class name ($class)." unless $class->isa("$caller");
 
-      # Construct the base class part, if the base class defines a constructor.
-      my $self_base = eval { $class->SUPER::new(); } || {};
+      # Construct the base class parts, if the base classes define
+      # constructors.
+      #
+      # N.B. This used to be done using...
+      #
+      #        my $self_base = eval { $class->SUPER::new(); } || {};
+      #
+      #      ... but clearly that wouldn't work for multiple bases. The problem
+      #      now is that we might miss superclasses that weren't declared using
+      #      the '_base' constructor key. I think we'll just have to live with
+      #      that.
+      my $self_base = {};
+      foreach my $base (@bases) {
+        my $current_base_part = eval { $base->new(); } || {};
+        croak "Failed to contruct $base part: $@" if $@;
+        $self_base = {%$current_base_part, %$self_base};
+      }
 
       # Assemble the object from the "guts", plus base class part, plus
       # arguments.
