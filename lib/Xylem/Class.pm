@@ -124,7 +124,15 @@ sub import
       or croak "No element type specified for element '$key'.";
     croak "'$value' is not a valid element type."
       unless ($value =~ /^\*?(?:\$|\@|\%|[A-Z][\w:]*)$/o);
-    $self->{$key} = undef;
+
+    # Initialise the element value.
+    if ($value =~ /^\*?\@$/o) {
+      $self->{$key} = [];
+    } elsif ($value =~ /^\*?\%$/o) {
+      $self->{$key} = {};
+    } else {
+      $self->{$key} = undef;
+    }
   }
 
   # Define a class method in the calling package, to retrieve the element
@@ -242,27 +250,75 @@ sub _generic_accessor_mutator
   # Look for the element in the object hash.
   croak "Element '$element' not recognised." unless exists($self->{$element});
 
-  croak "NOT YET WRITTEN!";
+  my $wantref = ($element_type =~ /^\*/o);
+  if ($element_type =~ /^\*?\$$/o) {
+    # Scalar.
+    $self->{$element} = shift if @_;
 
-  if ($element_type =~ /^\*/o) {
-    if ($element_type eq '*$') {
-    } elsif ($element_type eq '*@') {
-    } elsif ($element_type eq '*%') {
+    return $wantref ? \{$self->{$element}} : $self->{$element};
+  } elsif ($element_type eq '@') {
+    # Array.
+    if (@_) {
+      if (@_ == 1) {
+        if (ref($_[0])) {
+          # Assign the entire array from the specified reference.
+          my $value = shift;
+          croak "Expected an array reference." unless (ref($value) eq 'ARRAY');
+          $self->{$element} = $value;
+          return $self;
+        } else {
+          # Return an array slot [reference] for the specified index.
+          my $index = shift;
+          croak "Expected an array index." unless ($index =~ /^\d+$/o);
+          return $wantref ?
+            \{$self->{$element}->[$index]} : $self->{$element}->[$index];
+        }
+      } elsif (@_ == 2) {
+        # Assign to an array slot.
+        my $index = shift;
+        my $value = shift;
+        croak "Expected an array index." unless ($index =~ /^\d+$/o);
+        $self->{$element}->[$index] = $value;
+        return $wantref ?
+          \{$self->{$element}->[$index]} : $self->{$element}->[$index];
+      } else {
+        croak "Expected no more than two arguments.";
+      }
     } else {
+      # Always return the array reference.
+      return $self->{$element};
     }
-    croak "NOT YET WRITTEN!";
+  } elsif ($element_type eq '%') {
+    # Hash.
+    if (@_) {
+      if (@_ == 1) {
+        if (ref($_[0])) {
+          # Assign the entire hash from the specified reference.
+          my $value = shift;
+          croak "Expected a hash reference." unless (ref($value) eq 'HASH');
+          $self->{$element} = $value;
+          return $self;
+        } else {
+          # Return a hash slot [reference] for the specified key.
+          croak "NOT YET WRITTEN!";
+        }
+      } elsif (@_ == 2) {
+        # Assign to a hash slot.
+        croak "NOT YET WRITTEN!";
+      } else {
+        croak "Expected no more than two arguments.";
+      }
+    } else {
+      # Always return the hash reference.
+      return $self->{$element};
+    }
   } else {
-    if ($element_type eq '$') {
-    } elsif ($element_type eq '@') {
-    } elsif ($element_type eq '%') {
-    } else {
-    }
+    # Object.
     croak "NOT YET WRITTEN!";
   }
 
-  $self->{$element} = shift if @_;
-
-  return $self->{$element};
+  # If we get here, then something's gone wrong.
+  croak "Unexpected problem.";
 }
 
 1;
