@@ -23,8 +23,17 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 1; # qw(no_plan);
+use Test::More tests => 6; # qw(no_plan);
 
 BEGIN { use_ok('Xylem::Rsync::Stats'); }
 
-diag("NOT YET WRITTEN!");
+ok(my $transfer_stats =
+   Xylem::Rsync::Stats->new('num_files'             => 3,
+                            'num_files_transferred' => 2,
+                            'total_bytes_sent'      => 48),
+   'Creating transfer stats object.');
+ok($transfer_stats->transfer_rate(1.234), 'Setting transfer rate.');
+is($transfer_stats->transfer_rate(), 1.234, 'Getting transfer rate.');
+ok(!$transfer_stats->total_bytes_received(),
+   'Getting total number of bytes received.');
+is($transfer_stats->num_files(), 3, 'Getting number of files.');
