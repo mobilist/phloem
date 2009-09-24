@@ -2,6 +2,16 @@ REVISION HISTORY
 
  See http://sourceforge.net/projects/phloem for the full revision history.
 
+ 0.0.4 Thu Sep 24 13:40:43 2009 UTC
+    - Tagging the 0.0.4 release of the Phloem project.
+
+    - Various minor changes to the documentation.
+
+    - Some minor bug fixes, mostly in the utility scripts/code.
+
+    - Added a new class mechanism for Xylem. This is not yet used anywhere;
+      that will probably happen for the 0.0.5 release.
+
  0.0.3 Wed Sep 16 11:12:18 2009 UTC
     - Tagging the 0.0.3 release of the Phloem project.
 
