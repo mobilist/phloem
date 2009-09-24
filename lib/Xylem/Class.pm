@@ -186,7 +186,7 @@ sub AUTOLOAD
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   our $AUTOLOAD =~ /([^:]+)$/o;
-  my $element = $1;
+  my $element = $1 or croak "Failed to determine element name.";
 
   # Get out right now if we are being called for a destructor.
   return if ($element eq 'DESTROY');
@@ -200,7 +200,7 @@ sub AUTOLOAD
     my %element_types = ref($self)->_get_element_types()
       or croak "Failed to get element type information.";
     $element_type = $element_types{$element}
-    or croak "Failed to get type information for element '$element'.";
+      or croak "Failed to get type information for element '$element'.";
   }
 
   {
@@ -211,24 +211,22 @@ sub AUTOLOAD
     # want to redefine it.
     unless (defined(*$AUTOLOAD{'CODE'})) {
 
-      # Define a subroutine.
+      # Define an accessor/mutator method.
       #
-      # N.B. Really, the subroutine should behave differently, depending on
-      #      the element type.
-      carp "NOT YET WRITTEN!";
-      my $accessor_mutator_sub;
-      $accessor_mutator_sub = sub {
-        my $self = shift or croak "No object reference.";
-        croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-        $self->{$element} = shift if @_;
-
-        return $self->{$element};
-      };
-      *{$AUTOLOAD} = $accessor_mutator_sub;
+      # N.B. We have to do a bit of mucking about with the argument order.
+      #      See the comments inside _generic_accessor_mutator() for more
+      #      details. The important point here is that the call is pre-bound
+      #      in the closure to specific element name and type details. That
+      #      is important because those are the arguments that will NOT be
+      #      passed in to the autoload method when it is called in the future.
+      *{$AUTOLOAD} =
+        sub { return _generic_accessor_mutator($element, $element_type, @_); };
     }
 
     # Restart the new routine.
+    #
+    # N.B. Remember to put the invoking object back onto the front of the
+    # argument list.
     unshift(@_, $self);
     goto &$AUTOLOAD;
   }
@@ -238,14 +236,24 @@ sub AUTOLOAD
 sub _generic_accessor_mutator
 # Generic accessor/mutator method.
 {
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
+  # N.B. Note the rather strange argument order here. Specifically, the
+  #      invoking object reference comes after the element name and type
+  #      details.
+  #
+  #      This is done because the element name and type are bound to a call
+  #      to this method in an autoload closure. (See the AUTOLOAD method for
+  #      further details.) The upshot of this is that when the generated
+  #      autoload method is called, the "real" arguments will be passed in
+  #      _after_ the element name and type.
 
   my $element = shift or croak "No element specified.";
   croak "Expected an ordinary scalar." if ref($element);
 
   my $element_type = shift or croak "No element type specified.";
   croak "Expected an ordinary scalar." if ref($element_type);
+
+  my $self = shift or croak "No object reference.";
+  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
   # Look for the element in the object hash.
   croak "Element '$element' not recognised." unless exists($self->{$element});
