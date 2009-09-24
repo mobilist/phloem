@@ -256,65 +256,78 @@ sub _generic_accessor_mutator
     $self->{$element} = shift if @_;
 
     return $wantref ? \{$self->{$element}} : $self->{$element};
-  } elsif ($element_type eq '@') {
+  } elsif ($element_type =~ /^\*?\@$/o) {
     # Array.
-    if (@_) {
-      if (@_ == 1) {
-        if (ref($_[0])) {
-          # Assign the entire array from the specified reference.
-          my $value = shift;
-          croak "Expected an array reference." unless (ref($value) eq 'ARRAY');
-          $self->{$element} = $value;
-          return $self;
-        } else {
-          # Return an array slot [reference] for the specified index.
-          my $index = shift;
-          croak "Expected an array index." unless ($index =~ /^\d+$/o);
-          return $wantref ?
-            \{$self->{$element}->[$index]} : $self->{$element}->[$index];
-        }
-      } elsif (@_ == 2) {
-        # Assign to an array slot.
-        my $index = shift;
-        my $value = shift;
-        croak "Expected an array index." unless ($index =~ /^\d+$/o);
-        $self->{$element}->[$index] = $value;
-        return $wantref ?
-          \{$self->{$element}->[$index]} : $self->{$element}->[$index];
-      } else {
-        croak "Expected no more than two arguments.";
-      }
-    } else {
+    if (@_ == 0) {
       # Always return the array reference.
       return $self->{$element};
-    }
-  } elsif ($element_type eq '%') {
-    # Hash.
-    if (@_) {
-      if (@_ == 1) {
-        if (ref($_[0])) {
-          # Assign the entire hash from the specified reference.
-          my $value = shift;
-          croak "Expected a hash reference." unless (ref($value) eq 'HASH');
-          $self->{$element} = $value;
-          return $self;
-        } else {
-          # Return a hash slot [reference] for the specified key.
-          croak "NOT YET WRITTEN!";
-        }
-      } elsif (@_ == 2) {
-        # Assign to a hash slot.
-        croak "NOT YET WRITTEN!";
+    } elsif (@_ == 1) {
+      if (ref($_[0])) {
+        # Assign the entire array from the specified reference.
+        my $value = shift;
+        croak "Expected an array reference." unless (ref($value) eq 'ARRAY');
+        $self->{$element} = $value;
+        return $self;
       } else {
-        croak "Expected no more than two arguments.";
+        # Return an array slot [reference] for the specified index.
+        my $index = shift;
+        croak "Expected an array index." unless ($index =~ /^\d+$/o);
+        return $wantref ?
+          \{$self->{$element}->[$index]} : $self->{$element}->[$index];
       }
+    } elsif (@_ == 2) {
+      # Assign to an array slot.
+      my $index = shift;
+      my $value = shift;
+      croak "Expected an array index." unless ($index =~ /^\d+$/o);
+      $self->{$element}->[$index] = $value;
+      return $wantref ?
+        \{$self->{$element}->[$index]} : $self->{$element}->[$index];
     } else {
+      croak "Expected no more than two arguments.";
+    }
+  } elsif ($element_type =~ /^\*?\%$/o) {
+    # Hash.
+    if (@_ == 0) {
       # Always return the hash reference.
       return $self->{$element};
+    } elsif (@_ == 1) {
+      if (ref($_[0])) {
+        # Assign the entire hash from the specified reference.
+        my $value = shift;
+        croak "Expected a hash reference." unless (ref($value) eq 'HASH');
+        $self->{$element} = $value;
+        return $self;
+      } else {
+        # Return a hash slot [reference] for the specified key.
+        my $key = shift;
+        return $wantref ?
+          \{$self->{$element}->{$key}} : $self->{$element}->{$key};
+      }
+    } elsif (@_ == 2) {
+      # Assign to a hash slot.
+      my $key = shift;
+      my $value = shift;
+      $self->{$element}->{$key} = $value;
+      return $wantref ?
+        \{$self->{$element}->{$key}} : $self->{$element}->{$key};
+    } else {
+      croak "Expected no more than two arguments.";
     }
   } else {
     # Object.
-    croak "NOT YET WRITTEN!";
+    croak "Unexpected element type designation."
+      unless ($element_type =~ /^\*?([A-Z][\w:]*)$/o);
+    my $element_class = $1;
+    if (@_ == 1) {
+      my $value = shift;
+      croak "Expected a reference." unless ref($value);
+      croak "Unexpected object class." unless $value->isa($element_class);
+      $self->{$element} = $value;
+    } elsif (@_) {
+      croak "Expected no more than a single argument.";
+    }
+    return $wantref ? \{$self->{$element}} : $self->{$element};
   }
 
   # If we get here, then something's gone wrong.
