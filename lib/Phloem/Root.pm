@@ -64,7 +64,9 @@ use warnings;
 use diagnostics;
 
 use Carp;
-use Class::Struct 'Phloem::Root' => {'host' => '$',
-                                     'port' => '$'};
+
+use Xylem::Class ('class'  => 'Phloem::Root',
+                  'fields' => {'host' => '$',
+                               'port' => '$'});
 
 1;

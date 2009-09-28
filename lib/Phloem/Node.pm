@@ -20,7 +20,7 @@ A node in a Phloem network.
   print "Description: ", $node->description(), "\n";
   my $root = $node->root();
   my $rsync = $node->rsync();
-  my @roles = $node->roles();
+  my $roles_arrayref = $node->roles();
 
   my $role = Phloem::Role::Publish->new('route'     => 'root2leaf',
                                         'directory' => 'some/dir/path');
@@ -39,6 +39,46 @@ A node in a Phloem network.
 
 =over 8
 
+=item new
+
+Constructor.
+
+=item id
+
+Get/set the id.
+
+=item group
+
+Get/set the group.
+
+=item is_root
+
+Get/set the value of the "is root" flag.
+
+=item host
+
+Get/set the host.
+
+=item register_frequency_s
+
+Get/set the register frequency, in seconds.
+
+=item description
+
+Get/set the description.
+
+=item root
+
+Get/set the root.
+
+=item rsync
+
+Get/set the rsync parameters and settings.
+
+=item roles
+
+Get an array reference of the roles.
+
 =cut
 
 package Phloem::Node;
@@ -49,213 +89,21 @@ use diagnostics;
 
 use Carp;
 
-use base qw(Phloem::Dumper);
-
+use Phloem::Dumper;
 use Phloem::Role;
 use Phloem::Root;
 
-#------------------------------------------------------------------------------
-
-=item new
-
-Constructor.
-
-=cut
-
-sub new
-{
-  my $class = shift or croak "No class name specified.";
-  croak "Expected an ordinary scalar." if ref($class);
-  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
-
-  my $self = {'id'                   => undef,
-              'group'                => undef,
-              'is_root'              => 0,
-              'host'                 => undef,
-              'register_frequency_s' => undef,
-              'description'          => undef,
-              'root'                 => undef,
-              'rsync'                => undef,
-              'roles'                => [],
-              @_};
-  return bless($self, $class);
-}
-
-#------------------------------------------------------------------------------
-
-=item id
-
-Get/set the id.
-
-=cut
-
-sub id
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'id'} = $value if defined($value);
-
-  return $self->{'id'};
-}
-
-#------------------------------------------------------------------------------
-
-=item group
-
-Get/set the group.
-
-=cut
-
-sub group
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'group'} = $value if defined($value);
-
-  return $self->{'group'};
-}
-
-#------------------------------------------------------------------------------
-
-=item is_root
-
-Get/set the value of the "is root" flag.
-
-=cut
-
-sub is_root
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'is_root'} = $value if defined($value);
-
-  return $self->{'is_root'};
-}
-
-#------------------------------------------------------------------------------
-
-=item host
-
-Get/set the host.
-
-=cut
-
-sub host
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'host'} = $value if defined($value);
-
-  return $self->{'host'};
-}
-
-#------------------------------------------------------------------------------
-
-=item register_frequency_s
-
-Get/set the register frequency, in seconds.
-
-=cut
-
-sub register_frequency_s
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'register_frequency_s'} = $value if defined($value);
-
-  return $self->{'register_frequency_s'};
-}
-
-#------------------------------------------------------------------------------
-
-=item description
-
-Get/set the description.
-
-=cut
-
-sub description
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'description'} = $value if defined($value);
-
-  return $self->{'description'};
-}
-
-#------------------------------------------------------------------------------
-
-=item root
-
-Get/set the root.
-
-=cut
-
-sub root
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'root'} = $value if defined($value);
-
-  return $self->{'root'};
-}
-
-#------------------------------------------------------------------------------
-
-=item rsync
-
-Get/set the rsync parameters and settings.
-
-=cut
-
-sub rsync
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'rsync'} = $value if defined($value);
-
-  return $self->{'rsync'};
-}
-
-#------------------------------------------------------------------------------
-
-=item roles
-
-Get an array of the roles.
-
-=cut
-
-sub roles
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  return @{$self->{'roles'}};
-}
+use Xylem::Class ('class'  => 'Phloem::Node',
+                  'bases'  => [qw(Phloem::Dumper)],
+                  'fields' => {'id'                   => '$',
+                               'group'                => '$',
+                               'is_root'              => '$',
+                               'host'                 => '$',
+                               'register_frequency_s' => '$',
+                               'description'          => '$',
+                               'root'                 => 'Phloem::Root',
+                               'rsync'                => 'Phloem::Rsync',
+                               'roles'                => '@'});
 
 #------------------------------------------------------------------------------
 
@@ -292,8 +140,8 @@ sub subscribe_roles
 
   my @subscribe_roles;
   {
-    my @roles = $self->roles();
-    foreach my $current_role (@roles) {
+    my $roles_arrayref = $self->roles();
+    foreach my $current_role (@$roles_arrayref) {
       push(@subscribe_roles, $current_role)
         if $current_role->isa('Phloem::Role::Subscribe');
     }
@@ -315,8 +163,8 @@ sub is_publisher
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  my @roles = $self->roles();
-  foreach my $current_role (@roles) {
+  my $roles_arrayref = $self->roles();
+  foreach my $current_role (@$roles_arrayref) {
     return 1 if $current_role->isa('Phloem::Role::Publish');
   }
 
@@ -346,8 +194,8 @@ sub is_portal
   # Iterate over the roles.
   my $pub_dir;
   my $sub_dir;
-  my @roles = $self->roles();
-  foreach my $role (@roles) {
+  my $roles_arrayref = $self->roles();
+  foreach my $role (@$roles_arrayref) {
     next unless ($role->route() eq $route);
     my $dir = $role->directory();
     if ($role->isa('Phloem::Role::Publish')) {
@@ -382,8 +230,8 @@ sub publishes_on_route
   croak "Unexpected route specified."
     unless ($route =~ /^(?:root2leaf|leaf2root)$/o);
 
-  my @roles = $self->roles();
-  foreach my $current_role (@roles) {
+  my $roles_arrayref = $self->roles();
+  foreach my $current_role (@$roles_arrayref) {
     return $current_role if ($current_role->isa('Phloem::Role::Publish') &&
                              $current_role->route() eq $route);
   }

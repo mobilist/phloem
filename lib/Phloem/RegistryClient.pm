@@ -140,11 +140,11 @@ sub get_all_nodes
 
   Phloem::Debug->message('Server sent registry... ' . $registry->data_dump());
 
-  # Get a hash table of the nodes.
-  my %nodes_hash = $registry->nodes();
+  # Get a hash table (reference) of the nodes.
+  my $nodes_hashref = $registry->nodes();
 
   # The values are the node objects.
-  return values(%nodes_hash);
+  return values(%$nodes_hashref);
 }
 
 #------------------------------------------------------------------------------

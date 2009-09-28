@@ -46,9 +46,10 @@ use warnings;
 use diagnostics;
 
 use Carp;
-use Class::Struct
-  'Phloem::Subscriber' => {'node' => 'Phloem::Node',
-                           'role' => 'Phloem::Role::Subscribe'};
+
+use Xylem::Class ('class'  => 'Phloem::Subscriber',
+                  'fields' => {'node' => 'Phloem::Node',
+                               'role' => 'Phloem::Role::Subscribe'});
 
 use Phloem::ConfigLoader;
 use Phloem::Debug;

@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 26; # qw(no_plan);
+use Test::More tests => 27; # qw(no_plan);
 
 use Phloem::Role::Publish;
 use Phloem::Role::Subscribe;
@@ -60,7 +60,8 @@ ok($node->description() eq $object_data{'description'},
 ok(!defined($node->root()), 'Accessor for root.');
 ok(my $rsync2 = $node->rsync(), 'Accessor for rsync.');
 is_deeply($rsync2, $rsync, 'Rsync objects should match.');
-ok($node->roles() == 0, 'Accessor for roles.');
+ok(my $roles_arrayref = $node->roles(), 'Accessor for roles.');
+is(@$roles_arrayref, 0, 'Array of nodes should be empty.');
 
 ok(!$node->is_publisher(), 'Node does not publish.');
 

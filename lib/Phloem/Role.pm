@@ -22,6 +22,22 @@ Base class for a role for a node in a Phloem network.
 
 =over 8
 
+=item new
+
+Constructor.
+
+=item route
+
+Get/set the route.
+
+=item directory
+
+Get/set the directory.
+
+=item description
+
+Get/set the description.
+
 =cut
 
 package Phloem::Role;
@@ -32,86 +48,10 @@ use diagnostics;
 
 use Carp;
 
-#------------------------------------------------------------------------------
-
-=item new
-
-Constructor.
-
-=cut
-
-sub new
-{
-  my $class = shift or croak "No class name specified.";
-  croak "Expected an ordinary scalar." if ref($class);
-  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
-
-  my $self = {'route'       => undef,
-              'directory'   => undef,
-              'description' => undef,
-              @_};
-  return bless($self, $class);
-}
-
-#------------------------------------------------------------------------------
-
-=item route
-
-Get/set the route.
-
-=cut
-
-sub route
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'route'} = $value if defined($value);
-
-  return $self->{'route'};
-}
-
-#------------------------------------------------------------------------------
-
-=item directory
-
-Get/set the directory.
-
-=cut
-
-sub directory
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'directory'} = $value if defined($value);
-
-  return $self->{'directory'};
-}
-
-#------------------------------------------------------------------------------
-
-=item description
-
-Get/set the description.
-
-=cut
-
-sub description
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'description'} = $value if defined($value);
-
-  return $self->{'description'};
-}
+use Xylem::Class ('class'  => 'Phloem::Role',
+                  'fields' => {'route'       => '$',
+                               'directory'   => '$',
+                               'description' => '$'});
 
 1;
 

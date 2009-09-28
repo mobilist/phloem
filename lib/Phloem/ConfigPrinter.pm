@@ -123,7 +123,8 @@ sub print
 xxx_END_HEADER
 
   # Print details of the roles.
-  foreach my $role ($node->roles()) {
+  my $roles_arrayref = $node->roles();
+  foreach my $role (@$roles_arrayref) {
     my $role_type =
       $role->isa('Phloem::Role::Publish') ? 'publish' : 'subscribe';
     my $role_route = $role->route();

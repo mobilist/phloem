@@ -61,7 +61,9 @@ use warnings;
 use diagnostics;
 
 use Carp;
-use Class::Struct 'Phloem::Rsync' => {'user'        => '$',
-                                      'ssh_id_file' => '$'};
+
+use Xylem::Class ('class'  => 'Phloem::Rsync',
+                  'fields' => {'user'        => '$',
+                               'ssh_id_file' => '$'});
 
 1;

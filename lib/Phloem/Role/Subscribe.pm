@@ -25,6 +25,18 @@ A subscribe role for a node in a Phloem network.
 
 =over 8
 
+=item new
+
+Constructor.
+
+=item filter
+
+Get/set the filter.
+
+=item update_frequency_s
+
+Get/set the update frequency, in seconds.
+
 =cut
 
 package Phloem::Role::Subscribe;
@@ -36,71 +48,12 @@ use diagnostics;
 use Carp;
 
 use Phloem::Filter;
+use Phloem::Role;
 
-use base qw(Phloem::Role);
-
-#------------------------------------------------------------------------------
-
-=item new
-
-Constructor.
-
-=cut
-
-sub new
-{
-  my $class = shift or croak "No class name specified.";
-  croak "Expected an ordinary scalar." if ref($class);
-  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
-
-  # Construct the base class part.
-  my $self = $class->SUPER::new('filter'             => undef,
-                                'update_frequency_s' => undef,
-                                @_);
-
-  # Re-bless into the subclass.
-  return bless($self, $class);
-}
-
-#------------------------------------------------------------------------------
-
-=item filter
-
-Get/set the filter.
-
-=cut
-
-sub filter
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'filter'} = $value if defined($value);
-
-  return $self->{'filter'};
-}
-
-#------------------------------------------------------------------------------
-
-=item update_frequency_s
-
-Get/set the update frequency, in seconds.
-
-=cut
-
-sub update_frequency_s
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  my $value = shift;
-
-  $self->{'update_frequency_s'} = $value if defined($value);
-
-  return $self->{'update_frequency_s'};
-}
+use Xylem::Class ('class'  => 'Phloem::Role::Subscribe',
+                  'bases'  => [qw(Phloem::Role)],
+                  'fields' => {'filter'             => 'Phloem::Filter',
+                               'update_frequency_s' => '$'});
 
 1;
 
@@ -108,7 +61,7 @@ sub update_frequency_s
 
 =head1 SEE ALSO
 
-L<Phloem::Role>, L<Phloem::Role::Publish>
+L<Phloem::Role>, L<Phloem::Role::Publish>, L<Phloem::Filter>
 
 =head1 COPYRIGHT
 

@@ -43,9 +43,12 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Class::Struct 'Phloem::Filter' => {'type'  => '$',
-                                       'value' => '$',
-                                       'rule'  => '$'};
+use Carp;
+
+use Xylem::Class ('class'  => 'Phloem::Filter',
+                  'fields' => {'type'  => '$',
+                               'value' => '$',
+                               'rule'  => '$'});
 
 use Phloem::Node;
 

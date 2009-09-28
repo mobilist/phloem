@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 14; # qw(no_plan);
+use Test::More tests => 15; # qw(no_plan);
 
 use Xylem::TimeStamp;
 use Phloem::Node;
@@ -40,7 +40,8 @@ ok(my $registry = Phloem::Registry->new(%object_data),
 is_deeply($registry, \%object_data, 'Internal object data.');
 ok($registry->timestamp() eq $object_data{'timestamp'},
    'Accessor for timestamp.');
-ok($registry->nodes() == 0, 'Accessor for nodes.');
+ok(my $retrieved_nodes_hashref = $registry->nodes(), 'Accessor for nodes.');
+is(keys(%$retrieved_nodes_hashref), 0, 'Nodes hash should be empty.');
 
 ok(my $node = Phloem::Node->new('id' => 'egg', 'root' => 'dog'),
    'Creating node object.');

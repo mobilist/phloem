@@ -15,7 +15,8 @@ A registry of the nodes in a Phloem network.
   my $old_timestamp = $registry->timestamp();
   print "Registry time-stamp $old_timestamp\n";
 
-  die "The registry is empty." unless $registry->nodes();
+  my $nodes_hashref = $registry->nodes();
+  die "The registry is empty." unless keys(%$nodes_hashref);
 
   # Add a node to the registry.
   my $node = Phloem::Node->new('id' => 'egg', 'group' => 'ova1');
@@ -30,6 +31,18 @@ A registry of the nodes in a Phloem network.
 
 =over 8
 
+=item new
+
+Constructor.
+
+=item timestamp
+
+Get the time-stamp.
+
+=item nodes
+
+Get a hash table reference of the nodes.
+
 =cut
 
 package Phloem::Registry;
@@ -41,64 +54,15 @@ use diagnostics;
 use Carp;
 use File::Temp;
 
-use base qw(Phloem::Dumper);
+use Xylem::Class ('class'  => 'Phloem::Registry',
+                  'bases'  => [qw(Phloem::Dumper)],
+                  'fields' => {'timestamp' => '$',
+                               'nodes'     => '%'});
 
 use Phloem::Debug;
 use Phloem::Node;
 use Xylem::TimeStamp;
 use Xylem::Utils::File;
-
-#------------------------------------------------------------------------------
-
-=item new
-
-Constructor.
-
-=cut
-
-sub new
-{
-  my $class = shift or croak "No class name specified.";
-  croak "Expected an ordinary scalar." if ref($class);
-  croak "Incorrect class name." unless $class->isa(__PACKAGE__);
-
-  my $self = {'timestamp' => Xylem::TimeStamp::create(),
-              'nodes'     => {},
-              @_};
-  return bless($self, $class);
-}
-
-#------------------------------------------------------------------------------
-
-=item timestamp
-
-Get the time-stamp.
-
-=cut
-
-sub timestamp
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  return $self->{'timestamp'};
-}
-
-#------------------------------------------------------------------------------
-
-=item nodes
-
-Get a hash table of the nodes.
-
-=cut
-
-sub nodes
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  return %{$self->{'nodes'}};
-}
 
 #------------------------------------------------------------------------------
 
