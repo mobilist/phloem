@@ -9,12 +9,12 @@ A utility module for transferring data using rsync.
 =head1 SYNOPSIS
 
   use Xylem::Rsync::Transfer;
-  Xylem::Rsync::Transfer::go('10.20.30.40',
-                             'lemuelg',
-                             '/home/lemuelg/',
-                             '/',
-                             '~/.ssh/id_rsa',
-                             22);
+  Xylem::Rsync::Transfer::go('remote_host' => '10.20.30.40',
+                             'remote_user' => 'lemuelg',
+                             'remote_path' => '/home/lemuelg/',
+                             'local_path'  => '/',
+                             'ssh_id_file' => '~/.ssh/id_rsa',
+                             'ssh_port'    => 22);
 
 =head1 METHODS
 
@@ -52,12 +52,14 @@ duration, in seconds.
 sub go
 {
   # Get the inputs.
-  my $remote_ip_address = shift or croak "No remote IP address specified.";
-  my $remote_user = shift or croak "No remote user specified.";
-  my $remote_path = shift or croak "No remote path specified.";
-  my $local_path = shift or croak "No local path specified.";
-  my $ssh_id_file = shift or croak "No SSH identity file specified.";
-  my $ssh_port = shift or croak "No SSH port number specified.";
+  my %args = @_;
+  my $remote_host = $args{'remote_host'} or croak "No remote host specified.";
+  my $remote_user = $args{'remote_user'} or croak "No remote user specified.";
+  my $remote_path = $args{'remote_path'} or croak "No remote path specified.";
+  my $local_path = $args{'local_path'} or croak "No local path specified.";
+  my $ssh_id_file = $args{'ssh_id_file'}
+    or croak "No SSH identity file specified.";
+  my $ssh_port = $args{'ssh_port'} or croak "No SSH port number specified.";
 
   # N.B. Make sure that there is a trailing forward slash on the source
   #      (remote) path.
@@ -68,7 +70,7 @@ sub go
   $remote_path .= '/'; # Add trailing slash.
 
   my $full_remote_path =
-    $remote_user . '@' . $remote_ip_address . ':' . $remote_path;
+    $remote_user . '@' . $remote_host . ':' . $remote_path;
 
   my $shell_opts =
     '--rsh=\'' .

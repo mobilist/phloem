@@ -188,7 +188,7 @@ sub _update_from_publisher
   Phloem::Debug->message('About to update from publisher node.');
 
   # Get some details required to specify the transfer.
-  my $remote_ip_address = $node->host();
+  my $remote_host = $node->host();
   my $remote_user = $node->rsync()->user();
   my $remote_path = $role->directory();
   my $local_path = $self->role()->directory();
@@ -198,12 +198,12 @@ sub _update_from_publisher
   # Transfer data from the remote host.
   Phloem::Logger->append('Starting data transfer.');
   my ($rsync_stats, $transfer_duration) =
-    Xylem::Rsync::Transfer::go($remote_ip_address,
-                               $remote_user,
-                               $remote_path,
-                               $local_path,
-                               $ssh_id_file,
-                               $ssh_port);
+    Xylem::Rsync::Transfer::go('remote_host' => $remote_host,
+                               'remote_user' => $remote_user,
+                               'remote_path' => $remote_path,
+                               'local_path'  => $local_path,
+                               'ssh_id_file' => $ssh_id_file,
+                               'ssh_port'    => $ssh_port);
 
   # If we got an ordinary scalar, then it is an error string.
   unless (ref($rsync_stats)) {
