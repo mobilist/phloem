@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 53; # qw(no_plan);
+use Test::More tests => 54; # qw(no_plan);
 
 BEGIN { use_ok('Xylem::Class'); }
 
@@ -128,3 +128,14 @@ ok(my %donkey_element_types = Donkey->_get_element_types(),
    'Getting element types for Donkey.');
 is_deeply(\%donkey_element_types, {'dog' => 'Dog', 'cat' => 'Cat'},
           'Checking element types for Donkey.');
+
+diag('Testing a base class that does not have a constructor.');
+package Mixin;
+  sub something { return 1; };
+    package main;
+
+package Twist;
+  use Xylem::Class ('class' => 'Twist', 'bases' => [qw(Mixin)]);
+    package main;
+
+ok(my $twist = Twist->new(), 'Creating Twist object.');

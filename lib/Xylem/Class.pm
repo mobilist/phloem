@@ -87,7 +87,7 @@ sub import
   my $target_package = $use_args{'class'}
     or croak "No target class package specified.";
   croak "Expected an ordinary scalar." if ref($target_package);
-  my $fields = $use_args{'fields'} or croak "No class fields specified.";
+  my $fields = $use_args{'fields'} || {}; # N.B. There might not be any fields.
   croak "EXpected a hash reference." unless (ref($fields) eq 'HASH');
   my %args = %$fields;
 
