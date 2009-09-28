@@ -61,13 +61,15 @@ sub new
 Called automatically when this module is "use"ed; you should never need to
 call this explicitly.
 
-Parameters passed to "use" are a hash table of element names and types, in
-the style of Class::Struct.
+Parameters passed to "use" are a hash table. Under the 'class' hash key is the
+name of the target class.
 
-In addition to the usual Class::Struct parameters, base class information
-may be specified using the '_base' key. The value may be either a string (for
-specifying a single base class) or an array reference (for specifying multiple
-base classes).
+Under the 'fields' hash key is a hash reference of element names and types,
+in the style of Class::Struct.
+
+Base class information may optionally be specified using the 'bases' hash key.
+The value may be either a string (for specifying a single base class) or an
+array reference (for specifying multiple base classes).
 
 N.B. This is a class method.
 
@@ -125,7 +127,7 @@ sub import
     # N.B. We do this before we add any explicitly-named base classes, because
     #      this is the lowest-level base class.
     unless (defined(*{$target_package . '::ISA'})) {
-####      carp "Cannot find ISA array in $target_package.";
+      # Create an empty ISA array, if necessary.
       *{$target_package . '::ISA'} = [];
     }
     my $this_package = __PACKAGE__;
@@ -195,8 +197,11 @@ sub import
       #      that.
       my $self_base = {};
       foreach my $base (@bases) {
-        my $current_base_part = eval { $base->new(); } || {};
-        croak "Failed to contruct $base part: $@" if $@;
+        # N.B. It is not an error for a base class to not define a constructor.
+        #
+        #      For example, a base class might be a "mixin", in which case it
+        #      will typically not define a constructor.
+        my $current_base_part = eval { $base->new(); } or next;
         $self_base = {%$current_base_part, %$self_base};
       }
 
