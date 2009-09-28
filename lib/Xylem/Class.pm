@@ -11,11 +11,12 @@ A base class for Xylem classes.
   package MyClass;
   use Some::Class;
   use Some::Other::Class;
-  use Xylem::Class ('_base'   => [qw(Some::Other::Class)],
-                    'name'    => '$',
-                    'aliases' => '@',
-                    'data'    => '%',
-                    'object'  => 'Some::Class');
+  use Xylem::Class ('class'  => 'MyClass',
+                    'bases'  => [qw(Some::Other::Class)],
+                    'fields' => {'name'    => '$',
+                                 'aliases' => '@',
+                                 'data'    => '%',
+                                 'object'  => 'Some::Class'});
   package main;
 
   my $thing = MyClass->new('name' => 'toiletduck');
@@ -78,16 +79,32 @@ sub import
   croak "Expected an ordinary scalar." if ref($class);
   croak "Incorrect class name." unless $class->isa(__PACKAGE__);
 
-  # Get the name of the calling class.
-  my $caller = caller();
-
   # Our input takes the form of a hash table.
-  my %args = @_;
+  my %use_args = @_;
+  return unless keys(%use_args);
+  my $target_package = $use_args{'class'}
+    or croak "No target class package specified.";
+  croak "Expected an ordinary scalar." if ref($target_package);
+  my $fields = $use_args{'fields'} or croak "No class fields specified.";
+  croak "EXpected a hash reference." unless (ref($fields) eq 'HASH');
+  my %args = %$fields;
+
+  # We don't want to pollute the top-level namespace.
+  return 1 if ($target_package eq 'main');
+
+  # Have we already worked on the calling package.
+  {
+    # N.B. We're going to be using symbolic references for a while.
+    no strict 'refs';
+
+    return 1 if (defined(*{$target_package . '::new'}) &&
+                 defined(*{$target_package . '::_get_element_types'}));
+  }
 
   # Did we get base class information?
   my @bases;
-  if (exists($args{'_base'})) {
-    my $_base = $args{'_base'} or croak "No base class(es) specified.";
+  if (exists($use_args{'bases'})) {
+    my $_base = $use_args{'bases'} or croak "No base class(es) specified.";
     if (ref($_base)) {
       # We must have been given an array reference.
       croak "Expected an array reference." unless (ref($_base) eq 'ARRAY');
@@ -96,7 +113,6 @@ sub import
       # Just assume that we got a class name.
       push(@bases, $_base);
     }
-    delete($args{'_base'});
   }
 
   # Sort out the base class information.
@@ -108,12 +124,15 @@ sub import
     #
     # N.B. We do this before we add any explicitly-named base classes, because
     #      this is the lowest-level base class.
-    push(@{$caller . '::ISA'}, __PACKAGE__);
+    unless (defined(*{$target_package . '::ISA'})) {
+####      carp "Cannot find ISA array in $target_package.";
+      *{$target_package . '::ISA'} = [];
+    }
+    my $this_package = __PACKAGE__;
+    push(@{$target_package . '::ISA'}, $this_package);
 
     # Add the specified base classes as bases of the calling class.
-    foreach my $base (@bases) {
-      push(@{$caller . '::ISA'}, $base);
-    }
+    push(@{$target_package . '::ISA'}, @bases);
   }
 
   # Generate the "guts" of an object hash reference.
@@ -141,7 +160,7 @@ sub import
     # N.B. We're going to be using symbolic references for a while.
     no strict 'refs';
 
-    *{$caller . '::_get_element_types'} = sub {
+    *{$target_package . '::_get_element_types'} = sub {
       my $class = shift or croak "No class name specified.";
       croak "Expected an ordinary scalar." if ref($class);
       croak "Incorrect class name." unless $class->isa(__PACKAGE__);
@@ -156,11 +175,12 @@ sub import
     no strict 'refs';
 
     croak "Method 'new' already exists in package $class."
-      if defined(*{$caller . '::new'});
-    *{$caller . '::new'} = sub {
+      if defined(*{$target_package . '::new'});
+    *{$target_package . '::new'} = sub {
       my $class = shift or croak "No class name specified.";
       croak "Expected an ordinary scalar." if ref($class);
-      croak "Incorrect class name ($class)." unless $class->isa("$caller");
+      croak "Incorrect class name ($class)."
+        unless $class->isa("$target_package");
 
       # Construct the base class parts, if the base classes define
       # constructors.
@@ -187,6 +207,8 @@ sub import
       return bless($self, $class);
     };
   }
+
+  1;
 }
 
 #------------------------------------------------------------------------------

@@ -35,10 +35,11 @@ package Cat;
   sub new { my $c = shift; return bless({'name' => shift}, __PACKAGE__); };
     package main;
 package Dummy;
-  use Xylem::Class ('scalar' => '$',
-                    'array'  => '@',
-                    'hash'   => '%',
-                    'dog'    => 'Dog');
+  use Xylem::Class ('class'  => 'Dummy',
+                    'fields' => {'scalar' => '$',
+                                 'array'  => '@',
+                                 'hash'   => '%',
+                                 'dog'    => 'Dog'});
     package main;
 
 ok(my $dog = Dog->new('Fido'), 'Creating Dog object.');
@@ -52,7 +53,8 @@ is_deeply($dog2, $dog, 'Objects should be identical.');
 
 # Test a different class hierarchy.
 package Donkey;
-  use Xylem::Class ('dog' => 'Dog', 'cat' => 'Cat');
+  use Xylem::Class ('class'  => 'Donkey',
+                    'fields' => {'dog' => 'Dog', 'cat' => 'Cat'});
     package main;
 ok(my $cat = Cat->new('Oscar'), 'Creating Cat object.');
 ok(my $donkey = Donkey->new('dog' => $dog, 'cat' => $cat),
@@ -66,7 +68,9 @@ is_deeply($cat2, $cat, 'Objects should be identical.');
 
 # Test a deeper class hierarchy.
 package Monkey;
-  use Xylem::Class ('_base' => [qw(Donkey)], 'scalar' => '$');
+  use Xylem::Class ('class'  => 'Monkey',
+                    'bases'  => [qw(Donkey)],
+                    'fields' => {'scalar' => '$'});
     package main;
 ok(my $monkey = Monkey->new('dog' => $dog, 'scalar' => 34),
    'Creating Monkey object.');
@@ -85,9 +89,9 @@ is_deeply($cat3, $cat, 'Objects should be identical.');
 
 # Test multiple inheritance.
 package Thing;
-  use Xylem::Class ('_base' => [qw(Monkey Donkey)],
-                    'array' => '@',
-                    'hash'  => '%');
+  use Xylem::Class ('class'  => 'Thing',
+                    'bases'  => [qw(Monkey Donkey)],
+                    'fields' => {'array' => '@', 'hash'  => '%'});
     package main;
 ok(my $thing = Thing->new(), 'Creating Thing object.');
 ok($thing->isa('Thing'), 'Should be a Thing.');
