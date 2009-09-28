@@ -2,6 +2,12 @@ REVISION HISTORY
 
  See http://sourceforge.net/projects/phloem for the full revision history.
 
+ 0.0.5 Mon Sep 28 08:27:09 2009 UTC
+    - Tagging the 0.0.5 release of the Phloem project.
+
+    - Further work on the Xylem::Class mechanism. It still isn't used in the
+      code, but it will be shortly.
+
  0.0.4 Thu Sep 24 13:40:43 2009 UTC
     - Tagging the 0.0.4 release of the Phloem project.
 
