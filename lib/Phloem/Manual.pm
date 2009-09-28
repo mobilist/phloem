@@ -12,9 +12,11 @@ This is just a manual, and does not contain any code. To read the manual, do
 
   perldoc Phloem::Manual
 
-or
+if Phloem is installed locally. If Phloem is not installed, do
 
   pod2text lib/Phloem/Manual.pm
+
+or similar.
 
 =head1 INTRODUCTION
 
