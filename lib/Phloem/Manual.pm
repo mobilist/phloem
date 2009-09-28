@@ -411,6 +411,11 @@ See if the ugly layering of the Debug and Logger modules between Xylem and
 Phloem can be done away with. This adds unnecessarily to the complexity of
 the code.
 
+=item *
+
+Improve the dependency finding script, so that it doesn't generate false
+positives from use/require statements that occur in POD synopses.
+
 =back
 
 =head1 COPYRIGHT
