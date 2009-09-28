@@ -38,6 +38,7 @@
 <!ATTLIST rsync
   user         CDATA  #REQUIRED
   ssh_id_file  CDATA  #REQUIRED
+  ssh_port     CDATA  "22"
 >
 
 <!-- N.B. Ideally, only roles of type subscribe should be allowed to define a

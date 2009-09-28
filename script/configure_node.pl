@@ -132,7 +132,8 @@ sub _construct_node
 
   my $rsync = Phloem::Rsync->new();
   $rsync->user($term->readline('User name for ssh/rsync: '));
-  $rsync->ssh_id_file($term->readline('Path to the ssh identity file: '));
+  $rsync->ssh_id_file($term->readline('Path to the SSH identity file: '));
+  $rsync->ssh_port($term->readline('Port number for SSH: ') // 22);
   $node->rsync($rsync);
 
   my $role_counter = {};

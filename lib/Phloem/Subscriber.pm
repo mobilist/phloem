@@ -193,6 +193,7 @@ sub _update_from_publisher
   my $remote_path = $role->directory();
   my $local_path = $self->role()->directory();
   my $ssh_id_file = $node->rsync()->ssh_id_file();
+  my $ssh_port = $node->rsync()->ssh_port();
 
   # Transfer data from the remote host.
   Phloem::Logger->append('Starting data transfer.');
@@ -201,7 +202,8 @@ sub _update_from_publisher
                                $remote_user,
                                $remote_path,
                                $local_path,
-                               $ssh_id_file);
+                               $ssh_id_file,
+                               $ssh_port);
 
   # If we got an ordinary scalar, then it is an error string.
   unless (ref($rsync_stats)) {

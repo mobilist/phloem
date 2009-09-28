@@ -13,7 +13,8 @@ A utility module for transferring data using rsync.
                              'lemuelg',
                              '/home/lemuelg/',
                              '/',
-                             '~/.ssh/id_rsa');
+                             '~/.ssh/id_rsa',
+                             22);
 
 =head1 METHODS
 
@@ -56,6 +57,7 @@ sub go
   my $remote_path = shift or croak "No remote path specified.";
   my $local_path = shift or croak "No local path specified.";
   my $ssh_id_file = shift or croak "No SSH identity file specified.";
+  my $ssh_port = shift or croak "No SSH port number specified.";
 
   # N.B. Make sure that there is a trailing forward slash on the source
   #      (remote) path.
@@ -70,7 +72,7 @@ sub go
 
   my $shell_opts =
     '--rsh=\'' .
-    "ssh -i $ssh_id_file -q " .
+    "ssh -i $ssh_id_file -q -p $ssh_port " .
     '-o "CheckHostIP=no" -o "StrictHostKeyChecking=no"\'';
   my $rsync_command =
     'rsync --archive --compress --update --verbose --delete --stats ' .

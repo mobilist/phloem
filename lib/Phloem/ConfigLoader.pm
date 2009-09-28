@@ -191,9 +191,12 @@ sub _rsync_from_xml_data
       my $node_rsync_ssh_id_file_abs =
         File::Spec->rel2abs($node_rsync_ssh_id_file);
 
+      my $node_ssh_port = $node_rsync->[0]->{'ssh_port'} // 22;
+
       $rsync_object =
         Phloem::Rsync->new('user'        => $node_rsync_user,
-                           'ssh_id_file' => $node_rsync_ssh_id_file_abs)
+                           'ssh_id_file' => $node_rsync_ssh_id_file_abs,
+                           'ssh_port'    => $node_ssh_port)
         or croak "Failed to create rsync object.";
     }
   }

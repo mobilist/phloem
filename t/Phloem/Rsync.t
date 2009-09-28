@@ -23,11 +23,12 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 3; # qw(no_plan);
+use Test::More tests => 4; # qw(no_plan);
 
 BEGIN { use_ok('Phloem::Rsync'); }
 
-my %object_data = ('user' => 'Samuel. Egges');
+my %object_data = ('user' => 'Samuel. Egges', 'ssh_port' => 22);
 ok(my $rsync = Phloem::Rsync->new(%object_data), 'Creating rsync object.');
 
-ok($rsync->user() eq $object_data{'user'}, 'Accessor for user.');
+is($rsync->user(), $object_data{'user'}, 'Accessor for user.');
+is($rsync->ssh_port(), $object_data{'ssh_port'}, 'Accessor for SSH port.');

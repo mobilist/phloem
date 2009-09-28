@@ -10,7 +10,8 @@ Rsync parameters and settings for Phloem.
 
   use Phloem::Rsync;
   my $rsync = Phloem::Rsync->new('user'        => 'lemuelg',
-                                 'ssh_id_file' => 'etc/.ssh/id_rsa')
+                                 'ssh_id_file' => 'etc/.ssh/id_rsa',
+                                 'ssh_port'    => 22)
     or die "Failed to create rsync object.";
 
 =head1 METHODS
@@ -23,7 +24,15 @@ Constructor.
 
 =item user
 
-Get the user.
+Get/set the user.
+
+=item ssh_id_file
+
+Get/set the path to the SSH identity file.
+
+=item ssh_port
+
+Get/set the SSH port number.
 
 =back
 
@@ -64,6 +73,7 @@ use Carp;
 
 use Xylem::Class ('class'  => 'Phloem::Rsync',
                   'fields' => {'user'        => '$',
-                               'ssh_id_file' => '$'});
+                               'ssh_id_file' => '$',
+                               'ssh_port'    => '$'});
 
 1;

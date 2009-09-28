@@ -83,6 +83,7 @@ sub print
 
   my $rsync_user = $node->rsync()->user();
   my $rsync_ssh_id_file = $node->rsync()->ssh_id_file();
+  my $rsync_ssh_port = $node->rsync()->ssh_port();
 
   # Print the header.
   print $fh <<"xxx_END_HEADER";
@@ -119,7 +120,9 @@ sub print
 
   <root host="$root_host" port="$root_port" />
 
-  <rsync user="$rsync_user" ssh_id_file="$rsync_ssh_id_file" />
+  <rsync user="$rsync_user"
+    ssh_id_file="$rsync_ssh_id_file"
+    ssh_port="$rsync_ssh_port" />
 xxx_END_HEADER
 
   # Print details of the roles.
