@@ -2,6 +2,16 @@ REVISION HISTORY
 
  See http://sourceforge.net/projects/phloem for the full revision history.
 
+ 0.0.6 Mon Sep 28 14:13:48 2009 UTC
+    - Tagging the 0.0.6 release of the Phloem project.
+
+    - "Plugged in" the Xylem::Class generic class mechanism.
+
+    - Added the ability to specify the SSH port number in the node
+      configuration XML.
+
+    - Tidied up some internal APIs.
+
  0.0.5 Mon Sep 28 08:27:09 2009 UTC
     - Tagging the 0.0.5 release of the Phloem project.
 
