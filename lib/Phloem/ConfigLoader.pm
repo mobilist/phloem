@@ -191,7 +191,8 @@ sub _rsync_from_xml_data
       my $node_rsync_ssh_id_file_abs =
         File::Spec->rel2abs($node_rsync_ssh_id_file);
 
-      my $node_ssh_port = $node_rsync->[0]->{'ssh_port'} // 22;
+      my $node_ssh_port =
+        $node_rsync->[0]->{'ssh_port'} // $Phloem::Constants::DEFAULT_SSH_PORT;
 
       $rsync_object =
         Phloem::Rsync->new('user'        => $node_rsync_user,

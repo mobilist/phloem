@@ -103,9 +103,10 @@ sub process_command_line
 
   # More metadata.
   my $year = strftime("%Y", localtime);
+  my $author = 'Simon Dawson';
 
   print STDERR <<"xxx_END_GPL_HEADER";
-    $script_name Copyright (C) $year Simon Dawson
+    $script_name Copyright (C) $year $author
     This program comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it
     under certain conditions; type $script_name --license for details.
