@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 54; # qw(no_plan);
+use Test::More tests => 48; # qw(no_plan);
 
 BEGIN { use_ok('Xylem::Class'); }
 
@@ -77,10 +77,10 @@ ok(my $monkey = Monkey->new('dog' => $dog, 'scalar' => 34),
 ok($monkey->isa('Monkey'), 'Should be a Monkey.');
 ok($monkey->isa('Xylem::Class'), 'Should be a subclass of Xylem::Class.');
 ok($monkey->isa('Donkey'), 'Should be a subclass of Donkey.');
-ok(my $scalar = $monkey->scalar(), 'Accessor for scalar element.');
-is($scalar, 34, 'Value for scalar element.');
-ok($monkey->scalar(35), 'Mutator for scalar element.');
-is($monkey->scalar(), 35, 'New value for scalar element.');
+ok(my $scalar = $monkey->scalar(), 'Accessor for scalar field.');
+is($scalar, 34, 'Value for scalar field.');
+ok($monkey->scalar(35), 'Mutator for scalar field.');
+is($monkey->scalar(), 35, 'New value for scalar field.');
 ok(my $dog4 = $monkey->dog(), 'Retrieving dog.');
 is_deeply($dog4, $dog, 'Objects should be identical.');
 ok($monkey->cat($cat), 'Mutator for cat.');
@@ -108,28 +108,15 @@ ok($thing2->isa('Thing'), 'Should be a Thing.');
 ok($thing2->isa('Xylem::Class'), 'Should be a subclass of Xylem::Class.');
 ok($thing2->isa('Monkey'), 'Should be a subclass of Monkey.');
 ok($thing2->isa('Donkey'), 'Should be a subclass of Donkey too.');
-is($thing2->scalar(), 101, 'Value for scalar element');
-is_deeply($thing2->array(), [qw(hat shoe cheese)], 'Value for array element.');
-ok($thing2->array()->[0] = 'hats', 'Use array element as lvalue.');
+is($thing2->scalar(), 101, 'Value for scalar field.');
+is_deeply($thing2->array(), [qw(hat shoe cheese)], 'Value for array field.');
+ok($thing2->array()->[0] = 'hats', 'Use array field as lvalue.');
 is_deeply($thing2->array(), [qw(hats shoe cheese)],
-          'Check that array element has changed.');
+          'Check that array field has changed.');
 ok(my $cat4 = $thing2->cat(), 'Accessor for cat.');
 is_deeply($cat4, $felix, 'Cats should be identical.');
 
-ok(my %thing_element_types = Thing->_get_element_types(),
-   'Getting element types for Thing.');
-is_deeply(\%thing_element_types, {'array' => '@', 'hash' => '%'},
-          'Checking element types for Thing.');
-ok(my %monkey_element_types = Monkey->_get_element_types(),
-   'Getting element types for Monkey.');
-is_deeply(\%monkey_element_types, {'scalar' => '$'},
-          'Checking element types for Monkey.');
-ok(my %donkey_element_types = Donkey->_get_element_types(),
-   'Getting element types for Donkey.');
-is_deeply(\%donkey_element_types, {'dog' => 'Dog', 'cat' => 'Cat'},
-          'Checking element types for Donkey.');
-
-diag('Testing a base class that does not have a constructor.');
+diag('Testing a base class that does not have a constructor or fields.');
 package Mixin;
   sub something { return 1; };
     package main;

@@ -64,7 +64,7 @@ call this explicitly.
 Parameters passed to "use" are a hash table. Under the 'class' hash key is the
 name of the target class.
 
-Under the 'fields' hash key is a hash reference of element names and types,
+Under the 'fields' hash key is a hash reference of field names and types,
 in the style of Class::Struct.
 
 Base class information may optionally be specified using the 'bases' hash key.
@@ -83,24 +83,22 @@ sub import
 
   # Our input takes the form of a hash table.
   my %use_args = @_;
-  return unless keys(%use_args);
+  return 1 unless keys(%use_args);
   my $target_package = $use_args{'class'}
     or croak "No target class package specified.";
   croak "Expected an ordinary scalar." if ref($target_package);
   my $fields = $use_args{'fields'} || {}; # N.B. There might not be any fields.
   croak "EXpected a hash reference." unless (ref($fields) eq 'HASH');
-  my %args = %$fields;
 
   # We don't want to pollute the top-level namespace.
   return 1 if ($target_package eq 'main');
 
-  # Have we already worked on the calling package.
+  # Have we already worked on the target package.
   {
     # N.B. We're going to be using symbolic references for a while.
     no strict 'refs';
 
-    return 1 if (defined(*{$target_package . '::new'}) &&
-                 defined(*{$target_package . '::_get_element_types'}));
+    return 1 if defined(*{$target_package . '::new'});
   }
 
   # Did we get base class information?
@@ -122,7 +120,7 @@ sub import
     # N.B. We're going to be using symbolic references for a while.
     no strict 'refs';
 
-    # Add this class as a base of the calling class.
+    # Add this class as a base of the target class.
     #
     # N.B. We do this before we add any explicitly-named base classes, because
     #      this is the lowest-level base class.
@@ -133,45 +131,56 @@ sub import
     my $this_package = __PACKAGE__;
     push(@{$target_package . '::ISA'}, $this_package);
 
-    # Add the specified base classes as bases of the calling class.
+    # Add the specified base classes as bases of the target class.
     push(@{$target_package . '::ISA'}, @bases);
   }
 
-  # Generate the "guts" of an object hash reference.
+  # Generate the "guts" of an object hash reference, and accessor/mutator
+  # methods.
   my $self = {};
-  foreach my $key (keys(%args)) {
-    # Check the element type.
-    my $value = $args{$key}
-      or croak "No element type specified for element '$key'.";
-    croak "'$value' is not a valid element type."
-      unless ($value =~ /^\*?(?:\$|\@|\%|[A-Z][\w:]*)$/o);
+  foreach my $field_name (keys(%$fields)) {
+    # Check the field type.
+    my $field_type = $fields->{$field_name}
+      or croak "No field type specified for field '$field_name'.";
+    croak "'$field_type' is not a valid field type."
+      unless ($field_type =~ /^\*?(?:\$|\@|\%|[A-Z][\w:]*)$/o);
 
-    # Initialise the element value.
-    if ($value =~ /^\*?\@$/o) {
-      $self->{$key} = [];
-    } elsif ($value =~ /^\*?\%$/o) {
-      $self->{$key} = {};
+    # Initialise the field value.
+    if ($field_type =~ /^\*?\@$/o) {
+      $self->{$field_name} = [];
+    } elsif ($field_type =~ /^\*?\%$/o) {
+      $self->{$field_name} = {};
     } else {
-      $self->{$key} = undef;
+      $self->{$field_name} = undef;
+    }
+
+    # Generate an accessor/mutator method for the field.
+    {
+      # N.B. We're going to be using symbolic references for a while.
+      no strict 'refs';
+
+      # Does an accessor/mutator method exist already? If so, then we don't
+      # want to redefine it.
+      next if defined(*{$target_package . '::' . $field_name});
+      {
+
+        # Define an accessor/mutator method.
+        #
+        # N.B. We have to do a bit of mucking about with the argument order.
+        #      See the comments inside _generic_accessor_mutator() for more
+        #      details. The important point here is that the call is pre-bound
+        #      in the closure to specific field name and type details. That
+        #      is important because those are the arguments that will NOT be
+        #      passed in to the generated method when it is called in the
+        #      future.
+        *{$target_package . '::' . $field_name} = sub {
+          return _generic_accessor_mutator($field_name, $field_type, @_);
+        };
+      }
     }
   }
 
-  # Define a class method in the calling package, to retrieve the element
-  # type information.
-  {
-    # N.B. We're going to be using symbolic references for a while.
-    no strict 'refs';
-
-    *{$target_package . '::_get_element_types'} = sub {
-      my $class = shift or croak "No class name specified.";
-      croak "Expected an ordinary scalar." if ref($class);
-      croak "Incorrect class name." unless $class->isa(__PACKAGE__);
-
-      return %args;
-    };
-  }
-
-  # Generate a constructor in the calling package.
+  # Generate a constructor in the target package.
   {
     # N.B. We're going to be using symbolic references for a while.
     no strict 'refs';
@@ -213,65 +222,7 @@ sub import
     };
   }
 
-  1;
-}
-
-#------------------------------------------------------------------------------
-sub AUTOLOAD
-# Automatically generate accessor/mutator methods.
-#
-# This provides a definition for a missing subroutine, by assigning a closure
-# to the AUTOLOAD typeglob. The subroutine is then executed using the special
-# form of goto that can erase the stack frame of the AUTOLOAD routine.
-{
-  my $self = shift or croak "No object reference.";
-  croak "Unexpected object class." unless $self->isa(__PACKAGE__);
-
-  our $AUTOLOAD =~ /([^:]+)$/o;
-  my $element = $1 or croak "Failed to determine element name.";
-
-  # Get out right now if we are being called for a destructor.
-  return if ($element eq 'DESTROY');
-
-  # Look for the element in the object hash.
-  croak "Element '$element' not recognised." unless exists($self->{$element});
-
-  # Get element type information.
-  my $element_type;
-  {
-    my %element_types = ref($self)->_get_element_types()
-      or croak "Failed to get element type information.";
-    $element_type = $element_types{$element}
-      or croak "Failed to get type information for element '$element'.";
-  }
-
-  {
-    # N.B. We're going to be using symbolic references for a while.
-    no strict 'refs';
-
-    # Does an accessor/mutator method exist already? If so, then we don't
-    # want to redefine it.
-    unless (defined(*$AUTOLOAD{'CODE'})) {
-
-      # Define an accessor/mutator method.
-      #
-      # N.B. We have to do a bit of mucking about with the argument order.
-      #      See the comments inside _generic_accessor_mutator() for more
-      #      details. The important point here is that the call is pre-bound
-      #      in the closure to specific element name and type details. That
-      #      is important because those are the arguments that will NOT be
-      #      passed in to the autoload method when it is called in the future.
-      *{$AUTOLOAD} =
-        sub { return _generic_accessor_mutator($element, $element_type, @_); };
-    }
-
-    # Restart the new routine.
-    #
-    # N.B. Remember to put the invoking object back onto the front of the
-    # argument list.
-    unshift(@_, $self);
-    goto &$AUTOLOAD;
-  }
+  return 1;
 }
 
 #------------------------------------------------------------------------------
@@ -279,72 +230,73 @@ sub _generic_accessor_mutator
 # Generic accessor/mutator method.
 {
   # N.B. Note the rather strange argument order here. Specifically, the
-  #      invoking object reference comes after the element name and type
+  #      invoking object reference comes after the field name and type
   #      details.
   #
-  #      This is done because the element name and type are bound to a call
-  #      to this method in an autoload closure. (See the AUTOLOAD method for
-  #      further details.) The upshot of this is that when the generated
-  #      autoload method is called, the "real" arguments will be passed in
-  #      _after_ the element name and type.
+  #      This is done because the field name and type are bound to a call
+  #      to this method in a closure. (See the method generation code in
+  #      import() for further details.) The upshot of this is that when the
+  #      generated method is called, the "real" arguments will be passed in
+  #      _after_ the field name and type.
 
-  my $element = shift or croak "No element specified.";
-  croak "Expected an ordinary scalar." if ref($element);
+  my $field_name = shift or croak "No field name specified.";
+  croak "Expected an ordinary scalar." if ref($field_name);
 
-  my $element_type = shift or croak "No element type specified.";
-  croak "Expected an ordinary scalar." if ref($element_type);
+  my $field_type = shift or croak "No field type specified.";
+  croak "Expected an ordinary scalar." if ref($field_type);
 
   my $self = shift or croak "No object reference.";
   croak "Unexpected object class." unless $self->isa(__PACKAGE__);
 
-  # Look for the element in the object hash.
-  croak "Element '$element' not recognised." unless exists($self->{$element});
+  # Look for the field in the object hash.
+  croak "Field '$field_name' not recognised."
+    unless exists($self->{$field_name});
 
-  my $wantref = ($element_type =~ /^\*/o);
-  if ($element_type =~ /^\*?(?:\@|\%)$/o) {
+  my $wantref = ($field_type =~ /^\*/o);
+  if ($field_type =~ /^\*?(?:\@|\%)$/o) {
     # Array/hash.
-    my $element_is_array = ($element_type =~ /^\*?\@$/o);
+    my $field_is_array = ($field_type =~ /^\*?\@$/o);
     if (@_ == 0) {
-      # Always return the element.
-      return $self->{$element};
+      # Always return the field.
+      return $self->{$field_name};
     } elsif (@_ > 2) {
       # Too many arguments.
       croak "Expected no more than two arguments.";
     } elsif (@_ == 1 && ref($_[0])) {
-      # Assign the entire element from the specified reference.
+      # Assign the entire field from the specified reference.
       my $value = shift;
-      if ($element_is_array) {
+      if ($field_is_array) {
         croak "Expected an array reference." unless (ref($value) eq 'ARRAY');
       } else {
         croak "Expected a hash reference." unless (ref($value) eq 'HASH');
       }
-      $self->{$element} = $value;
+      $self->{$field_name} = $value;
       return $self;
     } else {
       # Exactly one non-reference argument, or exactly two arguments.
-      if ($element_is_array) {
+      if ($field_is_array) {
         # Array.
         my $index = shift;
         croak "Expected an array index." unless ($index =~ /^\d+$/o);
         if (@_) {
           # Assign to an array slot.
           my $value = shift;
-          $self->{$element}->[$index] = $value;
+          $self->{$field_name}->[$index] = $value;
         }
         # Return an array slot [reference] for the specified index.
         return $wantref ?
-          \{$self->{$element}->[$index]} : $self->{$element}->[$index];
+          \{$self->{$field_name}->[$index]} : $self->{$field_name}->[$index];
       } else {
         # Hash.
         my $key = shift;
         if (@_) {
           # Assign to a hash slot.
           my $value = shift;
-          $self->{$element}->{$key} = $value;
+          $self->{$field_name}->{$key} = $value;
         }
         # Return a hash slot [reference] for the specified key.
         return $wantref ?
-          \{$self->{$element}->{$key}} : $self->{$element}->{$key};
+          \{$self->{$field_name}->{$key}} : $self->{$field_name}->{$key};
       }
     }
   } else {
@@ -352,22 +304,22 @@ sub _generic_accessor_mutator
     if (@_) {
       my $value = shift;
 
-      unless ($element_type =~ /^\*?\$$/o) {
+      unless ($field_type =~ /^\*?\$$/o) {
         # Object.
         croak "Expected a reference." unless ref($value);
 
-        croak "Unexpected element type designation."
-          unless ($element_type =~ /^\*?([A-Z][\w:]*)$/o);
-        my $element_class = $1;
-        croak "Unexpected object class." unless $value->isa($element_class);
+        croak "Unexpected field type designation."
+          unless ($field_type =~ /^\*?([A-Z][\w:]*)$/o);
+        my $field_class = $1;
+        croak "Unexpected object class." unless $value->isa($field_class);
       }
 
-      $self->{$element} = $value;
+      $self->{$field_name} = $value;
 
       croak "Expected no more than a single argument." if @_;
     }
 
-    return $wantref ? \{$self->{$element}} : $self->{$element};
+    return $wantref ? \{$self->{$field_name}} : $self->{$field_name};
   }
 
   # If we get here, then something's gone wrong.
