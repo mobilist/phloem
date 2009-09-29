@@ -77,8 +77,10 @@ use Phloem::Version;
 use Xylem::Utils::Code;
 use Xylem::Utils::File;
 
-use constant BASE_URL  => 'https://phloem.svn.sourceforge.net/svnroot/phloem';
-use constant DEVELOPER => 'sconedog';
+use constant GOOGLE    => 0;
+use constant BASE_URL  => GOOGLE ? 'https://phloem.googlecode.com/svn' :
+  'https://phloem.svn.sourceforge.net/svnroot/phloem';
+use constant DEVELOPER => GOOGLE ? 'spdawson' : 'sconedog';
 
 #==============================================================================
 # Start of main program.
@@ -187,9 +189,25 @@ sub _upload_release_tarball
 
   # Attempt to upload the release tarball to the project host.
   print "Uploading $archive_file_name to project host...\n";
-  my $upload_command =
-    "scp $archive_file_name " . DEVELOPER . '@frs.sourceforge.net:' .
-    '/home/frs/project/p/ph/phloem/releases';
+  my $upload_command;
+  if (GOOGLE) {
+
+    # Get the password.
+    print "Enter Google code password: ";
+    chomp(my $password = <STDIN>);
+    die "No password specified." unless $password;
+
+    $upload_command =
+      './script/googlecode_upload.pl --user ' . DEVELOPER .
+      " --password $password " .
+      "--description 'Phloem release $phloem_version tarball' " .
+      "--project phloem --file $archive_file_name " .
+      '--label Type-Archive --label OpSys-All --label Featured';
+  } else {
+    $upload_command =
+      "scp $archive_file_name " . DEVELOPER . '@frs.sourceforge.net:' .
+      '/home/frs/project/p/ph/phloem/releases';
+  }
   if ($opt_s) {
     print "Simulate mode: $upload_command\n";
   } else {
