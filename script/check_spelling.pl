@@ -80,6 +80,7 @@ use Xylem::Utils::File;
                     'cpan'       => 1,
                     'FileHandle' => 1,
                     'filehandle' => 1,
+                    'Google'     => 1,
                     'GPL'        => 1,
                     'IP'         => 1,
                     'login'      => 1,

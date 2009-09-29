@@ -146,8 +146,8 @@ use constant DEVELOPER => 'sconedog';
     }
   }
 
-  # Create a tarball of the release, and upload it to SourceForge.
-  _upload_release_tarball($opt_f, $opt_s);
+  # Create a tarball of the release, and upload it to the project host.
+  _upload_release_tarball($opt_f, $opt_s, $phloem_version);
 
   print "Done.\n";
 }
@@ -155,10 +155,10 @@ use constant DEVELOPER => 'sconedog';
 
 #------------------------------------------------------------------------------
 sub _upload_release_tarball
-# Create a tarball of the release, and upload it to SourceForge.
+# Create a tarball of the release, and upload it to the project host.
 {
-  # Get the inputs: "force" and "simulate" flags.
-  my ($opt_f, $opt_s) = @_;
+  # Get the inputs: "force" and "simulate" flags, and a version number.
+  my ($opt_f, $opt_s, $phloem_version) = @_;
 
   # Create the tarball.
   my $archive_file_name;
@@ -185,8 +185,8 @@ sub _upload_release_tarball
   }
   die "Failed to get archive file name." unless $archive_file_name;
 
-  # Attempt to upload the release tarball to SourceForge.
-  print "Uploading $archive_file_name to SourceForge...\n";
+  # Attempt to upload the release tarball to the project host.
+  print "Uploading $archive_file_name to project host...\n";
   my $upload_command =
     "scp $archive_file_name " . DEVELOPER . '@frs.sourceforge.net:' .
     '/home/frs/project/p/ph/phloem/releases';
@@ -194,7 +194,7 @@ sub _upload_release_tarball
     print "Simulate mode: $upload_command\n";
   } else {
     (system($upload_command) == 0)
-      or die "Failed to upload tarball to SourceForge: $!";
+      or die "Failed to upload tarball to project host: $!";
   }
 
   # Clean up after ourself.
