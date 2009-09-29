@@ -77,7 +77,7 @@ use Phloem::Version;
 use Xylem::Utils::Code;
 use Xylem::Utils::File;
 
-use constant GOOGLE    => 0;
+use constant GOOGLE    => 1;
 use constant BASE_URL  => GOOGLE ? 'https://phloem.googlecode.com/svn' :
   'https://phloem.svn.sourceforge.net/svnroot/phloem';
 use constant DEVELOPER => GOOGLE ? 'spdawson' : 'sconedog';
