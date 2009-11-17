@@ -39,6 +39,8 @@ This file is part of Phloem.
 
 package Phloem::Constants;
 
+use base qw(Exporter);
+
 our $LOG_FILE                              = 'phloem.log';
 our $CONFIG_FILE                           = 'etc/node.xml';
 
@@ -48,5 +50,11 @@ our $DEFAULT_SUBSCRIBER_UPDATE_FREQUENCY_S = 10;
 our $DEFAULT_NODE_REGISTER_FREQUENCY_S     = 10;
 
 our $DEFAULT_SSH_PORT                      = 22;
+
+use constant ROOT2LEAF => 'root2leaf';
+use constant LEAF2ROOT => 'leaf2root';
+
+our @EXPORT_OK = qw(ROOT2LEAF LEAF2ROOT);
+our %EXPORT_TAGS = ('routes' => [qw(ROOT2LEAF LEAF2ROOT)]);
 
 1;

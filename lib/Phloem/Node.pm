@@ -8,6 +8,7 @@ A node in a Phloem network.
 
 =head1 SYNOPSIS
 
+  use Phloem::Constants qw(:routes);
   use Phloem::Node;
 
   my $node = Phloem::Node->new('id' => 'horse53', 'is_root' => 1);
@@ -22,18 +23,18 @@ A node in a Phloem network.
   my $rsync = $node->rsync();
   my $roles_arrayref = $node->roles();
 
-  my $role = Phloem::Role::Publish->new('route'     => 'root2leaf',
+  my $role = Phloem::Role::Publish->new('route'     => ROOT2LEAF,
                                         'directory' => 'some/dir/path');
   $node->add_role($role);
 
   die "Expected node to publish." unless $node->is_publisher();
-  die "Expected node to publish on the 'root2leaf' route."
-    unless $node->publishes_on_route('root2leaf');
+  die "Expected node to publish on the '" . ROOT2LEAF . "' route."
+    unless $node->publishes_on_route(ROOT2LEAF);
 
   my @subscribe_roles = $node->subscribe_roles();
   die "Did not expect the node to subscribe." if @subscribe_roles;
-  die "Expected a non-portal node on the 'root2leaf' route."
-    if $node->is_portal('root2leaf');
+  die "Expected a non-portal node on the '" . ROOT2LEAF . "' route."
+    if $node->is_portal(ROOT2LEAF);
 
 =head1 METHODS
 
@@ -89,6 +90,7 @@ use diagnostics;
 
 use Carp;
 
+use Phloem::Constants qw(:routes);
 use Phloem::Dumper;
 use Phloem::Role;
 use Phloem::Root;
@@ -189,7 +191,7 @@ sub is_portal
   croak "Expected an ordinary scalar." if ref($route);
 
   croak "Unexpected route specified."
-    unless ($route =~ /^(?:root2leaf|leaf2root)$/o);
+    unless ($route eq ROOT2LEAF || $route eq LEAF2ROOT);
 
   # Iterate over the roles.
   my $pub_dir;
@@ -228,7 +230,7 @@ sub publishes_on_route
   croak "Expected an ordinary scalar." if ref($route);
 
   croak "Unexpected route specified."
-    unless ($route =~ /^(?:root2leaf|leaf2root)$/o);
+    unless ($route eq ROOT2LEAF || $route eq LEAF2ROOT);
 
   my $roles_arrayref = $self->roles();
   foreach my $current_role (@$roles_arrayref) {

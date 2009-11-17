@@ -72,6 +72,7 @@ use Term::ReadLine;
 
 use lib qw(lib);
 use Phloem::ConfigPrinter;
+use Phloem::Constants qw(:routes);
 use Phloem::Node;
 use Phloem::Role::Publish;
 use Phloem::Role::Subscribe;
@@ -158,8 +159,8 @@ sub _construct_node
 
     $role->route(
       $term->get_reply('prompt'  => 'What route is the role for?',
-                       'choices' => [qw(root2leaf leaf2root)],
-                       'default' => 'root2leaf'));
+                       'choices' => [ROOT2LEAF, LEAF2ROOT],
+                       'default' => ROOT2LEAF));
     $role->directory($term->readline('Directory path for the role: '));
     $role->description($term->readline('Brief description of the role: '));
 

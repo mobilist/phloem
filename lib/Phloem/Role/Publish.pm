@@ -8,8 +8,9 @@ A publish role for a node in a Phloem network.
 
 =head1 SYNOPSIS
 
+  use Phloem::Constants qw(:routes);
   use Phloem::Role::Publish;
-  my $role = Phloem::Role::Publish->new('route'       => 'leaf2root',
+  my $role = Phloem::Role::Publish->new('route'       => LEAF2ROOT,
                                         'directory'   => 'some/dir/path',
                                         'description' => 'A publisher.');
 

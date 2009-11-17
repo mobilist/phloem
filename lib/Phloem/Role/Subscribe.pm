@@ -8,12 +8,13 @@ A subscribe role for a node in a Phloem network.
 
 =head1 SYNOPSIS
 
+  use Phloem::Constants qw(:routes);
   use Phloem::Role::Subscribe;
   my $filter = Phloem::Filter->new('type'  => 'group',
                                    'value' => '^ova\d+',
                                    'rule'  => 'match');
   my $role =
-    Phloem::Role::Subscribe->new('route'       => 'leaf2root',
+    Phloem::Role::Subscribe->new('route'       => LEAF2ROOT,
                                  'directory'   => 'some/dir/path',
                                  'description' => 'Some sort of role.',
                                  'filter'      => $filter);

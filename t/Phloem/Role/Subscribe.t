@@ -25,6 +25,7 @@ use diagnostics;
 
 use Test::More tests => 9; # qw(no_plan);
 
+use Phloem::Constants qw(:routes);
 use Phloem::Filter;
 
 BEGIN { use_ok('Phloem::Role::Subscribe'); }
@@ -32,7 +33,7 @@ BEGIN { use_ok('Phloem::Role::Subscribe'); }
 ok(my $filter = Phloem::Filter->new('type'  => 'group',
                                     'value' => '^ova\d+',
                                     'rule'  => 'match'), 'Creating filter.');
-my %object_data = ('route'              => 'leaf2root',
+my %object_data = ('route'              => LEAF2ROOT,
                    'directory'          => 'some/dir/path',
                    'description'        => 'Dummy role.',
                    'filter'             => $filter,

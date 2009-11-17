@@ -25,9 +25,11 @@ use diagnostics;
 
 use Test::More tests => 5; # qw(no_plan);
 
+use Phloem::Constants qw(:routes);
+
 BEGIN { use_ok('Phloem::Role::Publish'); }
 
-my %object_data = ('route'       => 'leaf2root',
+my %object_data = ('route'       => LEAF2ROOT,
                    'directory'   => 'some/dir/path',
                    'description' => 'Dummy role.');
 

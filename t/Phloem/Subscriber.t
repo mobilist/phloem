@@ -25,12 +25,13 @@ use diagnostics;
 
 use Test::More tests => 8; # qw(no_plan);
 
+use Phloem::Constants qw(:routes);
 use Phloem::Node;
 use Phloem::Role::Subscribe;
 
 BEGIN { use_ok('Phloem::Subscriber'); }
 
-ok(my $role = Phloem::Role::Subscribe->new('route'       => 'leaf2root',
+ok(my $role = Phloem::Role::Subscribe->new('route'       => LEAF2ROOT,
                                            'directory'   => 'some/path',
                                            'description' => 'Dummy.'),
    'Creating role object.');

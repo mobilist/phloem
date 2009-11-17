@@ -25,6 +25,7 @@ use diagnostics;
 
 use Test::More tests => 27; # qw(no_plan);
 
+use Phloem::Constants qw(:routes);
 use Phloem::Role::Publish;
 use Phloem::Role::Subscribe;
 use Phloem::Root;
@@ -65,9 +66,10 @@ is(@$roles_arrayref, 0, 'Array of nodes should be empty.');
 
 ok(!$node->is_publisher(), 'Node does not publish.');
 
-ok(my $role = Phloem::Role::Publish->new('route'       => 'leaf2root',
-                                         'directory'   => 'some/path',
-                                         'description' => 'A dummy role.'),
+ok(my $role =
+   Phloem::Role::Publish->new('route'       => LEAF2ROOT,
+                              'directory'   => 'some/path',
+                              'description' => 'A dummy role.'),
    'Creating publish role object.');
 
 ok($node->add_role($role), 'Adding role to node.');

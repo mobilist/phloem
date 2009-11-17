@@ -8,13 +8,14 @@ Base class for a role for a node in a Phloem network.
 
 =head1 SYNOPSIS
 
+  use Phloem::Constants qw(:routes);
   use Phloem::Role;
-  my $role = Phloem::Role->new('route'       => 'leaf2root',
+  my $role = Phloem::Role->new('route'       => LEAF2ROOT,
                                'directory'   => 'some/dir/path',
                                'description' => 'Some sort of role.');
 
   # Change the route.
-  $role->route('leaf2root');
+  $role->route(LEAF2ROOT);
 
   print $role->description(), "\n";
 

@@ -397,7 +397,9 @@ configuration is very incomplete.
 
 =item *
 
-Introduce constants to replace the "root2leaf" and "leaf2root" strings.
+Where appropriate, "promote" the constants in the Phloem::Constants module to
+be true constants. (At the moment, they are just exported package variables,
+with no actual immutability.)
 
 =item *
 
