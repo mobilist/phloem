@@ -2,6 +2,24 @@ REVISION HISTORY
 
  See http://code.google.com/p/phloem/source/list for the full revision history.
 
+ 0.0.7 Fri Jan 15 15:12:33 GMT 2010
+    - Tagging the 0.0.7 release of the Phloem project.
+
+    - Fixed a bug in the Phloem::RegistryServer module, which caused a
+      process death for transfers of longer duration than the server time-out.
+      This bug could be demonstrated by attempting to transfer a "large" file,
+      where "large" means "large enough to take longer than about 30 seconds
+      to transfer".
+
+    - Rewrote the rsync wrapper code to use File::Rsync. Yes, this introduces
+      yet another non-core module dependency. This is preferable, however, to
+      the buginess of the old rsync wrapper code. This code was failing with
+      "failed to close pipe" errors.
+
+    - Started paving the way for the replacement of Xylem::Class by something
+      based on Badger::Class. This is another wheel that we shouldn't really
+      be so foolish as to attempt to re-invent.
+
  0.0.6 Mon Sep 28 14:13:48 2009 UTC
     - Tagging the 0.0.6 release of the Phloem project.
 
