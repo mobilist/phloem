@@ -29,7 +29,7 @@ use warnings;
 use diagnostics;
 
 use Carp;
-use FileHandle;
+use File::Rsync;
 use File::Spec;
 use IPC::Cmd;
 use Time::HiRes;
@@ -73,31 +73,42 @@ sub go
     $remote_user . '@' . $remote_host . ':' . $remote_path;
 
   my $shell_opts =
-    '--rsh=\'' .
     "ssh -i $ssh_id_file -q -p $ssh_port " .
-    '-o "CheckHostIP=no" -o "StrictHostKeyChecking=no"\'';
-  my $rsync_command =
-    'rsync --archive --compress --update --verbose --delete --stats ' .
-    '--timeout=10 --copy-unsafe-links --hard-links ' .
-    '--exclude \'*~\' --partial --partial-dir=.rsync-tmp ' .
-    "$shell_opts " .
-    "$full_remote_path " .
-    "$local_path";
+    '-o "CheckHostIP=no" -o "StrictHostKeyChecking=no"';
+
+  my %rsync_options = ('archive'           => 1,
+                       'compress'          => 1,
+                       'update'            => 1,
+                       'verbose'           => 1,
+                       'delete'            => 1,
+                       'stats'             => 1,
+                       'timeout'           => 10,
+                       'copy-unsafe-links' => 1,
+                       'hard-links'        => 1,
+                       'exclude'           => ['*~'],
+                       'partial'           => 1,
+                       'partial-dir'       => '.rsync-tmp',
+                       'rsh'               => $shell_opts,
+                       'src'               => $full_remote_path,
+                       'dest'              => $local_path);
+  my $rsync = File::Rsync->new(\%rsync_options)
+    or croak "Failed to create rsync wrapper object: $!";
 
   # Run the rsync command.
-  return _run_rsync_command($rsync_command);
+  return _run_rsync($rsync);
 }
 
 #------------------------------------------------------------------------------
-sub _run_rsync_command
-# Run the specified rsync command.
+sub _run_rsync
+# Run the rsync transfer, using the specified File::Rsync object.
 #
 # Returns transfer statistics on success; an error string otherwise.
 #
 # In array context, a second return value is given: a high-resolution transfer
 # duration, in seconds.
 {
-  my $rsync_command = shift or croak "No rsync command specified.";
+  my $rsync = shift or croak "No rsync object specified.";
+  croak "Expected a File::Rsync object" unless $rsync->isa('File::Rsync');
 
   # Check that we can run rsync and ssh.
   IPC::Cmd::can_run('rsync')
@@ -108,29 +119,16 @@ sub _run_rsync_command
 
   # We want to catch the standard output from rsync, whilst also checking that
   # it runs without error.
-  my @caught_output;
-  eval {
-    # N.B. Re-instate the default child process signal handler,
-    #      because any non-default global handler will mess things up for us.
-    local $SIG{'CHLD'} = 'DEFAULT';
-    my $devnull = File::Spec->devnull();
-    my $rsync_process_fh = FileHandle->new("$rsync_command 2>$devnull |")
-      or croak "Failed to open pipe: $!";
-    while (my $current_line = $rsync_process_fh->getline()) {
-      chomp($current_line);
-      push(@caught_output, $current_line);
-    }
-    $rsync_process_fh->close() or croak "Failed to close pipe: $!";
-  };
-
+  #
   # Return error details, if necessary.
-  return ("Data transfer failed: $@", undef) if $@;
+  $rsync->exec()
+    or return ('Data transfer failed: ' . join('', $rsync->err()), undef);
 
   # Work out how long the transfer took.
   my $transfer_duration = Time::HiRes::time() - $start_time;
 
   # Analyse the caught output to collect transfer statistics.
-  my $rsync_stats = _get_rsync_stats(@caught_output);
+  my $rsync_stats = _get_rsync_stats($rsync->out());
 
   return ($rsync_stats, $transfer_duration);
 }

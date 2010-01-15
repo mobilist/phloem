@@ -304,6 +304,7 @@ sub get_dependencies
   my $fh = $locker->filehandle() or croak "Failed to get filehandle.";
 
   while (my $current_line = <$fh>) {
+    last if $current_line =~ /^\s*__(?:END|DATA)__\s*$/o;
     $deps{$1} = 1 if ($current_line =~ /^\s*(?:use|require)\s+([\w:]+)/o);
   }
 

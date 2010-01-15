@@ -39,8 +39,8 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('class'  => 'Phloem::NodeAdvertiser',
-                  'fields' => {'node' => 'Phloem::Node'});
+use Xylem::Class ('package' => 'Phloem::NodeAdvertiser',
+                  'fields'  => {'node' => 'Phloem::Node'});
 
 use Phloem::Logger;
 use Phloem::RegistryClient;

@@ -95,17 +95,17 @@ use Phloem::Dumper;
 use Phloem::Role;
 use Phloem::Root;
 
-use Xylem::Class ('class'  => 'Phloem::Node',
-                  'bases'  => [qw(Phloem::Dumper)],
-                  'fields' => {'id'                   => '$',
-                               'group'                => '$',
-                               'is_root'              => '$',
-                               'host'                 => '$',
-                               'register_frequency_s' => '$',
-                               'description'          => '$',
-                               'root'                 => 'Phloem::Root',
-                               'rsync'                => 'Phloem::Rsync',
-                               'roles'                => '@'});
+use Xylem::Class ('package' => 'Phloem::Node',
+                  'bases'   => [qw(Phloem::Dumper)],
+                  'fields'  => {'id'                   => '$',
+                                'group'                => '$',
+                                'is_root'              => '$',
+                                'host'                 => '$',
+                                'register_frequency_s' => '$',
+                                'description'          => '$',
+                                'root'                 => 'Phloem::Root',
+                                'rsync'                => 'Phloem::Rsync',
+                                'roles'                => '@'});
 
 #------------------------------------------------------------------------------
 

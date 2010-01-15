@@ -51,10 +51,10 @@ use Carp;
 use Phloem::Filter;
 use Phloem::Role;
 
-use Xylem::Class ('class'  => 'Phloem::Role::Subscribe',
-                  'bases'  => [qw(Phloem::Role)],
-                  'fields' => {'filter'             => 'Phloem::Filter',
-                               'update_frequency_s' => '$'});
+use Xylem::Class ('package' => 'Phloem::Role::Subscribe',
+                  'bases'   => [qw(Phloem::Role)],
+                  'fields'  => {'filter'             => 'Phloem::Filter',
+                                'update_frequency_s' => '$'});
 
 1;
 

@@ -45,10 +45,10 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('class'  => 'Phloem::Filter',
-                  'fields' => {'type'  => '$',
-                               'value' => '$',
-                               'rule'  => '$'});
+use Xylem::Class ('package' => 'Phloem::Filter',
+                  'fields'  => {'type'  => '$',
+                                'value' => '$',
+                                'rule'  => '$'});
 
 use Phloem::Node;
 

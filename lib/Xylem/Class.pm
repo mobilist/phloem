@@ -11,15 +11,15 @@ A base class for Xylem classes.
   package MyClass;
   use Some::Class;
   use Some::Other::Class;
-  use Xylem::Class ('class'  => 'MyClass',
-                    'bases'  => [qw(Some::Other::Class)],
-                    'fields' => {'name'    => '$',
-                                 'aliases' => '@',
-                                 'data'    => '%',
-                                 'object'  => 'Some::Class'});
+  use Xylem::Class ('package' => 'MyClass',
+                    'bases'   => [qw(Some::Other::Class)],
+                    'fields'  => {'name'    => '$',
+                                  'aliases' => '@',
+                                  'data'    => '%',
+                                  'object'  => 'Some::Class'});
   package main;
 
-  my $thing = MyClass->new('name' => 'toiletduck');
+  my $thing = MyClass->new('package' => 'toiletduck');
   my $dummy = Some::Class->new(...);
   $thing->object($dummy);
 
@@ -61,8 +61,8 @@ sub new
 Called automatically when this module is "use"ed; you should never need to
 call this explicitly.
 
-Parameters passed to "use" are a hash table. Under the 'class' hash key is the
-name of the target class.
+Parameters passed to "use" are a hash table. Under the 'package' hash key is
+the name of the target class package.
 
 Under the 'fields' hash key is a hash reference of field names and types,
 in the style of Class::Struct.
@@ -84,7 +84,7 @@ sub import
   # Our input takes the form of a hash table.
   my %use_args = @_;
   return 1 unless keys(%use_args);
-  my $target_package = $use_args{'class'}
+  my $target_package = $use_args{'package'}
     or croak "No target class package specified.";
   croak "Expected an ordinary scalar." if ref($target_package);
   my $fields = $use_args{'fields'} || {}; # N.B. There might not be any fields.

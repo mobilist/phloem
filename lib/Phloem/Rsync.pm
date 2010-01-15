@@ -71,9 +71,9 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('class'  => 'Phloem::Rsync',
-                  'fields' => {'user'        => '$',
-                               'ssh_id_file' => '$',
-                               'ssh_port'    => '$'});
+use Xylem::Class ('package' => 'Phloem::Rsync',
+                  'fields'  => {'user'        => '$',
+                                'ssh_id_file' => '$',
+                                'ssh_port'    => '$'});
 
 1;

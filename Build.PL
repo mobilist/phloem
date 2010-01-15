@@ -114,6 +114,7 @@ xxx_END_MANIFEST_SKIP
                         'App::Prove'       => 0,
                         'Archive::Tar'     => 1.46, # For COMPRESS_GZIP.
                         'File::Path'       => 2.06_05, # For make_path().
+                        'File::Rsync'      => 0,
                         'Mail::Sendmail'   => 0.75, # To send attachments.
                         'Module::CoreList' => 2.17, # To work properly with $].
                         'XML::Simple'      => 0},

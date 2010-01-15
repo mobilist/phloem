@@ -49,10 +49,10 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('class'  => 'Phloem::Role',
-                  'fields' => {'route'       => '$',
-                               'directory'   => '$',
-                               'description' => '$'});
+use Xylem::Class ('package' => 'Phloem::Role',
+                  'fields'  => {'route'       => '$',
+                                'directory'   => '$',
+                                'description' => '$'});
 
 1;
 

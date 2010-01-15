@@ -65,8 +65,8 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('class'  => 'Phloem::Root',
-                  'fields' => {'host' => '$',
-                               'port' => '$'});
+use Xylem::Class ('package' => 'Phloem::Root',
+                  'fields'  => {'host' => '$',
+                                'port' => '$'});
 
 1;

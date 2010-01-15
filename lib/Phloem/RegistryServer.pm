@@ -109,7 +109,8 @@ sub process_request
 
       if ($current_line =~ /^\s*GET\s*$/o) {
         $is_get = 1;
-        return; # (From the eval --- stop gathering input.)
+        alarm($previous_alarm);
+        return; # (Exit from the eval block --- stop gathering input.)
       }
       $input .= $current_line;
       Phloem::Debug->message($input);

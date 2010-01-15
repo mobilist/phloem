@@ -54,10 +54,10 @@ use diagnostics;
 use Carp;
 use File::Temp;
 
-use Xylem::Class ('class'  => 'Phloem::Registry',
-                  'bases'  => [qw(Phloem::Dumper)],
-                  'fields' => {'timestamp' => '$',
-                               'nodes'     => '%'});
+use Xylem::Class ('package' => 'Phloem::Registry',
+                  'bases'   => [qw(Phloem::Dumper)],
+                  'fields'  => {'timestamp' => '$',
+                                'nodes'     => '%'});
 
 use Phloem::Debug;
 use Phloem::Node;

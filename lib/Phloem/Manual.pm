@@ -37,6 +37,10 @@ Phloem currently depends on the following non-core Perl modules.
 As of Perl 5.10.1, this is actually a core module. If you've got an older
 Perl, then you'll have to install it using cpan. Sorry about that.
 
+=item File::Rsync
+
+This is used to wrap up calls to C<rsync(1)>.
+
 =item Mail::Sendmail
 
 As you might expect, this is needed so that Phloem is able to send out e-mails

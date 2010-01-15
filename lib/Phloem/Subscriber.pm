@@ -48,9 +48,9 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('class'  => 'Phloem::Subscriber',
-                  'fields' => {'node' => 'Phloem::Node',
-                               'role' => 'Phloem::Role::Subscribe'});
+use Xylem::Class ('package' => 'Phloem::Subscriber',
+                  'fields'  => {'node' => 'Phloem::Node',
+                                'role' => 'Phloem::Role::Subscribe'});
 
 use Phloem::ConfigLoader;
 use Phloem::Debug;
