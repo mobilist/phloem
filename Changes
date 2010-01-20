@@ -2,6 +2,12 @@ REVISION HISTORY
 
  See http://code.google.com/p/phloem/source/list for the full revision history.
 
+ 0.0.8 Wed Jan 20 13:41:51 GMT 2010
+    - Tagging the 0.0.8 release of the Phloem project.
+
+    - Rewrote Xylem::Class. It is now based on the excellent Badger::Class,
+      and is so much simpler as a consequence.
+
  0.0.7 Fri Jan 15 15:12:33 GMT 2010
     - Tagging the 0.0.7 release of the Phloem project.
 
@@ -70,7 +76,7 @@ REVISION HISTORY
 
 COPYRIGHT
 
- Copyright (C) 2009 Simon Dawson.
+ Copyright (C) 2009-2010 Simon Dawson.
 
 
 AUTHOR

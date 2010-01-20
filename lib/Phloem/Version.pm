@@ -22,7 +22,7 @@ use diagnostics;
 
 use Carp;
 
-use version; our $VERSION = qv('0.0.8');
+use version; our $VERSION = qv('0.0.9');
 
 1;
 
