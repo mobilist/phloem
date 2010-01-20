@@ -35,14 +35,16 @@
     ssh_port="22" />
 
   <role type="publish" route="leaf2root">
-    <directory path="/home/simond/Projects/Personal/svn/phloem/testleaf/leaf2root/" />
+    <directory
+      path="/home/simond/Projects/Personal/svn/phloem/testleaf/leaf2root/" />
     <description>
       Publish leaf2root content.
     </description>
   </role>
 
   <role type="subscribe" route="root2leaf" active="1">
-    <directory path="/home/simond/Projects/Personal/svn/phloem/testleaf/root2leaf/" />
+    <directory
+      path="/home/simond/Projects/Personal/svn/phloem/testleaf/root2leaf/" />
     <filter type="group" value="^test\w+" rule="match" />
     <description>
       Subscribe to root2leaf content from matching publisher nodes.
