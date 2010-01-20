@@ -8,7 +8,7 @@ A base class for Xylem classes.
 
 =head1 SYNOPSIS
 
-  package MyClass;
+  package MyClass0;
   use Some::Class;
   use Some::Other::Class;
   use Xylem::Class ('base'  => [qw(Some::Other::Class)],
@@ -18,9 +18,34 @@ A base class for Xylem classes.
                                  'object'  => 'Some::Class'});
   package main;
 
-  my $thing = MyClass->new('name' => 'toiletduck');
-  my $dummy = Some::Class->new(...);
+  package MySpace;
+
+  use Xylem::Class 'fields' => [qw(width height depth)];
+
+  package main;
+
+  package MySpaceTime;
+
+  use Xylem::Class 'fields' => 'duration', 'base' => 'MySpace';
+
+  package main;
+
+  package MyFish;
+
+  use Xylem::Class fields => 'species weight colour';
+
+  package main;
+
+  my $thing = MyClass0->new('name' => 'toiletduck');
+  my $dummy = Some::Class->new();
   $thing->object($dummy);
+
+  my $space = MySpace->new();
+  $space->height(100);
+  my $spacetime = MySpaceTime->new('width'    => 10,
+                                   'height'   => 20,
+                                   'depth'    => 30,
+                                   'duration' => 40);
 
 =cut
 
