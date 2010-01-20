@@ -64,7 +64,7 @@ is_deeply($cat2, $cat, 'Objects should be identical.');
 # Test a deeper class hierarchy.
 package Monkey;
   use Xylem::Class ('base'   => [qw(Donkey)],
-                    'fields' => {'scalar' => '$'});
+                    'fields' => [qw(scalar)]);
     package main;
 ok(my $monkey = Monkey->new('dog' => $dog, 'scalar' => 34),
    'Creating Monkey object.');

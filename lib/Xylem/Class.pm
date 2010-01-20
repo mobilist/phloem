@@ -41,11 +41,18 @@ use Badger::Class
 sub fields
 {
   my ($self, $value) = @_;
-  croak "Expected a hash reference." unless ref($value) eq 'HASH';
-  my $field_names = join(' ', keys(%$value));
+  if (ref($value)) {
+    if (ref($value) eq 'ARRAY') {
+      $value = join(' ', @$value);
+    } elsif (ref($value) eq 'HASH') {
+      $value = join(' ', keys(%$value));
+    } else {
+      croak "Expected an array or hash reference.";
+    }
+  }
   $self->base('Badger::Base');
-  $self->mutators($field_names);
-  $self->config($field_names);
+  $self->mutators($value);
+  $self->config($value);
   $self->init_method('configure');
 }
 

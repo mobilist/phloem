@@ -45,9 +45,7 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('fields' => {'type'  => '$',
-                               'value' => '$',
-                               'rule'  => '$'});
+use Xylem::Class ('fields' => [qw(type value rule)]);
 
 use Phloem::Node;
 

@@ -71,8 +71,6 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('fields' => {'user'        => '$',
-                               'ssh_id_file' => '$',
-                               'ssh_port'    => '$'});
+use Xylem::Class ('fields' => [qw(user ssh_id_file ssh_port)]);
 
 1;

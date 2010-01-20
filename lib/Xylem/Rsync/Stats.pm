@@ -109,17 +109,17 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('fields' => {'num_files'                   => '$',
-                               'num_files_transferred'       => '$',
-                               'total_file_size'             => '$',
-                               'total_transferred_file_size' => '$',
-                               'literal_data'                => '$',
-                               'matched_data'                => '$',
-                               'file_list_size'              => '$',
-                               'file_list_generation_time'   => '$',
-                               'file_list_transfer_time'     => '$',
-                               'total_bytes_sent'            => '$',
-                               'total_bytes_received'        => '$',
-                               'transfer_rate'               => '$'});
+use Xylem::Class ('fields' => [qw(num_files
+                                  num_files_transferred
+                                  total_file_size
+                                  total_transferred_file_size
+                                  literal_data
+                                  matched_data
+                                  file_list_size
+                                  file_list_generation_time
+                                  file_list_transfer_time
+                                  total_bytes_sent
+                                  total_bytes_received
+                                  transfer_rate)]);
 
 1;

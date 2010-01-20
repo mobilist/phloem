@@ -55,8 +55,7 @@ use Carp;
 use File::Temp;
 
 use Xylem::Class ('base'   => 'Phloem::Dumper',
-                  'fields' => {'timestamp' => '$',
-                               'nodes'     => '%'});
+                  'fields' => [qw(timestamp nodes)]);
 
 use Phloem::Debug;
 use Phloem::Node;

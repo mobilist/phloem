@@ -49,9 +49,7 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('fields' => {'route'       => '$',
-                               'directory'   => '$',
-                               'description' => '$'});
+use Xylem::Class ('fields' => [qw(route directory description)]);
 
 1;
 

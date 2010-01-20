@@ -65,7 +65,6 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('fields' => {'host' => '$',
-                               'port' => '$'});
+use Xylem::Class ('fields' => [qw(host port)]);
 
 1;
