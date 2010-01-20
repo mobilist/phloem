@@ -95,17 +95,16 @@ use Phloem::Dumper;
 use Phloem::Role;
 use Phloem::Root;
 
-use Xylem::Class ('package' => 'Phloem::Node',
-                  'bases'   => [qw(Phloem::Dumper)],
-                  'fields'  => {'id'                   => '$',
-                                'group'                => '$',
-                                'is_root'              => '$',
-                                'host'                 => '$',
-                                'register_frequency_s' => '$',
-                                'description'          => '$',
-                                'root'                 => 'Phloem::Root',
-                                'rsync'                => 'Phloem::Rsync',
-                                'roles'                => '@'});
+use Xylem::Class ('base'   => 'Phloem::Dumper',
+                  'fields' => {'id'                   => '$',
+                               'group'                => '$',
+                               'is_root'              => '$',
+                               'host'                 => '$',
+                               'register_frequency_s' => '$',
+                               'description'          => '$',
+                               'root'                 => 'Phloem::Root',
+                               'rsync'                => 'Phloem::Rsync',
+                               'roles'                => '@'});
 
 #------------------------------------------------------------------------------
 
@@ -248,7 +247,7 @@ sub publishes_on_route
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009-2010 Simon Dawson.
 
 =head1 AUTHOR
 

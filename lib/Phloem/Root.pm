@@ -32,7 +32,7 @@ Get the port.
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009-2010 Simon Dawson.
 
 =head1 AUTHOR
 
@@ -65,8 +65,7 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('package' => 'Phloem::Root',
-                  'fields'  => {'host' => '$',
-                                'port' => '$'});
+use Xylem::Class ('fields' => {'host' => '$',
+                               'port' => '$'});
 
 1;

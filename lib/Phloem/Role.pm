@@ -49,10 +49,9 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('package' => 'Phloem::Role',
-                  'fields'  => {'route'       => '$',
-                                'directory'   => '$',
-                                'description' => '$'});
+use Xylem::Class ('fields' => {'route'       => '$',
+                               'directory'   => '$',
+                               'description' => '$'});
 
 1;
 
@@ -64,7 +63,7 @@ L<Phloem::Role::Publish>, L<Phloem::Role::Subscribe>
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009-2010 Simon Dawson.
 
 =head1 AUTHOR
 

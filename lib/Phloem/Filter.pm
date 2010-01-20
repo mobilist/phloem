@@ -45,10 +45,9 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('package' => 'Phloem::Filter',
-                  'fields'  => {'type'  => '$',
-                                'value' => '$',
-                                'rule'  => '$'});
+use Xylem::Class ('fields' => {'type'  => '$',
+                               'value' => '$',
+                               'rule'  => '$'});
 
 use Phloem::Node;
 
@@ -109,7 +108,7 @@ sub apply
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009-2010 Simon Dawson.
 
 =head1 AUTHOR
 

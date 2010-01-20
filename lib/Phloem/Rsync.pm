@@ -38,7 +38,7 @@ Get/set the SSH port number.
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009-2010 Simon Dawson.
 
 =head1 AUTHOR
 
@@ -71,9 +71,8 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('package' => 'Phloem::Rsync',
-                  'fields'  => {'user'        => '$',
-                                'ssh_id_file' => '$',
-                                'ssh_port'    => '$'});
+use Xylem::Class ('fields' => {'user'        => '$',
+                               'ssh_id_file' => '$',
+                               'ssh_port'    => '$'});
 
 1;

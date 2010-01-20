@@ -54,10 +54,9 @@ use diagnostics;
 use Carp;
 use File::Temp;
 
-use Xylem::Class ('package' => 'Phloem::Registry',
-                  'bases'   => [qw(Phloem::Dumper)],
-                  'fields'  => {'timestamp' => '$',
-                                'nodes'     => '%'});
+use Xylem::Class ('base'   => 'Phloem::Dumper',
+                  'fields' => {'timestamp' => '$',
+                               'nodes'     => '%'});
 
 use Phloem::Debug;
 use Phloem::Node;
@@ -166,7 +165,7 @@ sub _registry_file
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009-2010 Simon Dawson.
 
 =head1 AUTHOR
 

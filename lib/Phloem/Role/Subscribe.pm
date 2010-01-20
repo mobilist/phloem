@@ -51,10 +51,9 @@ use Carp;
 use Phloem::Filter;
 use Phloem::Role;
 
-use Xylem::Class ('package' => 'Phloem::Role::Subscribe',
-                  'bases'   => [qw(Phloem::Role)],
-                  'fields'  => {'filter'             => 'Phloem::Filter',
-                                'update_frequency_s' => '$'});
+use Xylem::Class ('base'   => 'Phloem::Role',
+                  'fields' => {'filter'             => 'Phloem::Filter',
+                               'update_frequency_s' => '$'});
 
 1;
 
@@ -66,7 +65,7 @@ L<Phloem::Role>, L<Phloem::Role::Publish>, L<Phloem::Filter>
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009-2010 Simon Dawson.
 
 =head1 AUTHOR
 

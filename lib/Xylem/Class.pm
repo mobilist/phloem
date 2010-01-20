@@ -11,21 +11,16 @@ A base class for Xylem classes.
   package MyClass;
   use Some::Class;
   use Some::Other::Class;
-  use Xylem::Class ('package' => 'MyClass',
-                    'bases'   => [qw(Some::Other::Class)],
-                    'fields'  => {'name'    => '$',
-                                  'aliases' => '@',
-                                  'data'    => '%',
-                                  'object'  => 'Some::Class'});
+  use Xylem::Class ('base'  => [qw(Some::Other::Class)],
+                    'fields' => {'name'    => '$',
+                                 'aliases' => '@',
+                                 'data'    => '%',
+                                 'object'  => 'Some::Class'});
   package main;
 
-  my $thing = MyClass->new('package' => 'toiletduck');
+  my $thing = MyClass->new('name' => 'toiletduck');
   my $dummy = Some::Class->new(...);
   $thing->object($dummy);
-
-=head1 METHODS
-
-=over 8
 
 =cut
 
@@ -38,20 +33,8 @@ use diagnostics;
 use Carp;
 
 use Badger::Class
-  'uber'  => 'Badger::Class',
-  'hooks' => 'package fields bases';
-
-#------------------------------------------------------------------------------
-# Class metaprogramming hook.
-sub package
-{
-  # This is redundant, but is retained for backwards compatibility with
-  # existing client code.
-  #
-  # N.B. We need to return the Badger::Class instance that was passed in.
-  my ($self, $value) = @_;
-  $self->base('Badger::Base');
-}
+  'uber'   => 'Badger::Class',
+  'hooks'  => 'fields';
 
 #------------------------------------------------------------------------------
 # Class metaprogramming hook.
@@ -60,27 +43,13 @@ sub fields
   my ($self, $value) = @_;
   croak "Expected a hash reference." unless ref($value) eq 'HASH';
   my $field_names = join(' ', keys(%$value));
+  $self->base('Badger::Base');
   $self->mutators($field_names);
   $self->config($field_names);
   $self->init_method('configure');
 }
 
-#------------------------------------------------------------------------------
-# Class metaprogramming hook.
-sub bases
-{
-  my ($self, $value) = @_;
-  my $base_names = $value;
-  if (ref($value)) {
-    croak "Expected an array reference." unless ref($value) eq 'ARRAY';
-    $base_names = join(' ', @$value);
-  }
-  $self->base($base_names);
-}
-
 1;
-
-=back
 
 =head1 COPYRIGHT
 

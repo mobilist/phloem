@@ -48,9 +48,8 @@ use diagnostics;
 
 use Carp;
 
-use Xylem::Class ('package' => 'Phloem::Subscriber',
-                  'fields'  => {'node' => 'Phloem::Node',
-                                'role' => 'Phloem::Role::Subscribe'});
+use Xylem::Class ('fields' => {'node' => 'Phloem::Node',
+                               'role' => 'Phloem::Role::Subscribe'});
 
 use Phloem::ConfigLoader;
 use Phloem::Debug;
@@ -232,7 +231,7 @@ sub _update_from_publisher
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009-2010 Simon Dawson.
 
 =head1 AUTHOR
 
