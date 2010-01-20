@@ -2,7 +2,7 @@
 #
 # Unit test script for Phloem::Registry.
 
-# Copyright (C) 2009 Simon Dawson
+# Copyright (C) 2009-2010 Simon Dawson
 #
 # This file is part of Phloem.
 #
@@ -37,7 +37,7 @@ my %object_data = ('timestamp' => Xylem::TimeStamp::create(),
 ok(my $registry = Phloem::Registry->new(%object_data),
    'Creating registry object.');
 
-is_deeply($registry, \%object_data, 'Internal object data.');
+is_deeply($registry->{config}, \%object_data, 'Internal object data.');
 ok($registry->timestamp() eq $object_data{'timestamp'},
    'Accessor for timestamp.');
 ok(my $retrieved_nodes_hashref = $registry->nodes(), 'Accessor for nodes.');

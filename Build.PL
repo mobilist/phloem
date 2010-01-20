@@ -32,7 +32,7 @@ Print the license terms, and then exit.
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009-2010 Simon Dawson.
 
 =head1 AUTHOR
 
@@ -64,10 +64,10 @@ use diagnostics;
 use File::Spec;
 use Module::Build;
 
-use lib qw(lib);
+use lib qw(t/lib lib);
 use Phloem::Version;
-use Xylem::FileLocker;
 use Xylem::Utils::Code;
+use Xylem::Utils::File;
 
 #==============================================================================
 # Start of main program.
@@ -76,13 +76,7 @@ use Xylem::Utils::Code;
 
   # Generate a MANIFEST.SKIP file.
   {
-    # Acquire an exclusive lock on the file, while we write it.
-    my $locker = Xylem::FileLocker->new('MANIFEST.SKIP', 'w')
-      or die "Failed to lock file.";
-    my $manifest_skip_fh = $locker->filehandle()
-      or die "Failed to get filehandle.";
-
-    print $manifest_skip_fh <<'xxx_END_MANIFEST_SKIP';
+    my $manifest_skip_content = <<'xxx_END_MANIFEST_SKIP_CONTENT';
 ^_build
 ^Build$
 ^blib
@@ -92,7 +86,8 @@ use Xylem::Utils::Code;
 ^MANIFEST\.SKIP$
 CVS
 \.svn\W
-xxx_END_MANIFEST_SKIP
+xxx_END_MANIFEST_SKIP_CONTENT
+    Xylem::Utils::File::write('MANIFEST.SKIP', $manifest_skip_content);
   }
 
   # N.B. We're a bit sneaky here: there is no version number in Phloem::Manual.
@@ -112,6 +107,7 @@ xxx_END_MANIFEST_SKIP
     'license'       => 'gpl',
     'requires'      => {'perl'             => '5.10.0',
                         'App::Prove'       => 0,
+                        'Badger'           => 0,
                         'Archive::Tar'     => 1.46, # For COMPRESS_GZIP.
                         'File::Path'       => 2.06_05, # For make_path().
                         'File::Rsync'      => 0,

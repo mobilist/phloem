@@ -32,6 +32,10 @@ Phloem currently depends on the following non-core Perl modules.
 
 =over 8
 
+=item Badger
+
+This is used by the Xylem::Class generic class creation mechanism.
+
 =item App::Prove
 
 As of Perl 5.10.1, this is actually a core module. If you've got an older
@@ -428,7 +432,7 @@ positives from use/require statements that occur in POD synopses.
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009-2010 Simon Dawson.
 
 =head1 AUTHOR
 

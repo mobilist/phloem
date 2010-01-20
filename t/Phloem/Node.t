@@ -2,7 +2,7 @@
 #
 # Unit test script for Phloem::Node.
 
-# Copyright (C) 2009 Simon Dawson
+# Copyright (C) 2009-2010 Simon Dawson
 #
 # This file is part of Phloem.
 #
@@ -49,7 +49,7 @@ my %object_data = ('id'                   => 'egg',
 
 ok(my $node = Phloem::Node->new(%object_data), 'Creating node object.');
 
-is_deeply($node, \%object_data, 'Internal object data.');
+is_deeply($node->{config}, \%object_data, 'Internal object data.');
 ok($node->id() eq $object_data{'id'}, 'Accessor for id.');
 ok($node->group() eq $object_data{'group'}, 'Accessor for group.');
 ok($node->is_root() eq $object_data{'is_root'}, 'Accessor for is_root.');

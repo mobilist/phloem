@@ -2,7 +2,7 @@
 #
 # Unit test script for Xylem::Class.
 
-# Copyright (C) 2009 Simon Dawson
+# Copyright (C) 2009-2010 Simon Dawson
 #
 # This file is part of Xylem.
 #
@@ -23,17 +23,14 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Test::More tests => 48; # qw(no_plan);
+use Test::More tests => 51; # qw(no_plan);
 
 BEGIN { use_ok('Xylem::Class'); }
 
 # Define some test classes.
-package Dog;
-  sub new { my $c = shift; return bless({'name' => shift}, __PACKAGE__); };
-    package main;
-package Cat;
-  sub new { my $c = shift; return bless({'name' => shift}, __PACKAGE__); };
-    package main;
+use_ok('Dog');
+use_ok('Cat');
+
 package Dummy;
   use Xylem::Class ('package' => 'Dummy',
                     'fields'  => {'scalar' => '$',
@@ -45,7 +42,7 @@ package Dummy;
 ok(my $dog = Dog->new('Fido'), 'Creating Dog object.');
 ok(my $dummy = Dummy->new(), 'Creating Dummy object.');
 ok($dummy->isa('Dummy'), 'Should be a Dummy.');
-ok($dummy->isa('Xylem::Class'), 'Should be a subclass of Xylem::Class.');
+ok(!$dummy->isa('Xylem::Class'), 'Should not be a subclass of Xylem::Class.');
 ok(!$dummy->dog(), 'Should be no dog.');
 ok($dummy->dog($dog), 'Setting dog.');
 ok(my $dog2 = $dummy->dog(), 'Retrieving dog.');
@@ -60,7 +57,7 @@ ok(my $cat = Cat->new('Oscar'), 'Creating Cat object.');
 ok(my $donkey = Donkey->new('dog' => $dog, 'cat' => $cat),
    'Creating Donkey object.');
 ok($donkey->isa('Donkey'), 'Should be a Donkey.');
-ok($donkey->isa('Xylem::Class'), 'Should be a subclass of Xylem::Class.');
+ok(!$donkey->isa('Xylem::Class'), 'Should not be a subclass of Xylem::Class.');
 ok(my $dog3 = $donkey->dog(), 'Retrieving dog.');
 ok(my $cat2 = $donkey->cat(), 'Retrieving cat.');
 is_deeply($dog3, $dog, 'Objects should be identical.');
@@ -75,7 +72,7 @@ package Monkey;
 ok(my $monkey = Monkey->new('dog' => $dog, 'scalar' => 34),
    'Creating Monkey object.');
 ok($monkey->isa('Monkey'), 'Should be a Monkey.');
-ok($monkey->isa('Xylem::Class'), 'Should be a subclass of Xylem::Class.');
+ok(!$monkey->isa('Xylem::Class'), 'Should not be a subclass of Xylem::Class.');
 ok($monkey->isa('Donkey'), 'Should be a subclass of Donkey.');
 ok(my $scalar = $monkey->scalar(), 'Accessor for scalar field.');
 is($scalar, 34, 'Value for scalar field.');
@@ -95,7 +92,7 @@ package Thing;
     package main;
 ok(my $thing = Thing->new(), 'Creating Thing object.');
 ok($thing->isa('Thing'), 'Should be a Thing.');
-ok($thing->isa('Xylem::Class'), 'Should be a subclass of Xylem::Class.');
+ok(!$thing->isa('Xylem::Class'), 'Should not be a subclass of Xylem::Class.');
 ok($thing->isa('Monkey'), 'Should be a subclass of Monkey.');
 ok($thing->isa('Donkey'), 'Should be a subclass of Donkey too.');
 
@@ -105,7 +102,7 @@ ok(my $thing2 = Thing->new('array'  => [qw(hat shoe cheese)],
                            'cat'    => $felix),
    'Creating another Thing object.');
 ok($thing2->isa('Thing'), 'Should be a Thing.');
-ok($thing2->isa('Xylem::Class'), 'Should be a subclass of Xylem::Class.');
+ok(!$thing2->isa('Xylem::Class'), 'Should not be a subclass of Xylem::Class.');
 ok($thing2->isa('Monkey'), 'Should be a subclass of Monkey.');
 ok($thing2->isa('Donkey'), 'Should be a subclass of Donkey too.');
 is($thing2->scalar(), 101, 'Value for scalar field.');
@@ -117,9 +114,7 @@ ok(my $cat4 = $thing2->cat(), 'Accessor for cat.');
 is_deeply($cat4, $felix, 'Cats should be identical.');
 
 diag('Testing a base class that does not have a constructor or fields.');
-package Mixin;
-  sub something { return 1; };
-    package main;
+use_ok('Mixin');
 
 package Twist;
   use Xylem::Class ('package' => 'Twist', 'bases' => [qw(Mixin)]);

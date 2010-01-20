@@ -36,7 +36,7 @@ Print the license terms, and then exit.
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009-2010 Simon Dawson.
 
 =head1 AUTHOR
 
@@ -66,14 +66,27 @@ use warnings;
 use diagnostics;
 
 use App::Prove;
+use Cwd qw();
+use File::Spec;
 
 use lib qw(lib);
 use Xylem::Utils::Code;
+
+use constant TEST_DIR => 't'; # Test directory name.
 
 #==============================================================================
 # Start of main program.
 {
   Xylem::Utils::Code::process_command_line();
+
+  # Build a list of include directories for the tests.
+  my @extra_libs;
+  {
+    my $here = Cwd::getcwd();
+    foreach my $dir_name (TEST_DIR, '') {
+      push(@extra_libs, '-I', File::Spec->catdir($here, $dir_name, 'lib'));
+    }
+  }
 
   # Set up the tester object.
   my $app = App::Prove->new();
@@ -81,7 +94,7 @@ use Xylem::Utils::Code;
   $app->verbose(1);
   $app->recurse(1);
   $app->timer(1);
-  $app->process_args('t'); # Test directory path.
+  $app->process_args(@extra_libs, TEST_DIR);
 
   # Return a proper exit code.
   exit( $app->run() ? 0 : 1 );

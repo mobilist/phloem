@@ -3,7 +3,7 @@
 
 <!--
 
- Copyright (C) 2009 Simon Dawson
+ Copyright (C) 2009-2010 Simon Dawson
 
  This file is part of Phloem.
 
@@ -35,14 +35,14 @@
     ssh_port="22" />
 
   <role type="publish" route="root2leaf">
-    <directory path="/home/simond/Projects/svn/phloem/testroot/root2leaf/" />
+    <directory path="/home/simond/Projects/Personal/svn/phloem/testroot/root2leaf/" />
     <description>
       Publish root2leaf content.
     </description>
   </role>
 
   <role type="subscribe" route="leaf2root" active="1">
-    <directory path="/home/simond/Projects/svn/phloem/testroot/leaf2root/" />
+    <directory path="/home/simond/Projects/Personal/svn/phloem/testroot/leaf2root/" />
     <filter type="node" value="^test\w+" rule="match" />
     <description>
       Subscribe to leaf2root content from matching publisher nodes.
