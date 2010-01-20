@@ -24,8 +24,12 @@ use warnings;
 use diagnostics;
 
 use Carp;
+use English;
 use File::Spec;
 use POSIX qw(setsid);
+
+# Are we running on Win32/Cygwin?
+use constant WIN32 => ($OSNAME eq 'MSWin32');
 
 #------------------------------------------------------------------------------
 
@@ -45,14 +49,14 @@ sub spawn_child
   # The parent process just returns now.
   return $pid if $pid;
 
-  # Change the file mode mask.
-  #
-  # N.B. This can fail on some systems --- notably Win32/Cygwin --- so we
-  #      warn/carp rather than die/croak.
-  umask(0000) or carp "Failed to set file mode mask: $!";
+  # N.B. The following code won't work on Win32/Cygwin.
+  unless (WIN32) {
+    # Change the file mode mask.
+    umask(0000) or croak "Failed to set file mode mask: $!";
 
-  # Give the child a new process group and session.
-  setsid() or croak "Failed to start a new session: $!";
+    # Give the child a new process group and session.
+    setsid() or croak "Failed to start a new session: $!";
+  }
 
   # Change the working directory to the root.
   my $root_dir = File::Spec->rootdir();
@@ -73,7 +77,7 @@ sub spawn_child
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Simon Dawson.
+Copyright (C) 2009-2010 Simon Dawson.
 
 =head1 AUTHOR
 
