@@ -1,0 +1,1 @@
+A free, open-source, content delivery network (CDN); light-weight, and written in Perl. It is intended that the base layer, Xylem, will mature into a general-purpose Perl application framework.
